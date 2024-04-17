@@ -2,6 +2,7 @@ GET http://localhost:3000/users
 
 ###
 
+# Not sure which format would be better for the movieData object
 POST http://localhost:3000/users
 Content-Type: application/json
 
@@ -13,6 +14,33 @@ Content-Type: application/json
             "title": "Lord of the Rings",
             "rating": 5,
             "dateAdded": "2023-05-07"
+        }
+    }
+}
+
+###
+
+# Not sure which format would be better for the movieData object
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "username": "Sarah",
+    "password": "passwordSarah",
+    "movieData": {
+        "watchedMovies": {
+            "Harry Potter": {
+                "title": "Harry Potter",
+                "rating": 5,
+                "dateAdded": "2024-02-26"
+            }
+        },
+        "watchLaterList": {
+            "The Matrix": {
+                "title": "The Matrix",
+                "rating": 4,
+                "dateAdded": "2020-07-19"
+            }
         }
     }
 }
