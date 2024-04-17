@@ -4,37 +4,39 @@
 
 ### Core Features
 
-1. **User Input to Scrape Online Websites**: Users can input a job title and any other relevant information to scrape online job websites for job listings.
-2. **Data Analysis**: Extract key skills from job listings and analyze the frequency of each skill to identify the most sought-after skills.
-3. **Skill Summary**: Generate a summary of the top skills most sought after for the specified job.
-4. **AI Recommendations and Resources**: Provide AI-generated recommendations for improving skills and suggest resources for learning the identified skills.
+1. **User Input to List Watched Movies and Personal Ratings**: Users can input the names of movies they have watched and rate them on a scale of 1 to 5. These movies will then be saved to a "Watched Movies" list.
+2. **AI Recommendations**: The app will use AI algorithms to analyze the user's movie ratings and recommend new movies based on their preferences.
+3. **Saving Movies to Watch Later List**: Users can save recommended movies to a "Watch Later" list for future viewing.
 
 ### Additional Features
 
-1. **Color Palette Changing and Theme Customization**: Users can customize the app's appearance with various color palettes and themes.
-2. **User Authentication**: Users can create an account, log in, and save their preferences and search history.
+1. **User Authentication**: Users can create an account, log in, and save their movie list and ratings for future use.
+2. **Viewing Movie Data on Cick**: Users can view detailed information about a movie by clicking on its title after it is on their movie list. 
 
 ## Pages
 
-1. **Main Page/Home**: Displays the main functionality of the app, including the input form for job title and other information. The skill summary, and AI recommendations will be shown after the user submits the form.
-2. **Profile**: Displays user information, preferences, and search history.
+1. **Main Page/Home**: Displays the main functionality of the app, including the input form for listing movies and ratings, as well as being able to search without inputting movies. Also displays the "Watch Later" list of movies.
+2. **Profile**: Displays user information, preferences, and login/logout options.
 3. **Settings**: Offers personalization options and app settings.
 
 ## User Experience
 
-1. **Efficient Fetching of Data**: The app should quickly fetch and analyze job listings to provide users with timely and relevant information. 
-2. **Viewing statistics and Recommendations/Resources**: The app should provide users with clear and concise statistics on the most sought-after skills for a given job. The AI recommendations and resources should be easily accessible and relevant to the user's skill level.
-4. **Seamless Navigation**: Users can navigate between pages seamlessly with intuitive UI design and smooth transitions.
+1. **Efficient Fetching of Data**: The app should fetch movie data quickly and efficiently to provide users with instant recommendations. 
+2. **Seamless Navigation**: Users can navigate between pages seamlessly with intuitive UI design and smooth transitions.
 
 ## Technical Specifications
 
 - **Platform**: The application will be developed as a web-app.
-- **Technologies**: The app will be built using React for cross-platform development, with cloud storage integration for data synchronization.
+- **Technologies**: The app will be built using React for cross-platform development and Node.js for server-side logic.
 - **Authentication**: User authentication will be implemented using email sign-up/login.
 
 ## Milestones
 
-1. **MVP Development**: Implement core features such as user input, data scraping, skill analysis, and skill summary generation.
-2. **Cloud Integration**: Integrate cloud storage for user data synchronization and personalization.
-3. **User Authentication**: Implement email sign-up/login for user authentication and data security.
-4. **Polish and Optimization**: Refine UI/UX design, optimize performance, and fix bugs for a seamless user experience.
+1. **MVP Development**: Implement core features, including user input, AI recommendations, and basic UI.
+2. **User Authentication**: Implement email sign-up/login for user authentication and data security.
+3. **Polish and Optimization**: Refine UI/UX design, optimize performance, and fix bugs for a seamless user experience.
+
+## Future Enhancements
+1. **Exporting Movie List**: Allow users to export their movie list and ratings to a file or external service.
+2. **Default Movie Recommendations**: Provide default movie recommendations for new users based on popular movies or genres.
+3. **Cloud Storage**: Implement cloud storage for user data to enable seamless access across devices.
