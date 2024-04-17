@@ -1,0 +1,28 @@
+GET http://localhost:3000/users
+
+###
+
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "username": "Kyle",
+    "password": "password",
+    "movieData": {
+        "movie1": {
+            "title": "Lord of the Rings",
+            "rating": 5,
+            "dateAdded": "2023-05-07"
+        }
+    }
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+    "username": "Kyle",
+    "password": "password"
+}
