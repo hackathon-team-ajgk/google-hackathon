@@ -25,6 +25,7 @@ function searchForMovie(search_query) {
         ...movie,
         genre_ids: JSON.stringify(movie.genre_ids) // Stringify the genre_ids array
       }));
+      // console.log(json)
       return json; // Return the JSON data from the resolved Promise
     })
     .catch(err => {
@@ -32,7 +33,7 @@ function searchForMovie(search_query) {
       throw err; // Throw the error to propagate it to the caller
     });
 }
-// searchForMovie("star wars the force awakens")
+searchForMovie("star wars the force awakens")
 
 
 // Working get list of popular movies 
@@ -114,13 +115,15 @@ async function getMovieMetadata() {
       const movieMetadata = movie_obj.results.map(movie => ({
         movieId: movie.id,
         title: movie.title,
-        release_date: movie.release_date,
-        genre_ids: JSON.stringify(movie.genre_ids), // Stringify genre IDs
-        genre_names: movie.genre_ids.map(genreId => { // Map genre IDs to names
+        releaseDate: movie.release_date,
+        genreIds: JSON.stringify(movie.genre_ids), // Stringify genre IDs
+        genreNames: movie.genre_ids.map(genreId => { // Map genre IDs to names
           const genre = genreDict.genres.find(genre => genre.id === genreId);
           return genre ? genre.name : "Unknown Genre";
         }).join(','), // Join genre names into a single string
-        cover_image: "https://image.tmdb.org/t/p/w500" + movie.poster_path
+        coverImage: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
+        popularity: movie.popularity,
+        averageRating: movie.vote_average
       }));
 
       const newData = {
