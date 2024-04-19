@@ -7,24 +7,33 @@ const fetch = require('node-fetch');
 // Functions requiring API endpoints:
 // Working movie search 
 function searchForMovie(search_query) {
-    const formatted_quary = search_query.replace(' ', '%20');
-    const url = `https://api.themoviedb.org/3/search/movie?query=${formatted_quary}&include_adult=false&language=en-US&page=1`;
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
-      }
-    };
+  const formatted_query = search_query.replace(' ', '%20');
+  const url = `https://api.themoviedb.org/3/search/movie?query=${formatted_query}&include_adult=false&language=en-US&page=1`;
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
+    }
+  };
 
-    const result = fetch(url, options)
+  return fetch(url, options)
     .then(res => res.json())
-    .then(json => console.log(json))
-    .catch(err => console.error('error:' + err));
-
-    return result;
+    .then(json => {
+      // Iterate over each movie result to stringify the genre_ids array
+      const formattedResults = json.results.map(movie => ({
+        ...movie,
+        genre_ids: JSON.stringify(movie.genre_ids) // Stringify the genre_ids array
+      }));
+      return json; // Return the JSON data from the resolved Promise
+    })
+    .catch(err => {
+      console.error('error:', err);
+      throw err; // Throw the error to propagate it to the caller
+    });
 }
 // searchForMovie("star wars the force awakens")
+
 
 // Working get list of popular movies 
 function getPopularMovieHandler() {
@@ -37,12 +46,11 @@ function getPopularMovieHandler() {
       }
     };
     
-    const result = fetch(url, options)
+    return fetch(url, options)
       .then(res => res.json())
       .then(json => console.log(json))
       .catch(err => console.error('error:' + err));
 
-      return result;
 }
 // getPopularMovieHandler()
 
@@ -58,7 +66,7 @@ function getWatchProviderHandler() {
       }
     };
     
-    fetch(url, options)
+    return fetch(url, options)
       .then(res => res.json())
       .then(json => console.log(json))
       .catch(err => console.error('error:' + err));
@@ -66,25 +74,60 @@ function getWatchProviderHandler() {
 // getWatchProviderHandler()
 
 // Functions for parsing information
-
-// Issues on line 76 'result'
 async function getMovieMetadata() {
-    // Must get id, title, release_date, genre_ids, poster_path
-    const rawMovieName = "Star Wars the force awakens";
-    const movie_obj = await searchForMovie(rawMovieName)
-    console.log(movie_obj)
-    const movieMetadata = movie_obj.results.map(movie => ({
-        id: movie.id,
-        title: movie.title,
-        release_date: movie.release_date,
-        genre_ids: movie.genre_ids,
-        poster_path: movie.poster_path
+  try {
+      const rawMovieName = "Star Wars the force awakens";  // REPLACE THIS WITH USER INPUT
+      const movie_obj = await searchForMovie(rawMovieName);
+
+      if (!movie_obj || !movie_obj.results) {
+          console.error("No movie data found");
+          return;
+      }
+
+      // Mapping genre IDs to names
+      const genreDict = {
+          "genres": [
+              { "id": 28, "name": "Action" },
+              { "id": 12, "name": "Adventure" },
+              { "id": 16, "name": "Animation" },
+              { "id": 35, "name": "Comedy" },
+              { "id": 80, "name": "Crime" },
+              { "id": 99, "name": "Documentary" },
+              { "id": 18, "name": "Drama" },
+              { "id": 10751, "name": "Family" },
+              { "id": 14, "name": "Fantasy" },
+              { "id": 36, "name": "History" },
+              { "id": 27, "name": "Horror" },
+              { "id": 10402, "name": "Music" },
+              { "id": 9648, "name": "Mystery" },
+              { "id": 10749, "name": "Romance" },
+              { "id": 878, "name": "Science Fiction" },
+              { "id": 10770, "name": "TV Movie" },
+              { "id": 53, "name": "Thriller" },
+              { "id": 10752, "name": "War" },
+              { "id": 37, "name": "Western" }
+          ]
+      };
+
+      const movieMetadata = movie_obj.results.map(movie => ({
+          movieId: movie.id,
+          title: movie.title,
+          release_date: movie.release_date,
+          genre_ids: JSON.stringify(movie.genre_ids), // Stringify genre IDs
+          genre_names: movie.genre_ids.map(genreId => { // Map genre IDs to names
+              const genre = genreDict.genres.find(genre => genre.id === genreId);
+              return genre ? genre.name : "Unknown Genre";
+          }).join(','), // Join genre names into a single string
+          cover_image: "https://image.tmdb.org/t/p/w500" + movie.poster_path
       }));
 
-    const newData = {
-        movies: movieMetadata
-    };
+      const newData = {
+          movie: movieMetadata
+      };
 
-    console.log(newData)
+      console.log(newData);
+  } catch (error) {
+      console.error("Error retrieving movie metadata:", error);
+  }
 }
-getMovieMetadata()
+getMovieMetadata();
