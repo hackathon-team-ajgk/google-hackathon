@@ -78,7 +78,7 @@ function getWatchProviderHandler() {
 async function getMovieMetadata() {
   return new Promise(async (resolve, reject) => {
     try {
-      const rawMovieName = "Star Wars the force awakens";  // REPLACE THIS WITH USER INPUT
+      const rawMovieName = "harry potter";  // REPLACE THIS WITH USER INPUT
       const movie_obj = await searchForMovie(rawMovieName);
 
       if (!movie_obj || !movie_obj.results) {
@@ -144,3 +144,11 @@ async function viewMovieMetadata() {
   console.log(x)
 }
 viewMovieMetadata()
+
+/* 
+TO DO:
+- More error handling (more detailed error messages & try/catch blocks)
+- Input/output validation
+- Add more endpoint calls for potential info frontend might need
+- Remember to optimize function calls and interactions so load times are as low as possible
+*/
