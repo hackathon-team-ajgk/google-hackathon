@@ -1,9 +1,9 @@
+# Getting all users in DB
 GET http://localhost:3000/users
 
 ###
-
 # Not sure which format would be better for the movieData object
-POST http://localhost:3000/users
+POST http://localhost:3000/register
 Content-Type: application/json
 
 {
@@ -19,9 +19,8 @@ Content-Type: application/json
 }
 
 ###
-
 # Not sure which format would be better for the movieData object
-POST http://localhost:3000/users
+POST http://localhost:3000/register
 Content-Type: application/json
 
 {
@@ -46,8 +45,8 @@ Content-Type: application/json
 }
 
 ###
-
-POST http://localhost:3000/users/login
+# Testing Login
+POST http://localhost:3000/login
 Content-Type: application/json
 
 {
