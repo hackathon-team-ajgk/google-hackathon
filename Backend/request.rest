@@ -13,7 +13,8 @@ Content-Type: application/json
         "movie1": {
             "title": "Lord of the Rings",
             "rating": 5,
-            "dateAdded": "2023-05-07"
+            "dateAdded": "2023-05-07",
+            "status": "watched"
         }
     }
 }
@@ -31,14 +32,16 @@ Content-Type: application/json
             "Harry Potter": {
                 "title": "Harry Potter",
                 "rating": 5,
-                "dateAdded": "2024-02-26"
+                "dateAdded": "2024-02-26",
+                "status": "watched"
             }
         },
         "watchLaterList": {
             "The Matrix": {
                 "title": "The Matrix",
                 "rating": 4,
-                "dateAdded": "2020-07-19"
+                "dateAdded": "2020-07-19",
+                "status": "watch later"
             }
         }
     }
