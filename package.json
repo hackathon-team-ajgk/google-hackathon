@@ -1,6 +1,16 @@
 {
+  "scripts": {
+    "devStart": "nodemon serverExperimental.js"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.6.0",
-    "dotenv": "^16.4.5"
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

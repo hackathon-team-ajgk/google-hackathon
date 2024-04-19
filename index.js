@@ -23,4 +23,4 @@ async function run() {
   console.log(text);
 }
 
-run();
+// run();
