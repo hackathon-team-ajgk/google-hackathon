@@ -75,59 +75,69 @@ function getWatchProviderHandler() {
 
 // Functions for parsing information
 async function getMovieMetadata() {
-  try {
+  return new Promise(async (resolve, reject) => {
+    try {
       const rawMovieName = "Star Wars the force awakens";  // REPLACE THIS WITH USER INPUT
       const movie_obj = await searchForMovie(rawMovieName);
 
       if (!movie_obj || !movie_obj.results) {
-          console.error("No movie data found");
-          return;
+        console.error("No movie data found");
+        reject("No movie data found");
+        return;
       }
 
       // Mapping genre IDs to names
       const genreDict = {
-          "genres": [
-              { "id": 28, "name": "Action" },
-              { "id": 12, "name": "Adventure" },
-              { "id": 16, "name": "Animation" },
-              { "id": 35, "name": "Comedy" },
-              { "id": 80, "name": "Crime" },
-              { "id": 99, "name": "Documentary" },
-              { "id": 18, "name": "Drama" },
-              { "id": 10751, "name": "Family" },
-              { "id": 14, "name": "Fantasy" },
-              { "id": 36, "name": "History" },
-              { "id": 27, "name": "Horror" },
-              { "id": 10402, "name": "Music" },
-              { "id": 9648, "name": "Mystery" },
-              { "id": 10749, "name": "Romance" },
-              { "id": 878, "name": "Science Fiction" },
-              { "id": 10770, "name": "TV Movie" },
-              { "id": 53, "name": "Thriller" },
-              { "id": 10752, "name": "War" },
-              { "id": 37, "name": "Western" }
-          ]
+        "genres": [
+          { "id": 28, "name": "Action" },
+          { "id": 12, "name": "Adventure" },
+          { "id": 16, "name": "Animation" },
+          { "id": 35, "name": "Comedy" },
+          { "id": 80, "name": "Crime" },
+          { "id": 99, "name": "Documentary" },
+          { "id": 18, "name": "Drama" },
+          { "id": 10751, "name": "Family" },
+          { "id": 14, "name": "Fantasy" },
+          { "id": 36, "name": "History" },
+          { "id": 27, "name": "Horror" },
+          { "id": 10402, "name": "Music" },
+          { "id": 9648, "name": "Mystery" },
+          { "id": 10749, "name": "Romance" },
+          { "id": 878, "name": "Science Fiction" },
+          { "id": 10770, "name": "TV Movie" },
+          { "id": 53, "name": "Thriller" },
+          { "id": 10752, "name": "War" },
+          { "id": 37, "name": "Western" }
+        ]
       };
 
       const movieMetadata = movie_obj.results.map(movie => ({
-          movieId: movie.id,
-          title: movie.title,
-          release_date: movie.release_date,
-          genre_ids: JSON.stringify(movie.genre_ids), // Stringify genre IDs
-          genre_names: movie.genre_ids.map(genreId => { // Map genre IDs to names
-              const genre = genreDict.genres.find(genre => genre.id === genreId);
-              return genre ? genre.name : "Unknown Genre";
-          }).join(','), // Join genre names into a single string
-          cover_image: "https://image.tmdb.org/t/p/w500" + movie.poster_path
+        movieId: movie.id,
+        title: movie.title,
+        release_date: movie.release_date,
+        genre_ids: JSON.stringify(movie.genre_ids), // Stringify genre IDs
+        genre_names: movie.genre_ids.map(genreId => { // Map genre IDs to names
+          const genre = genreDict.genres.find(genre => genre.id === genreId);
+          return genre ? genre.name : "Unknown Genre";
+        }).join(','), // Join genre names into a single string
+        cover_image: "https://image.tmdb.org/t/p/w500" + movie.poster_path
       }));
 
       const newData = {
-          movie: movieMetadata
+        movie: movieMetadata
       };
-
-      console.log(newData);
-  } catch (error) {
-      console.error("Error retrieving movie metadata:", error);
-  }
+      
+      resolve(newData);
+    } catch (error) {
+      console.error("Error formatting movie metadata:", error);
+      reject(error);
+    }
+  });
 }
-getMovieMetadata();
+
+// Below only for testing purposes
+async function viewMovieMetadata() {
+  x = await getMovieMetadata();
+  console.log(x)
+}
+viewMovieMetadata()
