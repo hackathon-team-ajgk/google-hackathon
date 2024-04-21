@@ -7,37 +7,42 @@ const fetch = require('node-fetch');
 // Functions requiring API endpoints:
 // Working movie search 
 function searchForMovie(search_query) {
-  const formatted_query = search_query.replace(' ', '%20');
-  const url = `https://api.themoviedb.org/3/search/movie?query=${formatted_query}&include_adult=false&language=en-US&page=1`;
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
-    }
-  };
-
-  return fetch(url, options)
-    .then(res => res.json())
-    .then(json => {
-      // Iterate over each movie result to stringify the genre_ids array
-      const formattedResults = json.results.map(movie => ({
-        ...movie,
-        genre_ids: JSON.stringify(movie.genre_ids) // Stringify the genre_ids array
-      }));
-      // console.log(json)
-      return json; // Return the JSON data from the resolved Promise
-    })
-    .catch(err => {
-      console.error('error:', err);
-      throw err; // Throw the error to propagate it to the caller
-    });
+  try {
+    const formatted_query = search_query.replace(' ', '%20');
+    const url = `https://api.themoviedb.org/3/search/movie?query=${formatted_query}&include_adult=false&language=en-US&page=1`;
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
+      }
+    };
+  
+    return fetch(url, options)
+      .then(res => res.json())
+      .then(json => {
+        // Iterate over each movie result to stringify the genre_ids array
+        const formattedResults = json.results.map(movie => ({
+          ...movie,
+          genre_ids: JSON.stringify(movie.genre_ids) // Stringify the genre_ids array
+        }));
+        // console.log(json)
+        return json; // Return the JSON data from the resolved Promise
+      })
+      .catch(err => {
+        console.error('error:', err);
+        throw err; // Throw the error to propagate it to the caller
+      });
+  } catch (error) {
+    console.error("Error searching for movie(s)", error);
+  }
 }
-searchForMovie("star wars the force awakens")
+// searchForMovie("harry potter")
 
 
 // Working get list of popular movies 
 function getPopularMovieHandler() {
+  try {
     const url = 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=2';
     const options = {
       method: 'GET',
@@ -51,7 +56,9 @@ function getPopularMovieHandler() {
       .then(res => res.json())
       .then(json => console.log(json))
       .catch(err => console.error('error:' + err));
-
+  } catch (error) {
+    console.error("Error getting popular movies", error)
+  }
 }
 // getPopularMovieHandler()
 
@@ -123,20 +130,50 @@ async function getMovieMetadata() {
         }).join(','), // Join genre names into a single string
         coverImage: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
         popularity: movie.popularity,
-        averageRating: movie.vote_average
+        averageRating: movie.vote_average,
+        overview: movie.overview
       }));
 
       const newData = {
         movie: movieMetadata
       };
       
+      filterMovieData(newData)
+
       resolve(newData);
     } catch (error) {
-      console.error("Error formatting movie metadata:", error);
+      console.error("Error getting movie metadata:", error);
       reject(error);
     }
   });
 }
+
+function filterMovieData(movieMetadata) {
+  try {
+    // Iterate through each movie object
+    for (const movie of movieMetadata.movie) {
+      // If movie doesnt have genre, title, or movieId, remove movie from results.
+      const filteredMovies = movieMetadata.movie.filter(movie => {
+        return movie.genreNames !== '' && movie.title !== '' && !isNaN(movie.movieId);
+      });
+      movieMetadata.movie = filteredMovies;
+
+      // Replace empty strings and zeros with 'NULL' for specific properties
+      movie.releaseDate = movie.releaseDate === '' ? 'NULL' : movie.releaseDate;
+      movie.popularity = movie.popularity === 0 ? 'NULL' : movie.popularity;
+      movie.averageRating = movie.averageRating === 0 ? 'NULL' : movie.averageRating;
+      movie.overview = movie.overview === '' ? 'NULL' : movie.overview;
+
+      // Check if the cover image ends with '.jpg', otherwise replace it with 'NULL'
+      if (!/\.jpg$/.test(movie.coverImage)) {
+        movie.coverImage = 'NULL';
+      }
+    }
+  } catch (err) {
+    console.error("Error filtering movie metadata:", err);
+  }
+}
+
 
 // Below only for testing purposes
 async function viewMovieMetadata() {
@@ -147,8 +184,7 @@ viewMovieMetadata()
 
 /* 
 TO DO:
-- More error handling (more detailed error messages & try/catch blocks)
-- Input/output validation
+- Only english movies?
 - Add more endpoint calls for potential info frontend might need
 - Remember to optimize function calls and interactions so load times are as low as possible
 */
