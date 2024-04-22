@@ -18,12 +18,11 @@ function searchForMovie(search_query) {
         Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
       }
     };
-    console.log(options);
   
     return fetch(url, options)
       .then(res => res.json())
       .then(json => {
-        console.log('API Response:', json); // Log the API response
+        // console.log('API Response:', json); // Log the API response FOR TESTING THIS FUNC ONLY
         if (!json || !json.results) {
           console.error('Invalid API Response:', json); // Log if response is invalid
           throw new Error('Invalid API Response');
