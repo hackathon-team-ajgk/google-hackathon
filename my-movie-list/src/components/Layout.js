@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 function Layout() {
   return (
     <>
-      <div>
+      <div className="header-container">
         <h1>myMovieList</h1>
         <Navbar />
         <button>Login</button>
