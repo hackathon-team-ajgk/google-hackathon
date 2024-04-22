@@ -1,5 +1,6 @@
-require("dotenv").config();
+require("dotenv").config( {path: '../.env'} );
 const API_READ_ACCESS_TOKEN = process.env.API_READ_ACCESS_TOKEN;
+// console.log(API_READ_ACCESS_TOKEN);
 const { json } = require("express");
 const fetch = require('node-fetch');
 
@@ -17,10 +18,16 @@ function searchForMovie(search_query) {
         Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
       }
     };
+    console.log(options);
   
     return fetch(url, options)
       .then(res => res.json())
       .then(json => {
+        console.log('API Response:', json); // Log the API response
+        if (!json || !json.results) {
+          console.error('Invalid API Response:', json); // Log if response is invalid
+          throw new Error('Invalid API Response');
+        }
         // Iterate over each movie result to stringify the genre_ids array
         const formattedResults = json.results.map(movie => ({
           ...movie,
@@ -30,11 +37,12 @@ function searchForMovie(search_query) {
         return json; // Return the JSON data from the resolved Promise
       })
       .catch(err => {
-        console.error('error:', err);
+        console.error('Error fetching movie data:', err);
         throw err; // Throw the error to propagate it to the caller
       });
   } catch (error) {
     console.error("Error searching for movie(s)", error);
+    throw error; // Throw the error to propagate it to the caller
   }
 }
 // searchForMovie("harry potter")
@@ -119,28 +127,34 @@ async function getMovieMetadata() {
         ]
       };
 
-      const movieMetadata = movie_obj.results.map(movie => ({
-        movieId: movie.id,
-        title: movie.title,
-        releaseDate: movie.release_date,
-        genreIds: JSON.stringify(movie.genre_ids), // Stringify genre IDs
-        genreNames: movie.genre_ids.map(genreId => { // Map genre IDs to names
-          const genre = genreDict.genres.find(genre => genre.id === genreId);
-          return genre ? genre.name : "Unknown Genre";
-        }).join(','), // Join genre names into a single string
-        coverImage: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
-        popularity: movie.popularity,
-        averageRating: movie.vote_average,
-        overview: movie.overview
-      }));
-
-      const newData = {
-        movie: movieMetadata
-      };
+      if (movie_obj.results && movie_obj.results.length > 0) {
+        const movieMetadata = movie_obj.results.map(movie => ({
+          movieId: movie.id,
+          title: movie.title,
+          releaseDate: movie.release_date,
+          genreIds: JSON.stringify(movie.genre_ids), // Stringify genre IDs
+          genreNames: movie.genre_ids.map(genreId => { // Map genre IDs to names
+            const genre = genreDict.genres.find(genre => genre.id === genreId);
+            return genre ? genre.name : "Unknown Genre";
+          }).join(','), // Join genre names into a single string
+          coverImage: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
+          popularity: movie.popularity,
+          averageRating: movie.vote_average,
+          overview: movie.overview
+        }));
+        
+        const newData = {
+          movie: movieMetadata
+        };
       
-      filterMovieData(newData)
-
-      resolve(newData);
+        filterMovieData(newData);
+      
+        resolve(newData);
+      } else {
+        // Handle the case where movie_obj.results is empty or undefined
+        console.error("No movie data found");
+        reject("No movie data found");
+      }
     } catch (error) {
       console.error("Error getting movie metadata:", error);
       reject(error);
