@@ -1,9 +1,8 @@
-require("dotenv").config( {path: '../.env'} );
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const API_READ_ACCESS_TOKEN = process.env.API_READ_ACCESS_TOKEN;
-// console.log(API_READ_ACCESS_TOKEN);
 const { json } = require("express");
 const fetch = require('node-fetch');
-
 
 // Functions requiring API endpoints:
 // Working movie search 
@@ -89,12 +88,23 @@ function getWatchProviderHandler() {
 // getWatchProviderHandler()
 
 // Functions for parsing information
-async function getMovieMetadata() {
+async function getMovieMetadata(userInput) {
   return new Promise(async (resolve, reject) => {
     try {
-      const rawMovieName = "harry potter";  // REPLACE THIS WITH USER INPUT
-      const movie_obj = await searchForMovie(rawMovieName);
+      console.log("Logging type of userInput")
+      console.log(userInput);
+      const movie_obj = {};
 
+      if (typeof(userInput) === "object") {
+        console.log("user input is an object");
+        const movie_obj = userInput;
+      } else {
+        console.log("user input is not an object");
+        const movie_obj = await searchForMovie(userInput); // promise problem here
+      }
+
+      console.log(movie_obj);
+      
       if (!movie_obj || !movie_obj.results) {
         console.error("No movie data found");
         reject("No movie data found");
@@ -139,7 +149,8 @@ async function getMovieMetadata() {
           coverImage: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
           popularity: movie.popularity,
           averageRating: movie.vote_average,
-          overview: movie.overview
+          overview: movie.overview,
+          status: 'NULL'
         }));
         
         const newData = {
@@ -190,11 +201,65 @@ function filterMovieData(movieMetadata) {
 
 // Below only for testing purposes
 async function viewMovieMetadata() {
-  x = await getMovieMetadata();
-  console.log(x)
+  // x = await getMovieMetadata();
+  y = await getGenreRecommendations(10752)
+  // console.log(y)
 }
 viewMovieMetadata()
 
+//Return trending movies 
+async function getTrendingMovies(){
+
+  const options = {
+    method: 'GET',
+    headers:{
+      accept: 'application/json',
+      Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
+    }
+  };
+
+  const result = await fetch("https://api.themoviedb.org/3/trending/movie/day?language=en-US",options)
+  .then(res => res.json())
+  .then(json => console.log(json))
+  .catch(err => console.error('error:' + err));
+  
+  await getMovieMetadata(result)
+  return result
+}
+
+
+async function getGenreRecommendations(genreID) {
+  
+  const options = {
+    method: 'GET',
+    headers:{
+      accept: 'application/json',
+      Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
+    }
+  };
+
+  // const result = fetch("https://api.themoviedb.org/3/discover/movie?language=en-US&with_genres=" + genreID, options)
+  // .then(res => res.json())
+  // .then(json => console.log(json))
+  // .catch(err => console.error('error:' + err));
+
+  const result = await fetch("https://api.themoviedb.org/3/discover/movie?language=en-US&page=1&with_genres=" + genreID, options);
+  const jsonResult = await result.json();
+  console.log(typeof(jsonResult));
+
+// Pass jsonResult directly to getMovieMetadata if it's an object
+  if (typeof(jsonResult) === "object") {
+    const final_value = await getMovieMetadata(jsonResult);
+    console.log("Returned back to calee");
+    return final_value;
+  } else {
+    // Handle the case where jsonResult is not an object
+    console.error("jsonResult is not an object:", jsonResult);
+    return null; // or handle the error as needed
+  }
+}
+
+//getGenreRecommendations(10752)
 /* 
 TO DO:
 - Only english movies?
