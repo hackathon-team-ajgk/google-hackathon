@@ -13,16 +13,16 @@ function Navbar() {
   return (
     <>
       <ul className="navbar">
-        {NavbarData.map((val, key) => {
+        {NavbarData.map((val, key) => (
           <li
             id={location.pathname === val.path ? "active" : ""}
             className="navbar-item"
             key={key}
-            onClick={handleNavigate(val.path)}
+            onClick={() => handleNavigate(val.path)}
           >
             <p className="navbar-item-name">{val.name}</p>
-          </li>;
-        })}
+          </li>
+        ))}
       </ul>
     </>
   );
