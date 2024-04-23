@@ -1,7 +1,6 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const API_READ_ACCESS_TOKEN = process.env.API_READ_ACCESS_TOKEN;
-// console.log(API_READ_ACCESS_TOKEN)
 const { json } = require("express");
 const fetch = require('node-fetch');
 
@@ -89,23 +88,16 @@ function getWatchProviderHandler() {
 // getWatchProviderHandler()
 
 // Functions for parsing information
-async function getMovieMetadata(userInput) {
+// Working Parses and formats movie information from object input.
+async function getMovieMetadataFromObject(userInput) {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("Logging type of userInput")
       console.log(typeof(userInput));
-      console.log(userInput);
-      const movie_obj = await searchForMovie(userInput);
+      // console.log(userInput);
+      // const movie_obj = await searchForMovie(userInput);
 
-      // if (typeof(userInput) === "object") {
-      //   console.log("user input is an object");
-      //   const movie_obj = userInput;
-      // } else {
-      //   console.log("user input is not an object");
-      //   const movie_obj = await searchForMovie(userInput); // promise problem here
-      // }
-
-      
+      const movie_obj = userInput;
       
       if (!movie_obj || !movie_obj.results) {
         console.error("No movie data found");
@@ -152,7 +144,8 @@ async function getMovieMetadata(userInput) {
           popularity: movie.popularity,
           averageRating: movie.vote_average,
           overview: movie.overview,
-          status: 'NULL'
+          status: 'NULL',
+          userRating: 'NULL'
         }));
         
         const newData = {
@@ -174,6 +167,84 @@ async function getMovieMetadata(userInput) {
   });
 }
 
+// Working Parses and formats movie information from string input.
+async function getMovieMetadataFromString(userInput) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log("Logging type of userInput")
+      console.log(typeof(userInput));
+      console.log(userInput);
+      const movie_obj = await searchForMovie(userInput);
+
+      if (!movie_obj || !movie_obj.results) {
+        console.error("No movie data found");
+        reject("No movie data found");
+        return;
+      }
+
+      // Mapping genre IDs to names
+      const genreDict = {
+        "genres": [
+          { "id": 28, "name": "Action" },
+          { "id": 12, "name": "Adventure" },
+          { "id": 16, "name": "Animation" },
+          { "id": 35, "name": "Comedy" },
+          { "id": 80, "name": "Crime" },
+          { "id": 99, "name": "Documentary" },
+          { "id": 18, "name": "Drama" },
+          { "id": 10751, "name": "Family" },
+          { "id": 14, "name": "Fantasy" },
+          { "id": 36, "name": "History" },
+          { "id": 27, "name": "Horror" },
+          { "id": 10402, "name": "Music" },
+          { "id": 9648, "name": "Mystery" },
+          { "id": 10749, "name": "Romance" },
+          { "id": 878, "name": "Science Fiction" },
+          { "id": 10770, "name": "TV Movie" },
+          { "id": 53, "name": "Thriller" },
+          { "id": 10752, "name": "War" },
+          { "id": 37, "name": "Western" }
+        ]
+      };
+
+      if (movie_obj.results && movie_obj.results.length > 0) {
+        const movieMetadata = movie_obj.results.map(movie => ({
+          movieId: movie.id,
+          title: movie.title,
+          releaseDate: movie.release_date,
+          genreIds: JSON.stringify(movie.genre_ids), // Stringify genre IDs
+          genreNames: movie.genre_ids.map(genreId => { // Map genre IDs to names
+            const genre = genreDict.genres.find(genre => genre.id === genreId);
+            return genre ? genre.name : "Unknown Genre";
+          }).join(','), // Join genre names into a single string
+          coverImage: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
+          popularity: movie.popularity,
+          averageRating: movie.vote_average,
+          overview: movie.overview,
+          status: 'NULL',
+          userRating: 'NULL'
+        }));
+        
+        const newData = {
+          movie: movieMetadata
+        };
+      
+        filterMovieData(newData);
+      
+        resolve(newData);
+      } else {
+        // Handle the case where movie_obj.results is empty or undefined
+        console.error("No movie data found");
+        reject("No movie data found");
+      }
+    } catch (error) {
+      console.error("Error getting movie metadata:", error);
+      reject(error);
+    }
+  });
+}
+
+// Working movie filter to put NULL for values that might be problematic for frontend
 function filterMovieData(movieMetadata) {
   try {
     // Iterate through each movie object
@@ -200,16 +271,35 @@ function filterMovieData(movieMetadata) {
   }
 }
 
+// Working recommendations (FROM MOVIE API) given genre input 
+async function getGenreRecommendations(genreID) {
+  
+  const options = {
+    method: 'GET',
+    headers:{
+      accept: 'application/json',
+      Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
+    }
+  };
 
-// Below only for testing purposes
-async function viewMovieMetadata() {
-  x = await getMovieMetadata("Star wars");
-  // y = await getGenreRecommendations(10752)
-  console.log(x)
+  const result = await fetch("https://api.themoviedb.org/3/discover/movie?language=en-US&page=1&with_genres=" + genreID, options);
+  const jsonResult = await result.json();
+  console.log(typeof(jsonResult));
+
+// Pass jsonResult directly to getMovieMetadataFromObject if it's an object
+  if (typeof(jsonResult) === "object") {
+    const final_value = await getMovieMetadataFromObject(jsonResult);
+    console.log("Returned back to calee");
+    console.log(final_value)
+    return final_value;
+  } else {
+    // Handle the case where jsonResult is not an object
+    console.error("jsonResult is not an object:", jsonResult);
+    return null; // or handle the error as needed
+  }
 }
-viewMovieMetadata()
 
-//Return trending movies 
+// Working return trending movies (FROM MOVIE API)
 async function getTrendingMovies(){
 
   const options = {
@@ -221,50 +311,24 @@ async function getTrendingMovies(){
   };
 
   const result = await fetch("https://api.themoviedb.org/3/trending/movie/day?language=en-US",options)
-  .then(res => res.json())
-  .then(json => console.log(json))
-  .catch(err => console.error('error:' + err));
-  
-  await getMovieMetadata(result)
+  const jsonResult = await result.json();
+  // console.log(jsonResult)
+
+  const finalResult = await getMovieMetadataFromObject(jsonResult)
+  console.log(finalResult);
   return result
 }
 
-
-async function getGenreRecommendations(genreID) {
-  
-  const options = {
-    method: 'GET',
-    headers:{
-      accept: 'application/json',
-      Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`
-    }
-  };
-
-  // const result = fetch("https://api.themoviedb.org/3/discover/movie?language=en-US&with_genres=" + genreID, options)
-  // .then(res => res.json())
-  // .then(json => console.log(json))
-  // .catch(err => console.error('error:' + err));
-
-  const result = await fetch("https://api.themoviedb.org/3/discover/movie?language=en-US&page=1&with_genres=" + genreID, options);
-  const jsonResult = await result.json();
-  console.log(typeof(jsonResult));
-
-// Pass jsonResult directly to getMovieMetadata if it's an object
-  if (typeof(jsonResult) === "object") {
-    const final_value = await getMovieMetadata(jsonResult);
-    console.log("Returned back to calee");
-    return final_value;
-  } else {
-    // Handle the case where jsonResult is not an object
-    console.error("jsonResult is not an object:", jsonResult);
-    return null; // or handle the error as needed
-  }
+// Below only for testing purposes
+async function viewMovieMetadata() {
+  // x = await getMovieMetadataFromString("Star wars") && console.log(x);
+  // y = await getGenreRecommendations(10752) // War genre tag
+  // z = await getTrendingMovies()
 }
+viewMovieMetadata()
 
-//getGenreRecommendations(10752)
 /* 
 TO DO:
 - Only english movies?
-- Add more endpoint calls for potential info frontend might need
 - Remember to optimize function calls and interactions so load times are as low as possible
 */
