@@ -1,10 +1,23 @@
-// THIS IS THE MOST UP TO DATE VERSION
-// UNTESTED. REQUIRES FRONTEND CONNECTION TO TEST
+/* 
 
+
+
+
+*******DISCONTINUED*******
+
+
+
+
+
+
+*/
 const express = require("express");
 const app = express();
+const session = require("express-session");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 app.use(express.json());
 
 const MONGO_USERNAME = process.env.MONGO_USERNAME;

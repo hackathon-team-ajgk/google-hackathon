@@ -7,20 +7,11 @@ POST http://localhost:3000/register
 Content-Type: application/json
 
 {
-    "username": "Kyle",
-    "password": "password",
-    "movieData": {
-        "movie1": {
-            "title": "Lord of the Rings",
-            "rating": 5,
-            "dateAdded": "2023-05-07",
-            "status": "watched"
-        }
-    }
+    "username": "jason",
+    "password": "password"
 }
 
 ###
-# Not sure which format would be better for the movieData object
 POST http://localhost:3000/register
 Content-Type: application/json
 
@@ -53,6 +44,6 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "username": "Kyle",
+    "username": "jason",
     "password": "password"
 }
