@@ -1,14 +1,14 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React from "react";
-import Home from "./components/Home";
-import Login from "./components/Login";
-import Register from "./components/Register";
+import Home from "./pages/Home";
+import Login from "./pages/user-auth/Login";
+import Register from "./pages/user-auth/Register";
 import NoPage from "./components/NoPage";
 import Layout from "./components/Layout";
-import YourList from "./components/YourList";
-import Movies from "./components/Movies";
-import Help from "./components/Help";
+import YourList from "./pages/YourList";
+import Movies from "./pages/Movies";
+import Help from "./pages/Help";
 
 function App() {
   return (
