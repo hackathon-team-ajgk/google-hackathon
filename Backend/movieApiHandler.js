@@ -321,7 +321,7 @@ async function getTrendingMovies(){
 
 // Below only for testing purposes
 async function viewMovieMetadata() {
-  // x = await getMovieMetadataFromString("Star wars") && console.log(x);
+  x = await getMovieMetadataFromString("Harry potter").then(x => console.log(x))
   // y = await getGenreRecommendations(10752) // War genre tag
   // z = await getTrendingMovies()
 }
