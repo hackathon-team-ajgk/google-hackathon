@@ -4,7 +4,8 @@
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 app.use(express.json());
 
 const MONGO_USERNAME = process.env.MONGO_USERNAME;
@@ -14,6 +15,14 @@ const { MongoClient } = require("mongodb");
 
 // MongoDB connection URI
 const uri = `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@moviesitedb.dzkecdm.mongodb.net/MovieSiteDB`;
+
+// Enable CORS for all routes
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 
 // Create a new MongoClient
 const client = new MongoClient(uri, {
@@ -75,7 +84,7 @@ async function connectToDatabase() {
         if (await bcrypt.compare(req.body.password, user.password)) {
           res.send("Success");
         } else {
-          res.send("Incorrect password");
+          res.status(401).send("Incorrect password");
         }
       } catch {
         res.status(500).send();

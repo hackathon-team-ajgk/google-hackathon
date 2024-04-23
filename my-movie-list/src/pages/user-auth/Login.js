@@ -13,7 +13,7 @@ function Login() {
   const loginUser = async (credentials) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/users/login",
+        "http://localhost:3000/login",
         credentials
       );
       console.log("Login Successful", response.data);
