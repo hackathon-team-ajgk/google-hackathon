@@ -23,24 +23,17 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const MONGO_USERNAME = process.env.MONGO_USERNAME;
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
 
+// Middleware to check token validity
 function authenticateToken(req, res, next) {
     const token = req.session.token;
     if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
         req.user = user;
         next();
     });
 }
-
-// Enable CORS for all routes
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    next();
-  });
 
 const { MongoClient } = require('mongodb');
 
@@ -105,22 +98,44 @@ async function connectToDatabase() {
             if (user === null) {
                 return res.status(400).send("Cannot find user")
             }
-            try{
+            try {
                 if (await bcrypt.compare(req.body.password, user.password)) {
-                    const token = jwt.sign({username:user.name}, process.env.JWT_SECRET);
+                    const accessToken = jwt.sign({username:user.name}, process.env.JWT_SECRET);
+                    const refreshToken = jwt.sign({username:user.name}, process.env.JWT_SECRET, "_refresh");
                     req.session.token = token; // Store the token in session
-                    res.send("Success");
-                    res.send({token}); // Send token to the client
-                    console.log({token})
+                    req.session.refreshToken = refreshToken; // Store the refresh token in session
+                    res.send({accessToken, refreshToken}); // Send tokens to the client
+                    console.log({accessToken, refreshToken})
                 } else {
                    res.send("Incorrect password")
                 }
-           } catch{
+           } catch {
                res.status(500).send()
            }
         })
 
+        // Token refresh endpoint
+        app.post('/refresh', (req, res) => {
+            const refreshToken = req.body.refreshToken;
+            if (!refreshToken) {
+                return res.status(401).json({ message: 'Refresh token is required' });
+            }
+
+            // Verify refresh token
+            jwt.verify(refreshToken, JWT_SECRET + "_refresh", (err, user) => {
+                if (err) {
+                    return res.status(403).json({ message: 'Invalid refresh token' });
+                }
+
+                // Generate new access token
+                const accessToken = jwt.sign({ username: user.username }, JWT_SECRET, { expiresIn: '10m' });
+                res.json({ accessToken });
+            });
+        });
+
+        // Logout endpoint to invalidate token
         app.post('/logout', (req, res) => {
+            invalidateToken(req.session.token);
             req.session.destroy();
             res.send('Logged out successfully');
         });
@@ -150,6 +165,15 @@ async function connectToDatabase() {
         console.error("Error connecting to MongoDB:", error);
     }
 }
+
+// Enable CORS for all routes
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    next();
+});
+
 
 // Start the server after connecting to the database
 const PORT = process.env.PORT || 3000;
