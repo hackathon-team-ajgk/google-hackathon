@@ -1,6 +1,7 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const API_READ_ACCESS_TOKEN = process.env.API_READ_ACCESS_TOKEN;
+// console.log(API_READ_ACCESS_TOKEN)
 const { json } = require("express");
 const fetch = require('node-fetch');
 
@@ -92,18 +93,19 @@ async function getMovieMetadata(userInput) {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("Logging type of userInput")
+      console.log(typeof(userInput));
       console.log(userInput);
-      const movie_obj = {};
+      const movie_obj = await searchForMovie(userInput);
 
-      if (typeof(userInput) === "object") {
-        console.log("user input is an object");
-        const movie_obj = userInput;
-      } else {
-        console.log("user input is not an object");
-        const movie_obj = await searchForMovie(userInput); // promise problem here
-      }
+      // if (typeof(userInput) === "object") {
+      //   console.log("user input is an object");
+      //   const movie_obj = userInput;
+      // } else {
+      //   console.log("user input is not an object");
+      //   const movie_obj = await searchForMovie(userInput); // promise problem here
+      // }
 
-      console.log(movie_obj);
+      
       
       if (!movie_obj || !movie_obj.results) {
         console.error("No movie data found");
@@ -201,9 +203,9 @@ function filterMovieData(movieMetadata) {
 
 // Below only for testing purposes
 async function viewMovieMetadata() {
-  // x = await getMovieMetadata();
-  y = await getGenreRecommendations(10752)
-  // console.log(y)
+  x = await getMovieMetadata("Star wars");
+  // y = await getGenreRecommendations(10752)
+  console.log(x)
 }
 viewMovieMetadata()
 
