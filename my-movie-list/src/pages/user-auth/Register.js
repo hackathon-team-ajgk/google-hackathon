@@ -13,7 +13,7 @@ function Register() {
   const registerUser = async (userData) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/users",
+        "http://localhost:3000/register",
         userData
       );
       console.log("Registration Successful", response.data);
