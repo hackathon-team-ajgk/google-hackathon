@@ -1,0 +1,30 @@
+{
+    "movie": [
+        {
+        "movieId": 11,
+        "title": "Star Wars",
+        "releaseDate": "1977-05-25",
+        "genreIds": [12,28,878],
+        "genreNames": "Adventure,Action,Science Fiction",
+        "coverImage": 
+        "https://image.tmdb.org/t/p/w500/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg",
+        "popularity": 178.557,
+        "averageRating": 8.204,
+        "overview": "Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.",
+        "status": "NULL",
+        "userRating": "NULL"
+        },
+        {
+        "movieId": 140607,
+        "title": "Star Wars: The Force Awakens",
+        "releaseDate": "2015-12-15",
+        "genreIds": [12,28,878],
+        "genreNames": "Adventure,Action,Science Fiction",
+        "coverImage": "https://image.tmdb.org/t/p/w500/wqnLdwVXoBjKibFRR5U3y0aDUhs.jpg",
+        "popularity": 78.629,
+        "averageRating": 7.283,
+        "overview": "Thirty years after defeating the Galactic Empire, Han Solo and his allies face a new threat from the evil Kylo Ren and his army of Stormtroopers.",
+        "status": "NULL",
+        "userRating": "NULL"
+        }
+    ]}
