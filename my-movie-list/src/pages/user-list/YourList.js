@@ -1,4 +1,4 @@
-import "YourList.css";
+import "./YourList.css";
 
 function YourList() {
   return (

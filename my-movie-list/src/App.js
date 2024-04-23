@@ -6,9 +6,9 @@ import Login from "./pages/user-auth/Login";
 import Register from "./pages/user-auth/Register";
 import NoPage from "./components/NoPage";
 import Layout from "./components/Layout";
-import YourList from "./pages/YourList";
-import Movies from "./pages/Movies";
-import Help from "./pages/Help";
+import YourList from "./pages/user-list/YourList";
+import Movies from "./pages/movies/Movies";
+import Help from "./pages/help/Help";
 import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
