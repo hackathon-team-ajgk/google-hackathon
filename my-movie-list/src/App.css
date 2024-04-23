@@ -53,6 +53,31 @@ body {
   border-radius: 15px;
 }
 
+#user-account-buttons {
+  display: flex;
+  align-items: center;
+  margin: 5px 30px 0 0;
+  gap: 2rem;
+}
+
+#username {
+  cursor: pointer;
+}
+
+#logout-button {
+  font-size: large;
+  height: 40px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #ffffff;
+  border-radius: 5px;
+}
+
+#logout-button:hover {
+  background-color: #3c3c3c;
+}
+
 #login-button:hover {
   background-color: #3c3c3c;
 }

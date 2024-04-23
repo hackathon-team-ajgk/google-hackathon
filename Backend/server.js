@@ -66,7 +66,7 @@ app.post("/users/login", async (req, res) => {
     if (await bcrypt.compare(req.body.password, user.password)) {
       res.send("Success");
     } else {
-      res.send("Incorrect password");
+      res.status(401).send("Incorrect password");
     }
   } catch {
     res.status(500).send();
