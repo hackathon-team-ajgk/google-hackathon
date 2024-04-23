@@ -9,24 +9,27 @@ import Layout from "./components/Layout";
 import YourList from "./pages/YourList";
 import Movies from "./pages/Movies";
 import Help from "./pages/Help";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/your-list" element={<YourList />} />
-          <Route path="/movies" element={<Movies />} />
-          <Route path="/help" element={<Help />} />
-        </Route>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/your-list" element={<YourList />} />
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/help" element={<Help />} />
+          </Route>
 
-        <Route path="*" element={<NoPage />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="*" element={<NoPage />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

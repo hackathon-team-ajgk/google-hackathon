@@ -4,7 +4,17 @@
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 app.use(express.json());
+
+const MONGO_USERNAME = process.env.MONGO_USERNAME;
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
+
+const { MongoClient } = require("mongodb");
+
+// MongoDB connection URI
+const uri = `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@moviesitedb.dzkecdm.mongodb.net/MovieSiteDB`;
 
 // Enable CORS for all routes
 app.use((req, res, next) => {
@@ -14,68 +24,85 @@ app.use((req, res, next) => {
   next();
 });
 
-// Need connection to JSON DB (mongo? firebase?) for this to fully save I think... could try with React localStorage or sessionStorage. Replace with empty array when setup
-const users = [
-  {
-    username: "John",
-    password: "12345",
-    movieData: {
-      movie1: {
-        title: "sample_Movie Title",
-        rating: 5,
-        dateAdded: "2021-01-01",
-      },
-      movie2: {
-        title: "sample_Movie Title",
-        rating: 5,
-        dateAdded: "2021-01-01",
-      },
-    },
-  },
-];
-
-// Get all users (from JSON DB)
-app.get("/users", (req, res) => {
-  res.json(users);
+// Create a new MongoClient
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-// Register a user. PUT OTHER METRICS IN USER OBJECT!!!
-app.post("/users", async (req, res) => {
+// Connect to the MongoDB server
+async function connectToDatabase() {
   try {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    const user = {
-      username: req.body.username,
-      password: hashedPassword,
-      movieData: req.body.movieData,
-    }; // ADD MORE METRICS HERE!!
-    users.push(user);
-    res.status(201).send();
-  } catch {
-    res.status(500).send();
-  }
-});
+    await client.connect();
+    console.log("Connected to MongoDB");
 
-// Login a user
-app.post("/users/login", async (req, res) => {
-  const user = users.find((user) => user.username === req.body.username);
-  if (user == null) {
-    return res.status(400).send("Cannot find user");
-  }
-  try {
-    if (await bcrypt.compare(req.body.password, user.password)) {
-      res.send("Success");
-    } else {
-      res.send("Incorrect password");
-    }
-  } catch {
-    res.status(500).send();
-  }
-});
+    // Use the appropriate database and collection
+    const db = client.db("MovieSiteDB");
+    const usersCollection = db.collection("users");
 
-// Start server
-app.listen(3000, () => {
-  console.log("server is running on port 3000");
+    // Define routes after the connection is established
+    // Testing feature to get all users in DB
+    app.get("/users", async (req, res) => {
+      try {
+        // Retrieve all users from the database
+        const users = await usersCollection.find().toArray();
+        res.json(users);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+    app.post("/register", async (req, res) => {
+      try {
+        // Hash the password
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+        // Insert the new user into the database
+        const newUser = {
+          username: req.body.username,
+          password: hashedPassword,
+          movieData: req.body.movieData,
+        };
+        await usersCollection.insertOne(newUser);
+        res.status(201).send("User created successfully");
+      } catch (error) {
+        console.error("Error creating user:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+    app.post("/login", async (req, res) => {
+      const user = await usersCollection.findOne({
+        username: req.body.username,
+      });
+      if (user === null) {
+        return res.status(400).send("Cannot find user");
+      }
+      try {
+        if (await bcrypt.compare(req.body.password, user.password)) {
+          res.send("Success");
+        } else {
+          res.status(401).send("Incorrect password");
+        }
+      } catch {
+        res.status(500).send();
+      }
+    });
+
+    // Add other routes here...
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+  }
+}
+
+// Start the server after connecting to the database
+const PORT = process.env.PORT || 3000;
+connectToDatabase().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });
 
 /* 
