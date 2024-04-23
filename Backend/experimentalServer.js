@@ -1,8 +1,10 @@
-// THIS IS THE MOST UP TO DATE AND FUNCTIONAL VERSION
+// THIS IS A SERVER IN DEVELOPMENT
 // Run server and test with "requests.rest" file from top to bottom. Final request should return "Success" if working correctly.
 
 const express = require("express");
 const app = express();
+const session = require("express-session");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
