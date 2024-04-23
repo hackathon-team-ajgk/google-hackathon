@@ -10,8 +10,29 @@ const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 app.use(express.json());
 
+app.use(session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 1000 * 10 // 10 second expiry FOR TESTING
+    }
+}));
+
+const JWT_SECRET = process.env.JWT_SECRET;
 const MONGO_USERNAME = process.env.MONGO_USERNAME;
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
+
+function authenticateToken(req, res, next) {
+    const token = req.session.token;
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
 
 const { MongoClient } = require('mongodb');
 
@@ -54,7 +75,14 @@ async function connectToDatabase() {
                 const newUser = {
                     username: req.body.username,
                     password: hashedPassword,
-                    movieData: req.body.movieData
+                    movieData: {
+                        watchedMovies: {
+                            movies: {}
+                        },
+                        watchLaterList: {
+                            movies: {}
+                        }
+                    }
                 };
                 await usersCollection.insertOne(newUser);
                 res.status(201).send("User created successfully");
@@ -71,7 +99,11 @@ async function connectToDatabase() {
             }
             try{
                 if (await bcrypt.compare(req.body.password, user.password)) {
-                   res.send("Success")
+                    const token = jwt.sign({username:user.name}, process.env.JWT_SECRET);
+                    req.session.token = token; // Store the token in session
+                    res.send("Success");
+                    res.send({token}); // Send token to the client
+                    console.log({token})
                 } else {
                    res.send("Incorrect password")
                 }
@@ -80,7 +112,30 @@ async function connectToDatabase() {
            }
         })
 
+        app.post('/logout', (req, res) => {
+            req.session.destroy();
+            res.send('Logged out successfully');
+        });
+        
+        app.get('/profile', authenticateToken, async (req, res) => {
+            try {
+                // Access user's information from the JWT payload
+                const username = req.user.username;
+        
+                // Retrieve the user's data from DB, check if the user exists, send user data back
+                const user = await usersCollection.findOne({ username });
+                if (!user) {
+                    return res.status(404).send("User not found");
+                }
+                res.json(user);
 
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                res.status(500).send("Internal Server Error");
+            }
+        });
+        
+        
         // Add other routes here...
 
     } catch (error) {
@@ -100,5 +155,6 @@ connectToDatabase().then(() => {
 TO DO:
 - More error handling (more detailed error messages)
 - Input validation
-- More security (should be fine???)
+- JWT & session implementation
+- https
 */
