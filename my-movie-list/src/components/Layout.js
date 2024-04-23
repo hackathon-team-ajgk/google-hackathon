@@ -14,22 +14,24 @@ function Layout() {
     <div className="app">
       <div className="header-container">
         <h1 id="title">MyMovieList</h1>
-        {!isLoggedIn ? (
-          <button id="login-button" className="button" onClick={routeToLogin}>
-            Login
-          </button>
-        ) : (
-          <div id="user-account-buttons" className="button-group">
-            <p id="username">{userName}</p>
-            <button
-              id="logout-button"
-              className="button"
-              onClick={handleLogout}
-            >
-              Logout
+        <div id="user-account-buttons" className="button-group">
+          {!isLoggedIn ? (
+            <button id="login-button" className="button" onClick={routeToLogin}>
+              Login
             </button>
-          </div>
-        )}
+          ) : (
+            <>
+              <p id="username">{userName}</p>
+              <button
+                id="logout-button"
+                className="button"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </>
+          )}
+        </div>
       </div>
       <Navbar />
       <main>
