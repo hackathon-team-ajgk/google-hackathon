@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import axios from "axios";
+import "./Home.css";
 
 function Home() {
   const getUsers = async () => {
