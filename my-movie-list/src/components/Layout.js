@@ -44,8 +44,46 @@ function Layout() {
     return now.getTime() > token.expiry;
   };
 
+  const storeUserSession = (token, refreshToken) => {
+    const now = new Date();
+    const item = {
+      value: token,
+      refresh: refreshToken,
+      expiry: now.getTime() + 10000, // Token expires in 10000 ms (10 s)
+    };
+    sessionStorage.setItem("userToken", JSON.stringify(item));
+    sessionStorage.setItem("username", username);
+  };
+
+  const refreshUserSession = async () => {
+    const tokenString = sessionStorage.getItem("userToken");
+    const token = tokenString ? JSON.parse(tokenString) : null;
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/refresh",
+        token.refresh
+      );
+      const newToken = response.data.token;
+      storeUserSession(newToken);
+    } catch (error) {
+      if (error.response) {
+        // The server responded with a status code that falls out of the range of 2xx
+        console.error("Login Error:", error.response.data);
+        console.error("Status Code:", error.response.status);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("Login Request Error:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error:", error.message);
+      }
+    }
+  };
+
   useEffect(() => {
     if (isSessionExpired()) {
+      // If user's session is expired, send refresh token to generate new token
+      // refreshUserSession();
       // Logout the user or redirect to login page
       sessionStorage.removeItem("userToken"); // Clear the expired token
       sessionStorage.removeItem("username"); // Clear the current users username

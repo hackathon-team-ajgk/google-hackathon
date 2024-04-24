@@ -8,10 +8,11 @@ function Login() {
   const [password, setPassword] = useState("");
   const nav = useNavigate();
 
-  const storeUserSession = (token) => {
+  const storeUserSession = (token, refreshToken) => {
     const now = new Date();
     const item = {
       value: token,
+      refresh: refreshToken,
       expiry: now.getTime() + 10000, // Token expires in 10000 ms (10 s)
     };
     sessionStorage.setItem("userToken", JSON.stringify(item));
@@ -25,7 +26,7 @@ function Login() {
         credentials
       );
       console.log("Login Successful", response.data);
-      storeUserSession(response.data.token);
+      storeUserSession(response.data.token, response.data.refreshToken);
       // Handle successful login, such as storing auth tokens, redirecting, etc.
       nav("/");
     } catch (error) {
