@@ -135,7 +135,6 @@ async function connectToDatabase() {
 
         // Logout endpoint to invalidate token
         app.post('/logout', (req, res) => {
-            invalidateToken(req.session.token);
             req.session.destroy();
             res.send('Logged out successfully');
         });
