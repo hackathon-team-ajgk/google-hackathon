@@ -2,13 +2,21 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Auth.css";
 import axios from "axios";
-import { useAuth } from "../../contexts/AuthContext";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { handleUsername, handleLogin } = useAuth();
   const nav = useNavigate();
+
+  const storeUserSession = (token) => {
+    const now = new Date();
+    const item = {
+      value: token,
+      expiry: now.getTime() + 10000, // Token expires in 10000 ms (10 s)
+    };
+    sessionStorage.setItem("userToken", JSON.stringify(item));
+    sessionStorage.setItem("username", username);
+  };
 
   const loginUser = async (credentials) => {
     try {
@@ -17,8 +25,7 @@ function Login() {
         credentials
       );
       console.log("Login Successful", response.data);
-      handleLogin();
-      handleUsername(username);
+      storeUserSession(response.data.token);
       // Handle successful login, such as storing auth tokens, redirecting, etc.
       nav("/");
     } catch (error) {
