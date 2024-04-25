@@ -7,7 +7,9 @@ const fetch = require('node-fetch');
 const { GoogleGenerativeAI } = require("@google/generative-ai")
 const genAI = new GoogleGenerativeAI(API_READ_ACCESS_TOKEN)
 const model = genAI.getGenerativeModel({model: "gemini-pro"})
-const fs = require('fs')
+const fs = require('fs');
+const { type } = require("os");
+const { error } = require("console");
 
 async function giveMovieSuggestionsBasedOnGenre(userText) {
     try {
@@ -91,6 +93,12 @@ async function giveMovieSuggestionsBasedOnMovieList() {
     try {
         const dictionary = await tallyGenreInMovieList()
         const formattedDictionary = JSON.stringify(dictionary)
+
+        // Checking if dictionary is empty (problems loading dict)
+        if (!formattedDictionary.trim()) {
+            console.log("Formatted dictionary is empty. Exiting...")
+            return giveMovieSuggestionsBasedOnMovieList();
+        }
         
         const message = 'Can you give 10 movie suggestions based on the two highest genres in this dictionary. Give me this informantion in the following format: [movie1|movie2|movie3|etc]' 
         const result = await model.generateContent(message+formattedDictionary)
@@ -102,17 +110,66 @@ async function giveMovieSuggestionsBasedOnMovieList() {
         finalText = text.replace('[', '').replace(']', '').replace(regex, '').split('|')
         finalText.forEach(movie => console.log(movie)) // For testing only
 
-        // Checking for unwanted formatting or values (to be implemented)
-        console.log()
-        console.log("\nThe last movie in the finalText is: " + finalText[9]) // IMPORTANT FOR ERROR HANDLING (to be implemented). This gives "undefined" when error with dict, also is super long when dict somehow attaches to AI output. Can use length validation on last movie?
-        
-        return finalText
+        // Checking for unwanted formatting or values
+        const nonEmptyMovies = outputFormatting(finalText) 
 
+        // Recursive call if array is empty
+        if (nonEmptyMovies.length === 1 && nonEmptyMovies[0] === '') {
+            console.log("Empty array detected. Generating new movie suggestions...")
+            return giveMovieSuggestionsBasedOnMovieList()
+        }
+
+        console.log(nonEmptyMovies)
+        return nonEmptyMovies
     } catch (error) {
         console.log("There was an error processing or getting recommendations from the movies in the movie list: " + error)
     }
 }
 giveMovieSuggestionsBasedOnMovieList()
+
+// Helper function
+function outputFormatting(finalText) {
+    const nonEmptyMovies = []; // Array to store non-empty movie names
+    
+    finalText.forEach((movie) => {
+        // Max length
+        if (movie.length >= 55) {
+            return;
+        }
+
+        // Checking for undefined
+        if (movie === 'undefined') {
+            throw new Error('Undefined movie detected.');
+        }
+        
+        // Checking if * in title
+        if (movie.includes('*')) {
+            return;
+        } 
+
+        // Checking if punctuation in start or end of string
+        const startsWithPunctuation = (str) => /^[^\w\s]/.test(str);
+        const endsWithPunctuation = (str) => /[^\w\s]$/.test(str);
+        if (startsWithPunctuation(movie) || endsWithPunctuation(movie)) {
+            return;
+        }
+        
+        // Checking if name starts with a number followed by a period
+        if (/^\d+\./.test(movie)) {
+            return;
+        }
+
+        // Add non-empty movie to the new array
+        nonEmptyMovies.push(movie);
+    });
+    // Checking if entire list is empty
+    if (nonEmptyMovies.length === 0) {
+        return ['']; // Return an array with a single empty string
+    }
+
+    return nonEmptyMovies; // Return the array containing non-empty movie names
+}
+
 
 
 /*
@@ -123,10 +180,6 @@ TODO:
   deal with (or decide that its safe not to) random characters and formatting that shouldnt be the way it is
 - More I/O validation
 - MORE OUTPUT validation. SUPER weird outputs sometimes recieved from AI in giveMovieSuggestionsBasedOnMovieList function
-Ideas for this:
-1. Make a function to test for checking unwanted formatting or values. Use a switch block to handle different scenarios and call another func to generate another response?
-2. Max str length for each movie, movie cannot start/end with punctuation, movie cannot have asterisk. If any of these are true, trunkate movie and/or entire list
-3. If any movie is "undefined", trunkate movie and/or entire list
 - Think about optimization
 - READ API USAGE LIMITS ON THE DOCUMENTATION. Make sure we have enough leeway for every potential user and for regenerating when invalid responses
  */
