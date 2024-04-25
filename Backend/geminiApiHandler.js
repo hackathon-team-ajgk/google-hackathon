@@ -100,7 +100,7 @@ async function giveMovieSuggestionsBasedOnMovieList() {
         // Formatting AI recommendations
         const regex = /\d+\./ //   \d+: Matches one or more digits and \. Matches a period
         finalText = text.replace('[', '').replace(']', '').replace(regex, '').split('|')
-        finalText.forEach(movie => console.log(movie)) // For testing only
+        // finalText.forEach(movie => console.log(movie)) // For testing only
 
         // Checking for unwanted formatting or values
         const nonEmptyMovies = outputFormatting(finalText) 
@@ -111,13 +111,38 @@ async function giveMovieSuggestionsBasedOnMovieList() {
             return giveMovieSuggestionsBasedOnMovieList()
         }
 
-        console.log(nonEmptyMovies)
+        // console.log(nonEmptyMovies) // For testing only
         return nonEmptyMovies
     } catch (error) {
         console.log("There was an error processing or getting recommendations from the movies in the movie list: " + error)
     }
 }
-giveMovieSuggestionsBasedOnMovieList()
+// giveMovieSuggestionsBasedOnMovieList()
+
+// giveMovieSuggestionsBasedOnMovieList function but with a timer
+async function callWithTimeout() {
+    const timeoutMs = 3500; // Max # ms allowed. Works with 3s unless list needs to be regenerated. 3.5s otherwise 
+
+    const movieSuggestionsPromise = giveMovieSuggestionsBasedOnMovieList();
+    const timeoutPromise = new Promise((resolve) => setTimeout(resolve, timeoutMs));
+
+    try {
+        const result = await Promise.race([movieSuggestionsPromise, timeoutPromise]);
+        if (result !== undefined) {
+            console.log("Movie suggestions call completed:")
+            console.log(result);
+            return result;
+        } else {
+            console.log("Function execution timed out");
+            return null; // Or handle the timeout error as needed
+        }
+    } catch (error) {
+        console.log("Function execution failed:", error);
+        return null; // Or handle the error as needed
+    }
+}
+
+callWithTimeout() 
 
 // Helper function
 function outputFormatting(finalText) {
