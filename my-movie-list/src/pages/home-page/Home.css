@@ -1,0 +1,190 @@
+#hero-section {
+  height: 70dvh;
+  background: none;
+  position: relative;
+  overflow: hidden; /* Ensures no overflow from pseudo-element */
+}
+
+.section-container {
+  display: flex;
+  margin-bottom: 40px;
+  box-shadow: 4px 4px 20px 2px black;
+  border-radius: 10px;
+  background-color: #202020;
+}
+
+#hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../../../public/wallpaperOfMovies.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(30%);
+  z-index: -1; /* Ensures the pseudo-element stays behind the content */
+}
+
+#text-container {
+  width: 50%;
+  padding: 50px;
+  max-height: fit-content;
+}
+
+#bold-hero-text {
+  font-weight: bold;
+}
+
+.hero-section-text {
+  font-size: 30px;
+  margin-bottom: 50px;
+}
+
+.images {
+  width: 50%;
+}
+
+#hero-button {
+  font-size: 40px;
+  width: 400px;
+  height: 100px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+#hero-button:hover {
+  filter: brightness(60%);
+}
+
+#popular-movies-section {
+  height: 325px;
+  overflow-x: auto;
+  padding: 0 10px;
+  gap: 10px;
+}
+
+.movie-card {
+  max-height: fit-content;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.movie-image {
+  height: 225px;
+  border-radius: 5px;
+}
+
+.movie-card:hover {
+  box-shadow: 6px 6px 20px 6px #0b0b0b;
+}
+
+.movie-title {
+  text-align: center;
+  max-height: 22px;
+  font-weight: bold;
+}
+
+#ai-suggestions {
+  height: 500px;
+  justify-content: center;
+  max-height: 800px;
+}
+
+#ai-sugg-text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 75%;
+  gap: 1rem;
+}
+
+.home-text {
+  text-align: center;
+  font-size: 20px;
+}
+
+#ai-sugg-main-text {
+  font-size: 40px;
+  margin-top: 20px;
+}
+
+#ai-sugg-secondary-text {
+  font-size: 24px;
+}
+
+#ai-sugg-input {
+  width: 100%;
+  border-radius: 5px;
+  font-size: large;
+  color: white;
+  padding: 10px;
+  background-color: #4c4c4c;
+  border: none;
+  margin-top: 20px;
+}
+
+#ai-sugg-input::placeholder {
+  color: white;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0 0 0/40%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#movie-view-page {
+  display: flex;
+  gap: 2rem;
+  width: fit-content;
+  max-width: 75%;
+  min-height: fit-content;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #3c3c3c;
+  box-shadow: 4px 4px 30px 2px black;
+}
+
+#close-button-div {
+  width: fit-content;
+  cursor: pointer;
+  transition: filter 0.3s ease-in-out;
+}
+
+#close-button-div:hover {
+  filter: brightness(50%);
+}
+
+#movie-view-image {
+  width: 300px;
+  height: fit-content;
+}
+
+.movie-text {
+  margin: 0;
+  font-size: large;
+  margin-bottom: 30px;
+}
+
+#movie-view-title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
