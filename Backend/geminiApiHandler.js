@@ -1,15 +1,9 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const API_READ_ACCESS_TOKEN = process.env.GEMINI_API;
-const { json } = require("express");
-const fetch = require('node-fetch');
-
 const { GoogleGenerativeAI } = require("@google/generative-ai")
 const genAI = new GoogleGenerativeAI(API_READ_ACCESS_TOKEN)
 const model = genAI.getGenerativeModel({model: "gemini-pro"})
-const fs = require('fs');
-const { type } = require("os");
-const { error } = require("console");
 
 async function giveMovieSuggestionsBasedOnGenre(userText) {
     try {
@@ -25,8 +19,6 @@ async function giveMovieSuggestionsBasedOnGenre(userText) {
     } catch (error) {
         console.log("Error giving movie suggestions based on the genre: " + error)
     }
-    
-
 }
 
 //Tallies the most popular genres in the users movie list, and then returns movies that are related to those genres 
@@ -130,7 +122,7 @@ giveMovieSuggestionsBasedOnMovieList()
 // Helper function
 function outputFormatting(finalText) {
     const nonEmptyMovies = []; // Array to store non-empty movie names
-    
+
     finalText.forEach((movie) => {
         // Max length
         if (movie.length >= 55) {
