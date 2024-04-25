@@ -122,6 +122,44 @@ async function connectToDatabase() {
       }
     });
 
+    app.put('/edit-movie-state', authenticateToken, async (req, res) => {
+      try {
+          const { username, action, movie } = req.body;
+  
+          if (!username || !action || !movie) {
+              return res.status(400).send("Missing required fields");
+          }
+  
+          // Retrieve the user from the database
+          const user = await usersCollection.findOne({ username });
+          if (!user) {
+              return res.status(404).send("User not found");
+          }
+  
+          // Update the movie state based on the action
+          if (action === "watch" || action === "watch-later") {
+              // Determine which list to update
+              const listToUpdate = action === "watch" ? "watchedMovies" : "watchLaterList";
+  
+              // Add the movie to the specified list
+              user.movieData[listToUpdate][movie.title] = movie;
+  
+              // Update the user document in the database
+              await usersCollection.updateOne(
+                  { username },
+                  { $set: { movieData: user.movieData } }
+              );
+  
+              res.send(`Movie '${movie.title}' added to '${listToUpdate}' successfully`);
+          } else {
+              res.status(400).send("Invalid action");
+          }
+      } catch (error) {
+          console.error("Error updating movie state:", error);
+          res.status(500).send("Internal Server Error");
+      }
+  });
+
     // Add other routes here...
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
