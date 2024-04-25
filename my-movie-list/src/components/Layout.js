@@ -91,8 +91,19 @@ function Layout() {
             >
               Logout
             </button>
-          </div>
-        )}
+          ) : (
+            <>
+              <p id="username">{userName}</p>
+              <button
+                id="logout-button"
+                className="button"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </>
+          )}
+        </div>
       </div>
       <Navbar />
       <main className="page">
