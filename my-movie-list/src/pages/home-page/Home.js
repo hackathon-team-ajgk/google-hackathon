@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import axios from "axios";
 import MovieCard from "../../components/MovieCard";
 
 function Home() {
   const [trendingMovies, setTrendingMovies] = useState([]);
+  const navigate = useNavigate();
 
   const storeTrendingMovies = (movies) => {
     setTrendingMovies(movies);
@@ -48,7 +50,13 @@ function Home() {
           <p id="bold-hero-text" className="hero-section-text">
             Create your Movie List today.
           </p>
-          <button id="hero-button" className="home-button">
+          <button
+            id="hero-button"
+            className="home-button"
+            onClick={() => {
+              navigate("/your-list");
+            }}
+          >
             Your Movie List
           </button>
         </div>
