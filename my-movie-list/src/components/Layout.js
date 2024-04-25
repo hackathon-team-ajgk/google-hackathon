@@ -1,8 +1,11 @@
 import { useNavigate, Outlet } from "react-router-dom";
-import { useEffect } from "react";
 import Navbar from "./Navbar";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import axios from "axios";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import XIcon from "@mui/icons-material/X";
 
 function Layout() {
   const navigate = useNavigate();
@@ -34,63 +37,27 @@ function Layout() {
     navigate("/login");
   };
 
-  const isSessionExpired = () => {
-    const tokenString = sessionStorage.getItem("userToken");
-    const token = tokenString ? JSON.parse(tokenString) : null;
-    if (!token) {
-      return true;
-    }
-    const now = new Date();
-    return now.getTime() > token.expiry;
-  };
+  // const isSessionExpired = () => {
+  //   const tokenString = sessionStorage.getItem("userToken");
+  //   const token = tokenString ? JSON.parse(tokenString) : null;
+  //   if (!token) {
+  //     return true;
+  //   }
+  //   const now = new Date();
+  //   return now.getTime() > token.expiry;
+  // };
 
-  const storeUserSession = (token, refreshToken) => {
-    const now = new Date();
-    const item = {
-      value: token,
-      refresh: refreshToken,
-      expiry: now.getTime() + 10000, // Token expires in 10000 ms (10 s)
-    };
-    sessionStorage.setItem("userToken", JSON.stringify(item));
-    sessionStorage.setItem("username", username);
-  };
-
-  const refreshUserSession = async () => {
-    const tokenString = sessionStorage.getItem("userToken");
-    const token = tokenString ? JSON.parse(tokenString) : null;
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/refresh",
-        token.refresh
-      );
-      const newToken = response.data.token;
-      storeUserSession(newToken);
-    } catch (error) {
-      if (error.response) {
-        // The server responded with a status code that falls out of the range of 2xx
-        console.error("Login Error:", error.response.data);
-        console.error("Status Code:", error.response.status);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("Login Request Error:", error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error:", error.message);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (isSessionExpired()) {
-      // If user's session is expired, send refresh token to generate new token
-      // refreshUserSession();
-      // Logout the user or redirect to login page
-      sessionStorage.removeItem("userToken"); // Clear the expired token
-      sessionStorage.removeItem("username"); // Clear the current users username
-      // Redirect to login or do other logout cleanup here
-      console.log("Session expired. Redirecting to login.");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isSessionExpired()) {
+  //     // If user's session is expired, send refresh token to generate new token
+  //     // refreshUserSession();
+  //     // Logout the user or redirect to login page
+  //     sessionStorage.removeItem("userToken"); // Clear the expired token
+  //     sessionStorage.removeItem("username"); // Clear the current users username
+  //     // Redirect to login or do other logout cleanup here
+  //     console.log("Session expired. Redirecting to login.");
+  //   }
+  // }, []);
 
   return (
     <div className="app">
@@ -128,9 +95,23 @@ function Layout() {
         )}
       </div>
       <Navbar />
-      <main>
+      <main className="page">
         <Outlet />
       </main>
+      <footer>
+        <div id="footer-socials" className="footer-container">
+          <InstagramIcon fontSize="large" />
+          <FacebookIcon fontSize="large" />
+          <XIcon fontSize="large" />
+          <GitHubIcon fontSize="large" />
+        </div>
+        <div id="footer-navbar" className="footer-container">
+          <Navbar />
+        </div>
+        <div id="footer-copyright" className="footer-container">
+          <p id="footer-title">MyMovieList &copy; 2024</p>
+        </div>
+      </footer>
     </div>
   );
 }

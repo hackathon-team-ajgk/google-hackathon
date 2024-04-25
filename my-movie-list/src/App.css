@@ -4,7 +4,14 @@ body {
   padding: 0;
 }
 
+main {
+  flex: 1;
+  position: relative;
+}
+
 .app {
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
   color: #ffffff;
 }
@@ -29,7 +36,7 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 #active {
@@ -38,7 +45,6 @@ body {
 
 .navbar-item-name {
   cursor: pointer;
-  font-size: large;
   text-align: center;
   width: 80px;
   transition: translate 0.3s ease-in-out;
@@ -88,4 +94,39 @@ body {
 .auth-button:hover {
   background-color: #4c4c4c;
   box-shadow: 4px 4px 4px #1b1b1b;
+}
+
+.page {
+  margin: 20px 40px 40px 40px;
+}
+
+footer {
+  height: 200px;
+  background-color: #1b1b1b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#footer-socials {
+  margin-top: 40px;
+  display: flex;
+  gap: 1rem;
+}
+
+#footer-copyright {
+  margin-top: auto;
+  width: 100%;
+  background-color: #111111;
+}
+
+#footer-title {
+  text-align: center;
+  font-size: 30px;
+  margin: 0;
+}
+
+.social-icon {
+  font-size: large;
 }
