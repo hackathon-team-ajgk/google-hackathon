@@ -10,17 +10,21 @@ const model = genAI.getGenerativeModel({model: "gemini-pro"})
 const fs = require('fs')
 
 async function giveMovieSuggestionsBasedOnGenre(userText) {
+    try {
+        const message = "Give me a list of ten movies in array format based on this genre without the year:  "
     
-    const message = "Give me a list of ten movies in array format based on this genre without the year:  "
+        //perform i/o validation 
+        const result = await model.generateContent(message+userText)
+        const response = await result.response;
+        const text = response.text()
+        console.log(text)
     
-    //perform i/o validation 
-    const result = await model.generateContent(message+userText)
-    const response = await result.response;
-    const text = response.text()
-    console.log(text)
+        return text
+    } catch (error) {
+        console.log("Error giving movie suggestions based on the genre: " + error)
+    }
+    
 
-    //error handling 
-    return text
 }
 
 //Tallies the most popular genres in the users movie list, and then returns movies that are related to those genres 
@@ -76,7 +80,7 @@ async function tallyGenreInMovieList() {
         return genreTallyTotal
         
     } catch (error) {
-        console.error('Error reading file:', error);
+        console.error('Error reading user file:', error);
         throw error; // Re-throw the error to handle it outside this function
     }
 }
@@ -84,31 +88,35 @@ async function tallyGenreInMovieList() {
 
 // Make function that takes dictionary as input to gemini
 async function giveMovieSuggestionsBasedOnMovieList() {
-    const dictionary = await tallyGenreInMovieList()
-    const formattedDictionary = JSON.stringify(dictionary)
-    
-    const message = 'Can you give 10 movie suggestions based on the two highest genres in this dictionary. Give me this informantion in JavaScript array format, without genres, numbers, or single/double quotations encapsulating the names. I just want the movie names separated by "|".' 
-    const result = await model.generateContent(message+formattedDictionary)
-    const response = await result.response;
-    const text = response.text()
-    console.log(text)
-
-    const bannedString = /\[\n/
-    const bannedString2 = /\[/
-    const bannedString3 = /\'|/
-
-    while (bannedString.test(text) || bannedString2.test(text) || bannedString3.test(text)) {
-        const message2 = 'Give me this informantion in JavaScript array format, without genres, numbers, or single/double quotations encapsulating the names. I just want the movie names separated by "|".' 
-        const result2 = await model.generateContent(message+text)
-        const response2 = await result.response;
+    try {
+        const dictionary = await tallyGenreInMovieList()
+        const formattedDictionary = JSON.stringify(dictionary)
+        
+        const message = 'Can you give 10 movie suggestions based on the two highest genres in this dictionary. Give me this informantion in the following format: [movie1|movie2|movie3|etc]' 
+        const result = await model.generateContent(message+formattedDictionary)
+        const response = await result.response;
         const text = response.text()
-        console.log(text)
-    } 
 
-    
-    return text
+        // Formatting AI recommendations
+        const regex = /\d+\./ //   \d+: Matches one or more digits and \. Matches a period
+        finalText = text.replace('[', '').replace(']', '').replace(regex, '').split('|')
+        finalText.forEach(movie => console.log(movie)) // For testing only
+        
+        return finalText
+
+    } catch (error) {
+        console.log("There was an error processing or getting recommendations from the movies in the movie list: " + error)
+    }
 }
 giveMovieSuggestionsBasedOnMovieList()
 
 
-// Testing if the outputs of giveMovieSuggestionsBasedOnMovieList() can be used as input for movie search:
+/*
+TODO:
+- Output validation from AI response. Specifically, when there is an error with the dictionary. To test this,
+  try removing the await from the first line after the 'try{' in the giveMovieSuggestionsBasedOnMovieList function
+- Output validation for AI response in giveMovieSuggestionsBasedOnMovieList function. Run the function many times and 
+  deal with (or decide that its safe not to) random characters and formatting that shouldnt be the way it is
+- More I/O validation
+- Think about optimization
+ */
