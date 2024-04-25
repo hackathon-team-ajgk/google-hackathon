@@ -130,3 +130,19 @@ footer {
 .social-icon {
   font-size: large;
 }
+
+::-webkit-scrollbar {
+  width: 1rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #111111;
+  margin-block: 0.5rem;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #4c4c4c;
+  border-radius: 20px;
+}
