@@ -85,10 +85,18 @@ function Layout() {
       </main>
       <footer>
         <div id="footer-socials" className="footer-container">
-          <InstagramIcon fontSize="large" />
-          <FacebookIcon fontSize="large" />
-          <XIcon fontSize="large" />
-          <GitHubIcon fontSize="large" />
+          <span className="social-icon">
+            <InstagramIcon fontSize="large" />
+          </span>
+          <span className="social-icon">
+            <FacebookIcon fontSize="large" />
+          </span>
+          <span className="social-icon">
+            <XIcon fontSize="large" />
+          </span>
+          <span className="social-icon">
+            <GitHubIcon fontSize="large" />
+          </span>
         </div>
         <div id="footer-navbar" className="footer-container">
           <Navbar />
