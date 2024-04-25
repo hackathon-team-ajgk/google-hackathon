@@ -1,5 +1,10 @@
 # Getting all users in DB
-GET http://localhost:3000/users
+GET http://localhost:3000/allUsers
+
+###
+# Get user thast is signed in from DB 
+GET http://localhost:3000/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikt5bGUiLCJpYXQiOjE3MTQwMjI1MjR9.qCsluIYxZZM-9qEvm2sM0iRD4Zc7qJ0yHtZ4hixQFpk
 
 ###
 # Not sure which format would be better for the movieData object
@@ -44,6 +49,6 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "username": "jason",
+    "username": "Kyle",
     "password": "password"
 }
