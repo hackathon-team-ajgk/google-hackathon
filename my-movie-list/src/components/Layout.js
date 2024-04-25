@@ -70,40 +70,14 @@ function Layout() {
         >
           MyMovieList
         </h1>
-        {!sessionStorage.getItem("userToken") ? (
-          <button
-            id="login-button"
-            className="auth-button"
-            onClick={routeToLogin}
-          >
-            Login
-          </button>
-        ) : (
-          <div id="user-account-buttons" className="button-group">
-            <div id="user-account">
-              <p id="username">{username}</p>
-              <ArrowDropDownIcon />
-            </div>
-            <button
-              id="logout-button"
-              className="auth-button"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
-          ) : (
-            <>
-              <p id="username">{userName}</p>
-              <button
-                id="logout-button"
-                className="button"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </>
-          )}
-        </div>
+
+        <button
+          id="login-button"
+          className="auth-button"
+          onClick={routeToLogin}
+        >
+          Login
+        </button>
       </div>
       <Navbar />
       <main className="page">

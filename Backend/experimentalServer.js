@@ -1,6 +1,7 @@
 // THIS IS A SERVER IN DEVELOPMENT
 // Run server and test with "requests.rest" file from top to bottom. Final request should return "Success" if working correctly.
 
+const movieAPI = require("./movieApiHandler");
 const express = require("express");
 const app = express();
 const session = require("express-session");
@@ -129,7 +130,7 @@ async function connectToDatabase() {
           res.send({ accessToken, refreshToken }); // Send tokens to the client
           console.log({ accessToken, refreshToken });
         } else {
-          res.send("Incorrect password");
+          res.status(401).send("Incorrect password");
         }
       } catch {
         res.status(500).send();
@@ -178,6 +179,17 @@ async function connectToDatabase() {
         console.error("Error fetching user data:", error);
         res.status(500).send("Internal Server Error");
       }
+    });
+
+    app.get("/getTrendingMovies", (req, res) => {
+      movieAPI
+        .getTrendingMovies()
+        .then((data) => {
+          res.json(data);
+        })
+        .catch((error) => {
+          res.status(500).send("Error fetching popular movies.", error);
+        });
     });
 
     // Add other routes here...
