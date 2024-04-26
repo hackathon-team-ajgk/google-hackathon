@@ -75,7 +75,7 @@ main {
   margin: 0;
 }
 
-.auth-button {
+.button {
   font-size: large;
   height: 40px;
   width: 80px;
@@ -86,16 +86,16 @@ main {
   border-radius: 5px;
 }
 
+#logout-button {
+  margin-left: 20px;
+}
+
 #user-account {
   display: flex;
   cursor: pointer;
 }
 
-#logout-button {
-  margin-left: 5px;
-}
-
-.auth-button:hover {
+.button:hover {
   background-color: #4c4c4c;
   box-shadow: 4px 4px 4px #1b1b1b;
 }
