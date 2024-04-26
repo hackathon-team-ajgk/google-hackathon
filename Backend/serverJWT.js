@@ -1,3 +1,4 @@
+
 // THIS IS THE MOST UP TO DATE AND FUNCTIONAL VERSION
 // Run server and test with "requests.rest" file from top to bottom. Final request should return "Success" if working correctly.
 
@@ -26,15 +27,22 @@ app.use((req, res, next) => {
   next();
 });
 
+/**
+ * Middleware to authenticate JWT token.
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @param {function} next - Express next function
+ * @returns {void}
+ */
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
   if (token == null) return res.send("No token");
 
   jwt.verify(token, process.env.JWT_SECRET, (err, body) => {
     if (err) return res.send("Unverified token");
     req.user = body;
-    console.log(req.user);
+    // console.log(req.user) // For testing only
     next();
   });
 }
@@ -55,12 +63,18 @@ async function connectToDatabase() {
     const db = client.db("MovieSiteDB");
     const usersCollection = db.collection("users");
 
-    // Define routes after the connection is established
-    // Testing feature to get all users in DB
+    /**
+     * Route to fetch specific user data.
+     * @name GET/user
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/user", authenticateToken, async (req, res) => {
       try {
         // Retrieve all users from the database
-        console.log(req.user.username); // Should be name of whatever you signed in as
+        // console.log(req.user.username) // Should be name of whatever you signed in as
+
         const users = await usersCollection.find().toArray();
         res.json(users.filter((user) => user.username === req.user.username));
       } catch (error) {
@@ -69,6 +83,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to fetch all users.
+     * @name GET/allUsers
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/allUsers", async (req, res) => {
       try {
         // Retrieve all users from the database
@@ -79,7 +100,7 @@ async function connectToDatabase() {
         res.status(500).send("Internal Server Error");
       }
     });
-
+    
     app.get("/getTrendingMovies", (req, res) => {
       movieAPI
         .getTrendingMovies()
@@ -91,6 +112,13 @@ async function connectToDatabase() {
         });
     });
 
+    /**
+     * Route to register a new user.
+     * @name POST/register
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.post("/register", async (req, res) => {
       try {
         // Hash the password
@@ -111,6 +139,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to log in a user.
+     * @name POST/login
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.post("/login", async (req, res) => {
       const user = await usersCollection.findOne({
         username: req.body.username,
@@ -133,10 +168,16 @@ async function connectToDatabase() {
       }
     });
 
-    app.put("/edit-movie-state", authenticateToken, async (req, res) => {
+    /**
+     * Route to update the state of a movie.
+     * @name PUT/edit-movie-state
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
+    app.put('/edit-movie-state', authenticateToken, async (req, res) => {
       try {
         const { username, action, movie } = req.body;
-
         if (!username || !action || !movie) {
           return res.status(400).send("Missing required fields");
         }
@@ -146,31 +187,135 @@ async function connectToDatabase() {
         if (!user) {
           return res.status(404).send("User not found");
         }
-
+        /*   
+        console.log('User:', user);
+        console.log('Action:', action);
+        console.log('Movie:', movie);
+        */
         // Update the movie state based on the action
         if (action === "watch" || action === "watch-later") {
           // Determine which list to update
-          const listToUpdate =
-            action === "watch" ? "watchedMovies" : "watchLaterList";
-
+          const listToUpdate = action === "watch" ? "watchedMovies" : "watchLaterList";
+          // Ensure that the movieData object and the listToUpdate exist
+          user.movieData = user.movieData || {};
+          user.movieData[listToUpdate] = user.movieData[listToUpdate] || [];
           // Add the movie to the specified list
-          user.movieData[listToUpdate][movie.title] = movie;
+          user.movieData[listToUpdate].push(movie);
+          // Update the user document in the database
+          await usersCollection.updateOne(
+              { username },
+              { $set: { movieData: user.movieData } }
+          );
+          console.log(`${movie.title} added to ${listToUpdate} successfully for user ${username}`);
+          res.send(`Movie '${movie.title}' added to '${listToUpdate}' successfully`);
+        } else {
+            res.status(400).send("Invalid action");
+        }
+      } catch (error) {
+          console.error("Error updating movie state:", error);
+          res.status(500).send("Internal Server Error");
+      }
+    });
+    
+    
+    /**
+     * Route to remove a movie from user's lists.
+     * @name PUT/remove-movie
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
+    app.put('/remove-movie', authenticateToken, async (req, res) => {
+      try {
+          const { username, movieName } = req.body;
+          if (!username || !movieName) {
+              return res.status(400).send("Missing required fields");
+          }
+
+          // Retrieve the user from the database
+          const user = await usersCollection.findOne({ username });
+          if (!user) {
+              return res.status(404).send("User not found");
+          }
+          let removedMovie = null;
+
+          // Find and remove the movie from the watchedMovies list
+          if (user.movieData.watchedMovies) {
+              removedMovie = user.movieData.watchedMovies.find(movie => movie.title === movieName);
+              if (removedMovie) {
+                  user.movieData.watchedMovies = user.movieData.watchedMovies.filter(movie => movie.title !== movieName);
+              }
+          }
+
+          // Find and remove the movie from the watchLaterList
+          if (user.movieData.watchLaterList) {
+              removedMovie = user.movieData.watchLaterList.find(movie => movie.title === movieName);
+              if (removedMovie) {
+                  user.movieData.watchLaterList = user.movieData.watchLaterList.filter(movie => movie.title !== movieName);
+              }
+          }
 
           // Update the user document in the database
           await usersCollection.updateOne(
-            { username },
-            { $set: { movieData: user.movieData } }
+              { username },
+              { $set: { movieData: user.movieData } }
           );
 
-          res.send(
-            `Movie '${movie.title}' added to '${listToUpdate}' successfully`
-          );
-        } else {
-          res.status(400).send("Invalid action");
-        }
+          // Sending status/logging to the user
+          if (removedMovie) {
+              console.log(`Movie ${removedMovie.title} removed successfully for user ${username}`);
+              res.send(`Movie ${removedMovie.title} removed successfully`);
+          } else {
+              console.log(`Movie with name ${movieName} not found for user ${username}`);
+              res.status(404).send(`Movie with name ${movieName} not found`);
+          }
       } catch (error) {
-        console.error("Error updating movie state:", error);
-        res.status(500).send("Internal Server Error");
+          console.error("Error removing movie:", error);
+          res.status(500).send("Internal Server Error");
+      }
+    });
+
+    /**
+     * Route to update user's rating for a movie.
+     * @name PUT/update-user-rating
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
+    app.put('/update-user-rating', authenticateToken, async (req, res) => {
+      try {
+          const { username, movieTitle, userRating } = req.body;
+
+          if (!username || !movieTitle || userRating === undefined || userRating < 0 || userRating > 5) {
+              return res.status(400).send("Invalid request. Please provide username, movieTitle, and a userRating between 0 and 5.");
+          }
+
+          // Retrieve the user from the database
+          const user = await usersCollection.findOne({ username });
+          if (!user) {
+              return res.status(404).send("User not found");
+          }
+
+          // Check if the movie exists in the watchedMovies list
+          const movieIndex = user.movieData.watchedMovies.findIndex(movie => movie.title === movieTitle);
+          if (movieIndex === -1) {
+              return res.status(404).send("Movie not found in watchedMovies list. Please add the movie to your list first.");
+          }
+
+          // Update the userRating of the movie
+          user.movieData.watchedMovies[movieIndex].userRating = userRating;
+
+          // Update the user document in the database
+          await usersCollection.updateOne(
+              { username },
+              { $set: { movieData: user.movieData } }
+          );
+
+          console.log(`User rating for ${movieTitle} updated successfully for user ${username}`);
+          res.send(`User rating for ${movieTitle} updated successfully`);
+      } catch (error) {
+          console.error("Error updating user rating:", error);
+          res.status(500).send("Internal Server Error");
       }
     });
 
@@ -178,10 +323,11 @@ async function connectToDatabase() {
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
   }
-}
+} 
+
 
 // Start the server after connecting to the database
-const PORT = 3000;
+const PORT = 3000; 
 connectToDatabase().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
