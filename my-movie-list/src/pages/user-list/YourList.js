@@ -1,3 +1,5 @@
+import "./YourList.css";
+
 function YourList() {
   return (
     <>

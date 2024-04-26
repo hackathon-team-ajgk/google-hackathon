@@ -1,0 +1,429 @@
+#hero-section {
+  height: 500px;
+  position: relative;
+  background: none;
+  position: relative;
+  overflow: hidden; /* Ensures no overflow from pseudo-element */
+}
+
+.section-container {
+  display: flex;
+  max-width: 1536px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin-bottom: 40px;
+  box-shadow: 4px 4px 20px 2px black;
+  border-radius: 10px;
+  background-color: #202020;
+}
+
+#hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../../../public/wallpaperOfMovies.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(30%);
+  z-index: -1; /* Ensures the pseudo-element stays behind the content */
+}
+
+#text-container {
+  width: 50%;
+  padding: 50px;
+  max-height: fit-content;
+}
+
+#bold-hero-text {
+  font-weight: bold;
+}
+
+.hero-section-text {
+  font-size: 30px;
+  margin-bottom: 50px;
+}
+
+.listed-movie-card {
+  position: absolute;
+  background-color: #202020;
+  box-shadow: 4px 4px 10px 2px black;
+  width: fit-content;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-images {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#dune {
+  top: 20px;
+  right: 400px;
+  z-index: 2;
+}
+
+#kfp {
+  right: 275px;
+  top: 100px;
+  z-index: 1;
+}
+
+#immaculate {
+  top: 175px;
+  right: 150px;
+}
+
+.movie-user-status {
+  font-size: large;
+}
+
+.images {
+  width: 50%;
+}
+
+.home-button {
+  font-size: 40px;
+  width: 400px;
+  height: 100px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.home-button:hover {
+  filter: brightness(60%);
+  box-shadow: 6px 6px 20px 6px #0b0b0b;
+}
+
+#popular-movies-section {
+  height: 325px;
+  overflow-x: auto;
+  padding: 0 10px;
+  gap: 10px;
+}
+
+.movie-card {
+  max-height: fit-content;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.movie-image {
+  height: 225px;
+  border-radius: 5px;
+}
+
+.movie-card:hover {
+  box-shadow: 6px 6px 20px 6px #0b0b0b;
+  background-color: #3c3c3c;
+}
+
+.movie-title {
+  text-align: center;
+  max-height: 22px;
+  font-weight: bold;
+}
+
+#ai-suggestions {
+  height: 500px;
+  justify-content: center;
+  max-height: 800px;
+}
+
+#ai-sugg-text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 75%;
+  gap: 1rem;
+}
+
+.home-text {
+  text-align: center;
+  font-size: 20px;
+}
+
+#ai-sugg-main-text {
+  font-size: 40px;
+  margin-top: 20px;
+}
+
+#ai-sugg-secondary-text {
+  font-size: 24px;
+}
+
+#ai-sugg-input {
+  width: 100%;
+  border-radius: 5px;
+  font-size: large;
+  color: white;
+  padding: 10px;
+  background-color: #4c4c4c;
+  border: none;
+  margin-top: 20px;
+}
+
+#ai-sugg-input::placeholder {
+  color: white;
+}
+
+.overlay {
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0 0 0/40%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#movie-view-page {
+  display: flex;
+  gap: 2rem;
+  width: 850px;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #2c2c2c;
+  box-shadow: 4px 4px 30px 2px black;
+}
+
+#movie-view-image {
+  width: 300px;
+}
+
+#close-button-div {
+  cursor: pointer;
+  transition: filter 0.3s ease-in-out;
+  height: fit-content;
+  margin-left: auto;
+}
+
+#close-button-div:hover {
+  filter: brightness(50%);
+}
+
+.movie-text {
+  margin: 0;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+#movie-view-title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+#movie-view-title-overview {
+  max-width: 50%;
+}
+
+#movie-overview {
+  text-align: center;
+  font-size: 16px;
+}
+
+#other-movie-information {
+  height: fit-content;
+}
+
+#other-movie-information {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  grid-template-rows: 50px 50px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+#movie-rating-label {
+  font-weight: bold;
+}
+
+#movie-rating-input {
+  margin-left: 10px;
+  border-radius: 10px;
+  height: 30px;
+  width: 40px;
+  font-size: large;
+}
+
+#cta {
+  height: 500px;
+  justify-content: center;
+  align-items: center;
+}
+
+#cta-title {
+  font-size: 50px;
+}
+
+.cta-text {
+  font-size: 32px;
+  text-align: center;
+}
+
+#cta-div {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (max-width: 1536px) {
+  .app {
+    max-width: 1280px;
+  }
+  .section-container {
+    max-width: 1280px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .app {
+    max-width: 1024px;
+  }
+  .section-container {
+    max-width: 1024px;
+    max-height: fit-content;
+  }
+  .hero-images {
+    left: 100px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .app {
+    max-width: 768px;
+  }
+  .section-container {
+    max-width: 768px;
+  }
+  .hero-images {
+    left: 140px;
+  }
+  #dune {
+    right: 300px;
+  }
+  #kfp {
+    right: 160px;
+    top: 200px;
+  }
+  #immaculate {
+    top: 375px;
+    right: 300px;
+  }
+  #hero-button {
+    width: 350px;
+  }
+  #hero-section {
+    min-height: 700px;
+  }
+  #ai-suggestions {
+    min-height: 600px;
+  }
+  #cta {
+    min-height: 700px;
+  }
+}
+
+@media (max-width: 925px) {
+  #movie-view-page {
+    max-width: 600px;
+    max-height: 75%;
+    overflow-y: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  #other-movie-information {
+    gap: 0;
+  }
+  .movie-text {
+    text-align: center;
+  }
+  #close-button-div {
+    margin: 0;
+    width: fit-content;
+    max-width: 475px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app {
+    max-width: 640px;
+  }
+  .section-container {
+    max-width: 640px;
+  }
+  #dune {
+    right: 250px;
+  }
+  #immaculate {
+    top: 375px;
+    right: 250px;
+  }
+  #hero-button {
+    width: 300px;
+    font-size: 35px;
+  }
+  #movie-view-page {
+    max-width: 440px;
+  }
+  #movie-view-image {
+    width: 200px;
+  }
+}
+
+@media (max-width: 640px) {
+  .app {
+    max-width: 475px;
+  }
+  .section-container {
+    max-width: 475px;
+  }
+  .listed-movie-card {
+    display: none;
+  }
+  #hero-section {
+    min-height: 800px;
+  }
+  #ai-suggestions {
+    min-height: 650px;
+  }
+  #cta {
+    min-height: 800px;
+  }
+  #movie-view-page {
+    width: 350px;
+  }
+}
+
+@media (max-width: 475px) {
+  .app {
+    width: 100%;
+  }
+  .section-container {
+    width: 100%;
+  }
+}

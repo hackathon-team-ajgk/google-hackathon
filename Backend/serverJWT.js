@@ -1,6 +1,8 @@
-/**
- * Module dependencies.
- */
+
+// THIS IS THE MOST UP TO DATE AND FUNCTIONAL VERSION
+// Run server and test with "requests.rest" file from top to bottom. Final request should return "Success" if working correctly.
+
+const movieAPI = require("./movieApiHandler");
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
@@ -72,8 +74,9 @@ async function connectToDatabase() {
       try {
         // Retrieve all users from the database
         // console.log(req.user.username) // Should be name of whatever you signed in as
+
         const users = await usersCollection.find().toArray();
-        res.json(users.filter(user => user.username === req.user.username));
+        res.json(users.filter((user) => user.username === req.user.username));
       } catch (error) {
         console.error("Error fetching users:", error);
         res.status(500).send("Internal Server Error");
@@ -96,6 +99,17 @@ async function connectToDatabase() {
         console.error("Error fetching users:", error);
         res.status(500).send("Internal Server Error");
       }
+    });
+    
+    app.get("/getTrendingMovies", (req, res) => {
+      movieAPI
+        .getTrendingMovies()
+        .then((data) => {
+          res.json(data);
+        })
+        .catch((error) => {
+          res.status(500).send("Error fetching popular movies.", error);
+        });
     });
 
     /**
@@ -145,7 +159,7 @@ async function connectToDatabase() {
           const user = { username: username };
           const accessToken = jwt.sign(user, process.env.JWT_SECRET);
           console.log(accessToken);
-          res.send("Success");
+          res.send(accessToken);
         } else {
           res.status(401).send("Incorrect password");
         }
@@ -164,7 +178,6 @@ async function connectToDatabase() {
     app.put('/edit-movie-state', authenticateToken, async (req, res) => {
       try {
         const { username, action, movie } = req.body;
-  
         if (!username || !action || !movie) {
           return res.status(400).send("Missing required fields");
         }
@@ -312,11 +325,12 @@ async function connectToDatabase() {
   }
 } 
 
+
 // Start the server after connecting to the database
 const PORT = 3000; 
 connectToDatabase().then(() => {
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`); 
+    console.log(`Server is running on port ${PORT}`);
   });
 });
 

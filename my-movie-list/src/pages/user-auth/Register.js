@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import "./Login.css";
-import { useAuth } from "../../contexts/AuthContext";
+import "./Auth.css";
 
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { handleLogin, handleUsername } = useAuth();
   const nav = useNavigate();
 
   const registerUser = async (userData) => {
@@ -18,9 +16,7 @@ function Register() {
       );
       console.log("Registration Successful", response.data);
       // Handle successful registration, perhaps redirect or clear form
-      handleLogin();
-      handleUsername(username);
-      nav("/");
+      nav("/login");
     } catch (error) {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
@@ -41,6 +37,10 @@ function Register() {
     const credentials = {
       username: username,
       password: password,
+      movieData: {
+        watchedMovies: {},
+        watchLaterList: {},
+      },
     };
     registerUser(credentials);
   };

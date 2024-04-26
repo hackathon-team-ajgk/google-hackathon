@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "./Login.css";
+import "./Auth.css";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { handleUsername, handleLogin } = useAuth();
+  const { handleLogin } = useAuth();
   const nav = useNavigate();
 
   const loginUser = async (credentials) => {
@@ -17,9 +17,8 @@ function Login() {
         credentials
       );
       console.log("Login Successful", response.data);
-      handleLogin();
-      handleUsername(username);
       // Handle successful login, such as storing auth tokens, redirecting, etc.
+      handleLogin(username, response.data);
       nav("/");
     } catch (error) {
       if (error.response) {
