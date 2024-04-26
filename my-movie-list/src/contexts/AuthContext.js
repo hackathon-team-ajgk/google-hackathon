@@ -5,28 +5,31 @@ const AuthContext = createContext(undefined);
 
 // AuthProvider component that will wrap your app or part of it
 export const AuthProvider = ({ children }) => {
-  const isLoggedIn = sessionStorage.getItem("userToken");
-  const [isGuest, setIsGuest] = useState(true);
+  const [userToken, setUserToken] = useState(null);
 
   // Define the functions to handle login, logout, and guest user
-  const handleLogin = () => {
-    if (isGuest) {
-      setIsGuest(false);
-    }
+  const handleLogin = (username, token) => {
+    console.log(token);
+    const user = {
+      name: username,
+      userToken: token,
+    };
+    localStorage.setItem("user", JSON.stringify(user));
+    console.log(user);
+    setUserToken(token);
   };
+
   const handleLogout = () => {
-    sessionStorage.removeItem("userToken");
+    localStorage.removeItem("user");
+    setUserToken(null);
   };
-  const handleGuestUser = () => setIsGuest(true);
 
   return (
     <AuthContext.Provider
       value={{
-        isGuest,
-        isLoggedIn,
+        userToken,
         handleLogin,
         handleLogout,
-        handleGuestUser,
       }}
     >
       {children}

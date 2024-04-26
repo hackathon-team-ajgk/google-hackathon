@@ -1,6 +1,7 @@
 // THIS IS THE MOST UP TO DATE AND FUNCTIONAL VERSION
 // Run server and test with "requests.rest" file from top to bottom. Final request should return "Success" if working correctly.
 
+const movieAPI = require("./movieApiHandler");
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
@@ -26,18 +27,17 @@ app.use((req, res, next) => {
 });
 
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
-  if (token == null) return res.send("No token")
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.send("No token");
 
   jwt.verify(token, process.env.JWT_SECRET, (err, body) => {
-    if (err) return res.send("Unverified token")
-    req.user = body
-    console.log(req.user)
-    next() 
-  })
-
-} 
+    if (err) return res.send("Unverified token");
+    req.user = body;
+    console.log(req.user);
+    next();
+  });
+}
 
 // Create a new MongoClient
 const client = new MongoClient(uri, {
@@ -60,9 +60,9 @@ async function connectToDatabase() {
     app.get("/user", authenticateToken, async (req, res) => {
       try {
         // Retrieve all users from the database
-        console.log(req.user.username) // Should be name of whatever you signed in as
+        console.log(req.user.username); // Should be name of whatever you signed in as
         const users = await usersCollection.find().toArray();
-        res.json(users.filter(user => user.username === req.user.username));
+        res.json(users.filter((user) => user.username === req.user.username));
       } catch (error) {
         console.error("Error fetching users:", error);
         res.status(500).send("Internal Server Error");
@@ -78,6 +78,17 @@ async function connectToDatabase() {
         console.error("Error fetching users:", error);
         res.status(500).send("Internal Server Error");
       }
+    });
+
+    app.get("/getTrendingMovies", (req, res) => {
+      movieAPI
+        .getTrendingMovies()
+        .then((data) => {
+          res.json(data);
+        })
+        .catch((error) => {
+          res.status(500).send("Error fetching popular movies.", error);
+        });
     });
 
     app.post("/register", async (req, res) => {
@@ -109,11 +120,11 @@ async function connectToDatabase() {
       }
       try {
         if (await bcrypt.compare(req.body.password, user.password)) {
-          const username = req.body.username 
-          const user = {username: username}
-          const accessToken = jwt.sign(user, process.env.JWT_SECRET)
-          console.log(accessToken) 
-          res.send("Success")
+          const username = req.body.username;
+          const user = { username: username };
+          const accessToken = jwt.sign(user, process.env.JWT_SECRET);
+          console.log(accessToken);
+          res.send(accessToken);
         } else {
           res.status(401).send("Incorrect password");
         }
@@ -122,43 +133,46 @@ async function connectToDatabase() {
       }
     });
 
-    app.put('/edit-movie-state', authenticateToken, async (req, res) => {
+    app.put("/edit-movie-state", authenticateToken, async (req, res) => {
       try {
-          const { username, action, movie } = req.body;
-  
-          if (!username || !action || !movie) {
-              return res.status(400).send("Missing required fields");
-          }
-  
-          // Retrieve the user from the database
-          const user = await usersCollection.findOne({ username });
-          if (!user) {
-              return res.status(404).send("User not found");
-          }
-  
-          // Update the movie state based on the action
-          if (action === "watch" || action === "watch-later") {
-              // Determine which list to update
-              const listToUpdate = action === "watch" ? "watchedMovies" : "watchLaterList";
-  
-              // Add the movie to the specified list
-              user.movieData[listToUpdate][movie.title] = movie;
-  
-              // Update the user document in the database
-              await usersCollection.updateOne(
-                  { username },
-                  { $set: { movieData: user.movieData } }
-              );
-  
-              res.send(`Movie '${movie.title}' added to '${listToUpdate}' successfully`);
-          } else {
-              res.status(400).send("Invalid action");
-          }
+        const { username, action, movie } = req.body;
+
+        if (!username || !action || !movie) {
+          return res.status(400).send("Missing required fields");
+        }
+
+        // Retrieve the user from the database
+        const user = await usersCollection.findOne({ username });
+        if (!user) {
+          return res.status(404).send("User not found");
+        }
+
+        // Update the movie state based on the action
+        if (action === "watch" || action === "watch-later") {
+          // Determine which list to update
+          const listToUpdate =
+            action === "watch" ? "watchedMovies" : "watchLaterList";
+
+          // Add the movie to the specified list
+          user.movieData[listToUpdate][movie.title] = movie;
+
+          // Update the user document in the database
+          await usersCollection.updateOne(
+            { username },
+            { $set: { movieData: user.movieData } }
+          );
+
+          res.send(
+            `Movie '${movie.title}' added to '${listToUpdate}' successfully`
+          );
+        } else {
+          res.status(400).send("Invalid action");
+        }
       } catch (error) {
-          console.error("Error updating movie state:", error);
-          res.status(500).send("Internal Server Error");
+        console.error("Error updating movie state:", error);
+        res.status(500).send("Internal Server Error");
       }
-  });
+    });
 
     // Add other routes here...
   } catch (error) {
@@ -166,12 +180,11 @@ async function connectToDatabase() {
   }
 }
 
-
 // Start the server after connecting to the database
 const PORT = 3000;
 connectToDatabase().then(() => {
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`); 
+    console.log(`Server is running on port ${PORT}`);
   });
 });
 
