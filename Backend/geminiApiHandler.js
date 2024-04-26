@@ -51,8 +51,10 @@ async function tallyGenreInMovieList() {
             "Western": 0
         };
 
-        const watchedMoviesList = jsonData.movieData.watchedMovies.movie;
-        const watchLaterList = jsonData.movieData.watchLaterList.movie;
+        const watchedMoviesList = jsonData.movieData.watchedMovies;
+        const watchLaterList = jsonData.movieData.watchLaterList;
+        // console.log(watchedMoviesList)
+        // console.log(watchLaterList)
 
         watchedMoviesList.forEach(movie => {
             movie.genreNames.split(',').forEach(item => {
@@ -141,8 +143,7 @@ async function callWithTimeout() {
         return null; // Or handle the error as needed
     }
 }
-
-callWithTimeout() 
+callWithTimeout()
 
 // Helper function
 function outputFormatting(finalText) {
