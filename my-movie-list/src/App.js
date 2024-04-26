@@ -10,6 +10,7 @@ import YourList from "./pages/user-list/YourList";
 import Movies from "./pages/movies-page/Movies";
 import Help from "./pages/help-page/Help";
 import { AuthProvider } from "./contexts/AuthContext";
+import UserProfile from "./pages/user-profile/UserProfile";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/your-list" element={<YourList />} />
             <Route path="/movies" element={<Movies />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/profile" element={<UserProfile />} />
           </Route>
 
           <Route path="*" element={<NoPage />} />

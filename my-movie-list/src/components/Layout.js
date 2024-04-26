@@ -45,6 +45,10 @@ function Layout() {
     navigate("/login");
   };
 
+  const routeToProfile = () => {
+    navigate("/profile");
+  };
+
   // Function for logging out the user
   const logoutUser = () => {
     handleLogout();
@@ -98,7 +102,11 @@ function Layout() {
           {userToken ? (
             <div id="user-details-and-logout" className="button-group">
               <div className="dropdown">
-                <button id="profile-btn" className="button">
+                <button
+                  id="profile-btn"
+                  className="button"
+                  onClick={routeToProfile}
+                >
                   {username}
                 </button>
               </div>
