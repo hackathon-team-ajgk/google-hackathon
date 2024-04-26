@@ -37,6 +37,10 @@ function Register() {
     const credentials = {
       username: username,
       password: password,
+      movieData: {
+        watchedMovies: {},
+        watchLaterList: {},
+      },
     };
     registerUser(credentials);
   };
