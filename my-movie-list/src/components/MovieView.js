@@ -1,9 +1,8 @@
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 
 function MovieView({ movieInfo, toggleOverlay }) {
-  console.log(movieInfo);
   return (
-    <div className="overlay">
+    <div className="overlay" onClick={toggleOverlay}>
       <div id="movie-view-page">
         <img
           src={movieInfo.coverImage}
@@ -19,16 +18,23 @@ function MovieView({ movieInfo, toggleOverlay }) {
           </p>
           <div id="other-movie-information" className="text-container">
             <p id="movie-genres" className="movie-text">
-              <strong>Genres:</strong> {movieInfo.genreNames}
+              <strong className="movie-metadata">Genres:</strong>{" "}
+              {movieInfo.genreNames}
             </p>
             <p id="movie-average-rating" className="movie-text">
-              <strong>Average Rating:</strong> {movieInfo.averageRating}
+              <strong className="movie-metadata">Average Rating:</strong>{" "}
+              {movieInfo.averageRating}
             </p>
             <p id="movie-average-rating" className="movie-text">
-              <strong>Release Date:</strong> {movieInfo.releaseDate}
+              <strong className="movie-metadata">Release Date:</strong>{" "}
+              {movieInfo.releaseDate}
             </p>
             <p id="movie-user-rating" className="movie-text">
-              <label id="movie-rating-label" htmlFor="movie-rating-input">
+              <label
+                id="movie-rating-label"
+                className="movie-metadata"
+                htmlFor="movie-rating-input"
+              >
                 User Rating:
               </label>
               {movieInfo.userRating !== "NULL" ? (

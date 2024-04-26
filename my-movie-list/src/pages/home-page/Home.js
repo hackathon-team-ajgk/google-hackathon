@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import axios from "axios";
 import MovieCard from "../../components/MovieCard";
+import HeroMovies from "../../components/HeroMovies";
 
 function Home() {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -10,6 +11,14 @@ function Home() {
 
   const storeTrendingMovies = (movies) => {
     setTrendingMovies(movies);
+  };
+
+  const getHeroMovies = () => {
+    const moviesToFind = ["Dune: Part Two", "Kung Fu Panda 4", "Immaculate"];
+    const foundMovies = trendingMovies.filter((movie) =>
+      moviesToFind.includes(movie.title)
+    );
+    return foundMovies;
   };
 
   const getTrendingMovies = async () => {
@@ -60,7 +69,9 @@ function Home() {
             Your Movie List
           </button>
         </div>
-        <div id="hero-movie-images" className="images"></div>
+        <div id="hero-movie-images" className="images">
+          {trendingMovies.length > 0 && <HeroMovies movies={getHeroMovies()} />}
+        </div>
       </section>
       <section id="popular-movies-section" className="section-container">
         {trendingMovies.map((val, key) => (
@@ -86,6 +97,27 @@ function Home() {
             placeholder="Enter your prompt here."
             type="text"
           />
+        </div>
+      </section>
+      {/* {section below should only be rendered if user is not logged in} */}
+      <section id="cta" className="section-container">
+        <div id="cta-div">
+          <strong id="cta-title" className="cta-text">
+            Create an Account Today!
+          </strong>
+          <p className="cta-text">
+            Join the community and start adding to your own movie list today.
+            Always have something to watch next and an AI tool that gives you
+            suggestions if you're still not sure!
+          </p>
+          <button
+            className="home-button"
+            onClick={() => {
+              navigate("/register");
+            }}
+          >
+            Register Now
+          </button>
         </div>
       </section>
     </>
