@@ -93,8 +93,8 @@ function getWatchProviderHandler() {
 async function getMovieMetadataFromObject(userInput) {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("Logging type of userInput");
-      console.log(typeof userInput);
+      // console.log("Logging type of userInput");
+      // console.log(typeof userInput);
       // console.log(userInput);
       // const movie_obj = await searchForMovie(userInput);
 
@@ -177,9 +177,9 @@ async function getMovieMetadataFromObject(userInput) {
 async function getMovieMetadataFromString(userInput) {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("Logging type of userInput");
-      console.log(typeof userInput);
-      console.log(userInput);
+      // console.log("Logging type of userInput");
+      // console.log(typeof userInput);
+      // console.log(userInput);
       const movie_obj = await searchForMovie(userInput);
 
       if (!movie_obj || !movie_obj.results) {
@@ -334,19 +334,18 @@ async function getTrendingMovies() {
   // console.log(jsonResult)
 
   const finalResult = await getMovieMetadataFromObject(jsonResult);
-  console.log("Trending Movies Final:", finalResult);
   return finalResult;
 }
 
 // Below only for testing purposes
-async function viewMovieMetadata() {
-  x = await getMovieMetadataFromString("Harry potter").then((x) =>
-    console.log(x)
-  );
-  // y = await getGenreRecommendations(10752) // War genre tag
-  // z = await getTrendingMovies()
-}
-viewMovieMetadata();
+// async function viewMovieMetadata() {
+//   x = await getMovieMetadataFromString("Harry potter").then((x) =>
+//     console.log(x)
+//   );
+//   // y = await getGenreRecommendations(10752) // War genre tag
+//   // z = await getTrendingMovies()
+// }
+// viewMovieMetadata();
 
 module.exports = {
   searchForMovie,

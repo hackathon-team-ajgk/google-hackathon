@@ -43,6 +43,7 @@ main {
 .navbar {
   list-style: none;
   margin: 0;
+  margin-bottom: 10px;
   padding: 0;
   display: flex;
   gap: 1rem;
@@ -75,15 +76,29 @@ main {
   margin: 0;
 }
 
+.button-group {
+  display: flex;
+}
+
 .button {
   font-size: large;
   height: 40px;
-  width: 80px;
+  width: fit-content;
   cursor: pointer;
   background: none;
   border: none;
   color: #ffffff;
   border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+#profile-btn {
+  background-color: #6c6c6c;
+  box-shadow: 4px 4px 4px #1b1b1b;
+}
+
+#profile-btn:hover {
+  background-color: #4c4c4c;
 }
 
 #logout-button {
@@ -97,7 +112,7 @@ main {
 
 .button:hover {
   background-color: #4c4c4c;
-  box-shadow: 4px 4px 4px #1b1b1b;
+  box-shadow: 6px 6px 20px #1b1b1b;
 }
 
 footer {

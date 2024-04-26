@@ -77,9 +77,11 @@ function Layout() {
           </h1>
           {userToken ? (
             <div id="user-details-and-logout" className="button-group">
-              <button id="profile-btn" className="button">
-                {username}
-              </button>
+              <div className="dropdown">
+                <button id="profile-btn" className="button">
+                  {username}
+                </button>
+              </div>
               <button
                 id="logout-button"
                 className="button"
