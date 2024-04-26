@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import axios from "axios";
@@ -7,46 +7,51 @@ import HeroMovies from "../../components/HeroMovies";
 
 function Home() {
   const [trendingMovies, setTrendingMovies] = useState([]);
+  const [heroMovies, setHeroMovies] = useState([]);
+
   const navigate = useNavigate();
 
   const storeTrendingMovies = (movies) => {
     setTrendingMovies(movies);
   };
 
-  const getHeroMovies = () => {
-    const moviesToFind = ["Dune: Part Two", "Kung Fu Panda 4", "Immaculate"];
-    const foundMovies = trendingMovies.filter((movie) =>
-      moviesToFind.includes(movie.title)
-    );
-    return foundMovies;
-  };
-
-  const getTrendingMovies = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/getTrendingMovies"
-      );
-      const movies = response.data.movie;
-      storeTrendingMovies(movies);
-    } catch (error) {
-      // Handle error
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        console.error("Response Error:", error.response.data);
-        console.error("Status Code:", error.response.status);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("Request Error:", error.request);
-      } else {
-        // Something else happened while setting up the request
-        console.error("Error:", error.message);
-      }
-    }
-  };
+  const getHeroMovies = useCallback(() => {
+    const firstThreeMovies = trendingMovies.slice(0, 3);
+    setHeroMovies(firstThreeMovies);
+  }, [trendingMovies]);
 
   useEffect(() => {
+    const getTrendingMovies = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/getTrendingMovies"
+        );
+        const movies = response.data.movie;
+        storeTrendingMovies(movies);
+      } catch (error) {
+        // Handle error
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          console.error("Response Error:", error.response.data);
+          console.error("Status Code:", error.response.status);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error("Request Error:", error.request);
+        } else {
+          // Something else happened while setting up the request
+          console.error("Error:", error.message);
+        }
+      }
+    };
+
     getTrendingMovies();
   }, []);
+
+  useEffect(() => {
+    if (trendingMovies.length > 0) {
+      getHeroMovies();
+    }
+  }, [trendingMovies, getHeroMovies]);
 
   return (
     <>
@@ -70,9 +75,12 @@ function Home() {
           </button>
         </div>
         <div id="hero-movie-images" className="images">
-          {trendingMovies.length > 0 && <HeroMovies movies={getHeroMovies()} />}
+          {heroMovies.length === 3 && <HeroMovies movies={heroMovies} />}
         </div>
       </section>
+      <p id="trending-movies-label" className="movie-label">
+        Trending
+      </p>
       <section id="popular-movies-section" className="section-container">
         {trendingMovies.map((val, key) => (
           <MovieCard key={key} movie={val} />

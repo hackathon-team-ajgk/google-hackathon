@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import YourList from "./pages/user-list/YourList";
 import Movies from "./pages/movies-page/Movies";
 import Help from "./pages/help-page/Help";
+import Settings from "./pages/settings-page/Settings";
 import { AuthProvider } from "./contexts/AuthContext";
 import UserProfile from "./pages/user-profile/UserProfile";
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/movies" element={<Movies />} />
             <Route path="/help" element={<Help />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
 
           <Route path="*" element={<NoPage />} />

@@ -6,14 +6,22 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import XIcon from "@mui/icons-material/X";
 import { useAuth } from "../contexts/AuthContext";
-import { useEffect } from "react";
-// import { useEffect } from "react";
+import { useState } from "react";
+import Dropdown from "./Dropdown";
 
 function Layout() {
   const navigate = useNavigate();
 
+  // State to manage visibility of dropdown menu for user profile
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Function to toggle the dropdown menu
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   // User's JWT token and helper Logout function from custom Context
-  const { userToken, setUserToken, handleLogout } = useAuth();
+  const { handleLogout } = useAuth();
 
   // Function to get the user's username from localStorage
   const getUsername = () => {
@@ -43,10 +51,6 @@ function Layout() {
   // Helper function to route to Login page
   const routeToLogin = () => {
     navigate("/login");
-  };
-
-  const routeToProfile = () => {
-    navigate("/profile");
   };
 
   // Function for logging out the user
@@ -82,10 +86,6 @@ function Layout() {
   // Side effect so that everytime the app is refreshed or mounted
   // if token still exists (user has not logged out) then the user will
   // stay signed in.
-  useEffect(() => {
-    const storedToken = getToken();
-    setUserToken(storedToken);
-  });
 
   return (
     <div className="app">
@@ -99,16 +99,17 @@ function Layout() {
           >
             MyMovieList
           </h1>
-          {userToken ? (
+          {getToken ? (
             <div id="user-details-and-logout" className="button-group">
               <div className="dropdown">
                 <button
                   id="profile-btn"
                   className="button"
-                  onClick={routeToProfile}
+                  onClick={toggleDropdown}
                 >
                   {username}
                 </button>
+                {isDropdownOpen && <Dropdown toggle={toggleDropdown} />}
               </div>
               <button
                 id="logout-button"

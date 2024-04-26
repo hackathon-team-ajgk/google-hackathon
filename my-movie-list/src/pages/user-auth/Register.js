@@ -41,6 +41,7 @@ function Register() {
         watchedMovies: {},
         watchLaterList: {},
       },
+      bio: "",
     };
     registerUser(credentials);
   };

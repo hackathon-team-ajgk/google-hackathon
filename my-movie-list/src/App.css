@@ -5,6 +5,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-x: hidden;
 }
 
 main {
@@ -64,20 +65,9 @@ main {
   text-shadow: 0.5px 0 black, -0.5px 0 black, 0 0.5px black, 0 -0.5px black; /* These values can be adjusted based on your design */
 }
 
-#user-account-buttons {
-  display: flex;
-  align-items: center;
-  margin-right: 20px;
-}
-
-#username {
-  font-weight: bold;
-  font-size: large;
-  margin: 0;
-}
-
 .button-group {
   display: flex;
+  position: relative;
 }
 
 .button {
@@ -92,12 +82,44 @@ main {
   transition: all 0.3s ease-in-out;
 }
 
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 2.8rem;
+  right: 0;
+  width: 100px;
+  background-color: #3c3c3c;
+  box-shadow: 6px 6px 20px #0f0f0f;
+  z-index: 3;
+  border-radius: 5px;
+}
+
+.dropdown-link {
+  cursor: pointer;
+  padding-left: 10px;
+  padding-top: 10px;
+  height: 35px;
+  transition: background 0.3s ease-in-out;
+}
+
+.dropdown-link:hover {
+  background-color: #1a1a1a;
+}
 #profile-btn {
-  background-color: #6c6c6c;
+  position: relative;
+  background-color: #4c4c4c;
+  box-shadow: 4px 4px 10px #0f0f0f;
+  font-weight: bold;
 }
 
 #profile-btn:hover {
-  background-color: #4c4c4c;
+  background-color: #3c3c3c;
+  box-shadow: 6px 6px 20px black;
 }
 
 #logout-button {
@@ -176,5 +198,8 @@ footer {
 @media (max-width: 640px) {
   .navbar {
     gap: 0;
+  }
+  .header-container {
+    margin-left: 10px;
   }
 }
