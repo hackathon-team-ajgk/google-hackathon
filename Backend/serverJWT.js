@@ -33,7 +33,7 @@ function authenticateToken(req, res, next) {
   jwt.verify(token, process.env.JWT_SECRET, (err, body) => {
     if (err) return res.send("Unverified token")
     req.user = body
-    console.log(req.user)
+    // console.log(req.user) // For testing only
     next() 
   })
 
@@ -60,7 +60,7 @@ async function connectToDatabase() {
     app.get("/user", authenticateToken, async (req, res) => {
       try {
         // Retrieve all users from the database
-        console.log(req.user.username) // Should be name of whatever you signed in as
+        // console.log(req.user.username) // Should be name of whatever you signed in as
         const users = await usersCollection.find().toArray();
         res.json(users.filter(user => user.username === req.user.username));
       } catch (error) {
@@ -112,7 +112,7 @@ async function connectToDatabase() {
           const username = req.body.username 
           const user = {username: username}
           const accessToken = jwt.sign(user, process.env.JWT_SECRET)
-          console.log(accessToken) 
+          console.log(accessToken)
           res.send("Success")
         } else {
           res.status(401).send("Incorrect password");
@@ -122,43 +122,52 @@ async function connectToDatabase() {
       }
     });
 
+    // Working route to place movies in either the watched list (action = watch) watch later list (action = watch-later)
+    // Requires username, action, and movie field to work
     app.put('/edit-movie-state', authenticateToken, async (req, res) => {
       try {
-          const { username, action, movie } = req.body;
+        const { username, action, movie } = req.body;
   
-          if (!username || !action || !movie) {
-              return res.status(400).send("Missing required fields");
-          }
-  
-          // Retrieve the user from the database
-          const user = await usersCollection.findOne({ username });
-          if (!user) {
-              return res.status(404).send("User not found");
-          }
-  
-          // Update the movie state based on the action
-          if (action === "watch" || action === "watch-later") {
-              // Determine which list to update
-              const listToUpdate = action === "watch" ? "watchedMovies" : "watchLaterList";
-  
-              // Add the movie to the specified list
-              user.movieData[listToUpdate][movie.title] = movie;
-  
-              // Update the user document in the database
-              await usersCollection.updateOne(
-                  { username },
-                  { $set: { movieData: user.movieData } }
-              );
-  
-              res.send(`Movie '${movie.title}' added to '${listToUpdate}' successfully`);
-          } else {
-              res.status(400).send("Invalid action");
-          }
+        if (!username || !action || !movie) {
+          return res.status(400).send("Missing required fields");
+        }
+
+        // Retrieve the user from the database
+        const user = await usersCollection.findOne({ username });
+        if (!user) {
+          return res.status(404).send("User not found");
+        }
+        /*   
+        console.log('User:', user);
+        console.log('Action:', action);
+        console.log('Movie:', movie);
+        */
+        // Update the movie state based on the action
+        if (action === "watch" || action === "watch-later") {
+          // Determine which list to update
+          const listToUpdate = action === "watch" ? "watchedMovies" : "watchLaterList";
+          // Ensure that the movieData object and the listToUpdate exist
+          user.movieData = user.movieData || {};
+          user.movieData[listToUpdate] = user.movieData[listToUpdate] || [];
+          // Add the movie to the specified list
+          user.movieData[listToUpdate].push(movie);
+          // Update the user document in the database
+          await usersCollection.updateOne(
+              { username },
+              { $set: { movieData: user.movieData } }
+          );
+          console.log(`${movie.title} added to ${listToUpdate} successfully for user ${username}`);
+          res.send(`Movie '${movie.title}' added to '${listToUpdate}' successfully`);
+        } else {
+            res.status(400).send("Invalid action");
+        }
       } catch (error) {
           console.error("Error updating movie state:", error);
           res.status(500).send("Internal Server Error");
       }
   });
+  
+  
 
     // Add other routes here...
   } catch (error) {
@@ -168,7 +177,7 @@ async function connectToDatabase() {
 
 
 // Start the server after connecting to the database
-const PORT = 3000;
+const PORT = 3000; 
 connectToDatabase().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`); 
