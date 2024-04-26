@@ -158,7 +158,7 @@ async function connectToDatabase() {
           const username = req.body.username;
           const user = { username: username };
           const accessToken = jwt.sign(user, process.env.JWT_SECRET);
-          console.log(accessToken);
+          // console.log(accessToken);
           res.send(accessToken);
         } else {
           res.status(401).send("Incorrect password");

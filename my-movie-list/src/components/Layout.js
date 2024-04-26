@@ -6,15 +6,16 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import XIcon from "@mui/icons-material/X";
 import { useAuth } from "../contexts/AuthContext";
+import { useEffect } from "react";
 // import { useEffect } from "react";
 
 function Layout() {
   const navigate = useNavigate();
 
   // User's JWT token and helper Logout function from custom Context
-  const { userToken, handleLogout } = useAuth();
+  const { userToken, setUserToken, handleLogout } = useAuth();
 
-  // Function to get the user's username from the localStorage Obj
+  // Function to get the user's username from localStorage
   const getUsername = () => {
     const userString = localStorage.getItem("user");
     if (userString) {
@@ -25,8 +26,19 @@ function Layout() {
 
     return null;
   };
-
   const username = getUsername();
+
+  // Function to get the user's token from localStorage
+  const getToken = () => {
+    const userString = localStorage.getItem("user");
+    if (userString) {
+      const userObject = JSON.parse(userString);
+      const token = userObject.userToken;
+      return token;
+    }
+
+    return null;
+  };
 
   // Helper function to route to Login page
   const routeToLogin = () => {
@@ -63,6 +75,14 @@ function Layout() {
   //   getUsers();
   // });
 
+  // Side effect so that everytime the app is refreshed or mounted
+  // if token still exists (user has not logged out) then the user will
+  // stay signed in.
+  useEffect(() => {
+    const storedToken = getToken();
+    setUserToken(storedToken);
+  });
+
   return (
     <div className="app">
       <div className="header-container">
@@ -77,9 +97,11 @@ function Layout() {
           </h1>
           {userToken ? (
             <div id="user-details-and-logout" className="button-group">
-              <button id="profile-btn" className="button">
-                {username}
-              </button>
+              <div className="dropdown">
+                <button id="profile-btn" className="button">
+                  {username}
+                </button>
+              </div>
               <button
                 id="logout-button"
                 className="button"
