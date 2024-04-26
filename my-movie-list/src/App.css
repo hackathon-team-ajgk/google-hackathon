@@ -2,25 +2,42 @@ body {
   background-color: #2c2c2c;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+main {
+  flex: 1;
 }
 
 .app {
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
-  margin-left: 20px;
   color: #ffffff;
+  max-width: 1536px;
+  width: 1536px;
 }
 
 #title {
   text-align: center;
   margin-bottom: 0;
   margin-top: 0;
+  cursor: pointer;
 }
 
 .header-container {
   display: flex;
+  flex-direction: column;
+}
+
+.sub-header-container {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 20px;
+  width: 100%;
 }
 
 .navbar {
@@ -28,45 +45,40 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 3rem;
+  gap: 1rem;
 }
 
-#active .navbar-item {
+#active {
   font-weight: bold;
 }
 
 .navbar-item-name {
   cursor: pointer;
-  font-size: large;
-  text-align: center;
+  width: 80px;
+  transition: translate 0.3s ease-in-out;
 }
 
-#login-button {
-  font-size: large;
-  margin-right: 20px;
-  background: none;
-  color: #ffffff;
-  width: 100px;
-  border: none;
-  cursor: pointer;
-  height: 40px;
-  border-radius: 15px;
+.navbar-item-name:hover {
+  translate: 0 2px;
+  text-shadow: 0.5px 0 black, -0.5px 0 black, 0 0.5px black, 0 -0.5px black; /* These values can be adjusted based on your design */
 }
 
 #user-account-buttons {
   display: flex;
   align-items: center;
-  margin: 5px 30px 0 0;
-  gap: 2rem;
+  margin-right: 20px;
 }
 
 #username {
-  cursor: pointer;
+  font-weight: bold;
+  font-size: large;
+  margin: 0;
 }
 
-#logout-button {
+.auth-button {
   font-size: large;
   height: 40px;
+  width: 80px;
   cursor: pointer;
   background: none;
   border: none;
@@ -74,10 +86,75 @@ body {
   border-radius: 5px;
 }
 
-#logout-button:hover {
-  background-color: #3c3c3c;
+#user-account {
+  display: flex;
+  cursor: pointer;
 }
 
-#login-button:hover {
+#logout-button {
+  margin-left: 5px;
+}
+
+.auth-button:hover {
+  background-color: #4c4c4c;
+  box-shadow: 4px 4px 4px #1b1b1b;
+}
+
+footer {
+  height: 200px;
+  width: 100%;
+  background-color: #1b1b1b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 4px 4px 20px 2px black;
+}
+
+#footer-navbar {
+  text-align: center;
+}
+
+#footer-socials {
+  margin-top: 40px;
+  display: flex;
+  gap: 1rem;
+}
+
+#footer-copyright {
+  margin-top: auto;
+  width: 100%;
+  background-color: #111111;
+}
+
+#footer-title {
+  text-align: center;
+  font-size: 30px;
+  margin: 0;
+}
+
+.social-icon {
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 1rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #111111;
+  margin-block: 0.5rem;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
   background-color: #3c3c3c;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4c4c4c;
 }

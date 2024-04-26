@@ -1,14 +1,14 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React from "react";
-import Home from "./pages/home/Home";
+import Home from "./pages/home-page/Home";
 import Login from "./pages/user-auth/Login";
 import Register from "./pages/user-auth/Register";
 import NoPage from "./components/NoPage";
 import Layout from "./components/Layout";
 import YourList from "./pages/user-list/YourList";
-import Movies from "./pages/movies/Movies";
-import Help from "./pages/help/Help";
+import Movies from "./pages/movies-page/Movies";
+import Help from "./pages/help-page/Help";
 import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
