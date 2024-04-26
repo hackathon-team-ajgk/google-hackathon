@@ -1,6 +1,6 @@
-// THIS IS THE MOST UP TO DATE AND FUNCTIONAL VERSION
-// Run server and test with "requests.rest" file from top to bottom. Final request should return "Success" if working correctly.
-
+/**
+ * Module dependencies.
+ */
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
@@ -25,19 +25,25 @@ app.use((req, res, next) => {
   next();
 });
 
+/**
+ * Middleware to authenticate JWT token.
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @param {function} next - Express next function
+ * @returns {void}
+ */
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
-  if (token == null) return res.send("No token")
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.send("No token");
 
   jwt.verify(token, process.env.JWT_SECRET, (err, body) => {
-    if (err) return res.send("Unverified token")
-    req.user = body
+    if (err) return res.send("Unverified token");
+    req.user = body;
     // console.log(req.user) // For testing only
-    next() 
-  })
-
-} 
+    next();
+  });
+}
 
 // Create a new MongoClient
 const client = new MongoClient(uri, {
@@ -55,8 +61,13 @@ async function connectToDatabase() {
     const db = client.db("MovieSiteDB");
     const usersCollection = db.collection("users");
 
-    // Define routes after the connection is established
-    // Testing feature to get all users in DB
+    /**
+     * Route to fetch specific user data.
+     * @name GET/user
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/user", authenticateToken, async (req, res) => {
       try {
         // Retrieve all users from the database
@@ -69,6 +80,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to fetch all users.
+     * @name GET/allUsers
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/allUsers", async (req, res) => {
       try {
         // Retrieve all users from the database
@@ -80,6 +98,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to register a new user.
+     * @name POST/register
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.post("/register", async (req, res) => {
       try {
         // Hash the password
@@ -100,6 +125,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to log in a user.
+     * @name POST/login
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.post("/login", async (req, res) => {
       const user = await usersCollection.findOne({
         username: req.body.username,
@@ -109,11 +141,11 @@ async function connectToDatabase() {
       }
       try {
         if (await bcrypt.compare(req.body.password, user.password)) {
-          const username = req.body.username 
-          const user = {username: username}
-          const accessToken = jwt.sign(user, process.env.JWT_SECRET)
-          console.log(accessToken)
-          res.send("Success")
+          const username = req.body.username;
+          const user = { username: username };
+          const accessToken = jwt.sign(user, process.env.JWT_SECRET);
+          console.log(accessToken);
+          res.send("Success");
         } else {
           res.status(401).send("Incorrect password");
         }
@@ -122,8 +154,13 @@ async function connectToDatabase() {
       }
     });
 
-    // Working route to place movies in either the watched list (action = watch) watch later list (action = watch-later)
-    // Requires username, action, and movie field to work
+    /**
+     * Route to update the state of a movie.
+     * @name PUT/edit-movie-state
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.put('/edit-movie-state', authenticateToken, async (req, res) => {
       try {
         const { username, action, movie } = req.body;
@@ -165,8 +202,16 @@ async function connectToDatabase() {
           console.error("Error updating movie state:", error);
           res.status(500).send("Internal Server Error");
       }
-  });
-  
+    });
+    
+    
+    /**
+     * Route to remove a movie from user's lists.
+     * @name PUT/remove-movie
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.put('/remove-movie', authenticateToken, async (req, res) => {
       try {
           const { username, movieName } = req.body;
@@ -215,8 +260,15 @@ async function connectToDatabase() {
           console.error("Error removing movie:", error);
           res.status(500).send("Internal Server Error");
       }
-  });
+    });
 
+    /**
+     * Route to update user's rating for a movie.
+     * @name PUT/update-user-rating
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.put('/update-user-rating', authenticateToken, async (req, res) => {
       try {
           const { username, movieTitle, userRating } = req.body;
@@ -254,13 +306,11 @@ async function connectToDatabase() {
       }
     });
 
-
     // Add other routes here...
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
   }
 } 
-
 
 // Start the server after connecting to the database
 const PORT = 3000; 

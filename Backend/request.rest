@@ -4,7 +4,7 @@ GET http://localhost:3000/allUsers
 ###
 # Get user thast is signed in from DB 
 GET http://localhost:3000/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk3NDMxfQ.9Ow029ylM0Js-uXYc-16TWwV0LsbUj4ZH9Kkr2yb-uA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk4MjA0fQ.b7G_Hj8cWJc2S8QlzGutLqBJ0_EC0K5BigXNJkqbIJw
 
 ###
 # Testing registration
@@ -102,7 +102,7 @@ Content-Type: application/json
 ###
 # Placing movies in either lists
 PUT http://localhost:3000/edit-movie-state
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk3NDMxfQ.9Ow029ylM0Js-uXYc-16TWwV0LsbUj4ZH9Kkr2yb-uA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk4MjA0fQ.b7G_Hj8cWJc2S8QlzGutLqBJ0_EC0K5BigXNJkqbIJw
 Content-Type: application/json
 
 {
@@ -119,22 +119,22 @@ Content-Type: application/json
 ###
 # Testing removing movie from user's list
 PUT http://localhost:3000/remove-movie
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk2NTI5fQ.l0iuXzj1wUpkdcWo9_6vD6RxQMCnxHd3P9QsJHwKluI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk4MjA0fQ.b7G_Hj8cWJc2S8QlzGutLqBJ0_EC0K5BigXNJkqbIJw
 Content-Type: application/json
 
 {
     "username": "Sarah",
-    "movieName": "The Lord of the Rings: The Fellowship of the Ring"
+    "movieName": "STAR WARS: ULTIMATE UNIVERSE TACO STAND"
 }
 
 ###
 # Testing updating the user rating (only works if movie is in watchedMovies list
 PUT http://localhost:3000/update-user-rating
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk3NDMxfQ.9Ow029ylM0Js-uXYc-16TWwV0LsbUj4ZH9Kkr2yb-uA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk4MjA0fQ.b7G_Hj8cWJc2S8QlzGutLqBJ0_EC0K5BigXNJkqbIJw
 Content-Type: application/json
 
 {
     "username": "Sarah",
     "movieTitle": "STAR WARS: ULTIMATE UNIVERSE TACO STAND",
-    "userRating": 2
+    "userRating": 3
 }
