@@ -192,6 +192,29 @@ async function connectToDatabase() {
         });
     });
 
+    // Logout endpoint to invalidate token
+    app.post("/logout", (req, res) => {
+      req.session.destroy();
+      res.send("Logged out successfully");
+    });
+
+    app.get("/profile", authenticateToken, async (req, res) => {
+      try {
+        // Access user's information from the JWT payload
+        const username = req.user.username;
+
+        // Retrieve the user's data from DB, check if the user exists, send user data back
+        const user = await usersCollection.findOne({ username });
+        if (!user) {
+          return res.status(404).send("User not found");
+        }
+        res.json(user);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
     // Add other routes here...
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
