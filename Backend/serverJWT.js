@@ -167,7 +167,55 @@ async function connectToDatabase() {
       }
   });
   
-  
+  app.put('/remove-movie', authenticateToken, async (req, res) => {
+    try {
+        const { username, movieName } = req.body;
+        if (!username || !movieName) {
+            return res.status(400).send("Missing required fields");
+        }
+
+        // Retrieve the user from the database
+        const user = await usersCollection.findOne({ username });
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+        let removedMovie = null;
+
+        // Find and remove the movie from the watchedMovies list
+        if (user.movieData.watchedMovies) {
+            removedMovie = user.movieData.watchedMovies.find(movie => movie.title === movieName);
+            if (removedMovie) {
+                user.movieData.watchedMovies = user.movieData.watchedMovies.filter(movie => movie.title !== movieName);
+            }
+        }
+
+        // Find and remove the movie from the watchLaterList
+        if (user.movieData.watchLaterList) {
+            removedMovie = user.movieData.watchLaterList.find(movie => movie.title === movieName);
+            if (removedMovie) {
+                user.movieData.watchLaterList = user.movieData.watchLaterList.filter(movie => movie.title !== movieName);
+            }
+        }
+
+        // Update the user document in the database
+        await usersCollection.updateOne(
+            { username },
+            { $set: { movieData: user.movieData } }
+        );
+
+        // Sending status/logging to the user
+        if (removedMovie) {
+            console.log(`Movie ${removedMovie.title} removed successfully for user ${username}`);
+            res.send(`Movie ${removedMovie.title} removed successfully`);
+        } else {
+            console.log(`Movie with name ${movieName} not found for user ${username}`);
+            res.status(404).send(`Movie with name ${movieName} not found`);
+        }
+    } catch (error) {
+        console.error("Error removing movie:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
     // Add other routes here...
   } catch (error) {

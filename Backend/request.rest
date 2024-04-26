@@ -4,7 +4,7 @@ GET http://localhost:3000/allUsers
 ###
 # Get user thast is signed in from DB 
 GET http://localhost:3000/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDkzMjY5fQ.uIwFXyCZ1tUXNcvbXRTQ-G-tGzQjHbEIx6-EFg8ymis
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk2NTI5fQ.l0iuXzj1wUpkdcWo9_6vD6RxQMCnxHd3P9QsJHwKluI
 
 ###
 # Testing registration
@@ -114,4 +114,15 @@ Content-Type: application/json
                 "dateAdded": "2024-02-26",
                 "status": "watched"
             }
+}
+
+###
+# Testing removing movie from user's list
+PUT http://localhost:3000/remove-movie
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk2NTI5fQ.l0iuXzj1wUpkdcWo9_6vD6RxQMCnxHd3P9QsJHwKluI
+Content-Type: application/json
+
+{
+    "username": "Sarah",
+    "movieName": "The Lord of the Rings: The Fellowship of the Ring"
 }
