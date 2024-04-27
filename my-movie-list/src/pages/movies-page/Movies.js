@@ -1,12 +1,11 @@
+import { useState, useEffect } from "react";
 
 function Movies() {
   const [movies, setMovies] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  const fetchMovies = async (genre, popularity) => {
-
-  };
+  const fetchMovies = async (genre, popularity) => {};
 
   // Handle search functionality - fetch movies based on the search query
   const handleSearch = async () => {
@@ -29,21 +28,8 @@ function Movies() {
   useEffect(() => {
     fetchMovies();
   }, []);
-    
-};
-  return (
-    <div className="app">
-      <SearchBar onSearch={handleSearch} setSearchQuery={setSearchQuery} />
-      <MovieFilters onFilterChange={fetchMovies} />
-      <MovieGrid 
-        movies={movies} 
-        onSelectMovie={selectMovie} 
-        onAddToUserList={addToUserList} 
-      />
-      {selectedMovie && (
-        <MovieOverlay movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
-      )}
-    </div>
-  );
 
-export default Movies
+  return <div className="movies"></div>;
+}
+
+export default Movies;
