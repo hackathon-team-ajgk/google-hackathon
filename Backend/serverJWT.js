@@ -329,7 +329,7 @@ async function connectToDatabase() {
           movieMetadata.push(formattedMovie);
         }
         res.send(movieMetadata);
-        
+
       } catch (error) {
         console.error("Error getting recommendations:", error);
         res.status(500).send("Internal Server Error");
@@ -338,6 +338,20 @@ async function connectToDatabase() {
     
     app.get('/getRecommendations-list', authenticateToken, async (req, res) => {
       // Same as above but from geminiAPI.giveMovieSuggestionsBasedOnMovieList instead
+      try {
+        const userGenre = req.body.genres;
+        const movieSuggestions = await geminiAPI.callWithTimeout();
+        const movieMetadata = [];
+        for (const movie of movieSuggestions) {
+          const formattedMovie = await movieAPI.searchForMovieFromGemini(movie);
+          movieMetadata.push(formattedMovie);
+        }
+        res.send(movieMetadata);
+      } catch (error) {
+        console.error("Error getting recommendations:", error);
+        res.status(500).send("Internal Server Error");
+      }
+
     });
     // Add other routes here...
   } catch (error) {

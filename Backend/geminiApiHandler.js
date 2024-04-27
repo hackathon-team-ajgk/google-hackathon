@@ -46,6 +46,7 @@ async function tallyGenreInMovieList() {
     const fs = require('fs').promises; // Use fs.promises for promise-based file operations
 
     try {
+        // HAVE TO CHANGE THIS SO IT IS ON A PER USER BASIS
         const data = await fs.readFile(path.join(__dirname, './object.json'), 'utf-8');
         const jsonData = JSON.parse(data);
 
