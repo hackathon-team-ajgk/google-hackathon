@@ -31,7 +31,7 @@ async function searchForMovie(search_query) {
     }));
 
     const formattedJson = await getMovieMetadataFromObject(json);
-    // console.log(formattedJson);
+    console.log(formattedJson);
     return formattedJson;
 
   } catch (error) {
@@ -39,7 +39,44 @@ async function searchForMovie(search_query) {
     throw error;
   }
 }
-// searchForMovie("harry potter")
+// searchForMovie("star wars")
+
+// Working movie search
+async function searchForMovieFromGemini(search_query) {
+  try {
+    const formatted_query = search_query.replace(" ", "%20");
+    const url = `https://api.themoviedb.org/3/search/movie?query=${formatted_query}&include_adult=false&language=en-US&page=1`;
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`,
+      },
+    };
+
+    const res = await fetch(url, options);
+    const json = await res.json();
+
+    if (!json || !json.results) {
+      console.error("Invalid API Response:", json);
+      throw new Error("Invalid API Response");
+    }
+
+    const formattedResults = json.results.map((movie) => ({
+      ...movie,
+      genre_ids: JSON.stringify(movie.genre_ids),
+    }));
+
+    const formattedJson = await getMovieMetadataFromObject(json);
+    // console.log(formattedJson.movie[0]);
+    return formattedJson.movie[0];
+
+  } catch (error) {
+    console.error("Error searching for movie(s)", error);
+    throw error;
+  }
+}
+// searchForMovieFromGemini("star wars")
 
 // Working get list of popular movies
 function getPopularMovieHandler() {
@@ -346,6 +383,7 @@ async function viewMovieMetadata() {
 
 module.exports = {
   searchForMovie,
+  searchForMovieFromGemini,
   getGenreRecommendations,
   getMovieMetadataFromObject,
   getMovieMetadataFromString,

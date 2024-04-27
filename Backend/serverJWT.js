@@ -325,11 +325,11 @@ async function connectToDatabase() {
         const movieSuggestions = await geminiAPI.giveMovieSuggestionsBasedOnGenre(userGenre);
         const movieMetadata = [];
         for (const movie of movieSuggestions) {
-          const formattedMovie = await movieAPI.searchForMovie(movie);
+          const formattedMovie = await movieAPI.searchForMovieFromGemini(movie);
           movieMetadata.push(formattedMovie);
         }
-        // Currently this is sending a super long list since the movieSearch function is returning a list of movies that have a similar name to the one provided. We must turn this to an exact match somehow to avoid getting so many outputs. Otherwise, working correctly
         res.send(movieMetadata);
+        
       } catch (error) {
         console.error("Error getting recommendations:", error);
         res.status(500).send("Internal Server Error");
@@ -343,7 +343,7 @@ async function connectToDatabase() {
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
   }
-} 
+}
 
 
 // Start the server after connecting to the database
