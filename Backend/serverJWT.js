@@ -226,6 +226,23 @@ async function connectToDatabase() {
       }
     });
 
+    app.put("/changeBio", authenticateToken, async (req, res) => {
+      try {
+        const { username, bio } = req.query;
+
+        // Update the user's bio in the database
+        await usersCollection.updateOne(
+          { username: username },
+          { $set: { bio: bio } }
+        );
+
+        res.send("Bio updated successfully");
+      } catch (error) {
+        console.error("Error updating bio:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
     /**
      * Route to remove a movie from user's lists.
      * @name PUT/remove-movie
