@@ -4,32 +4,13 @@ import axios from "axios";
 
 function UserProfile() {
   const [bio, setBio] = useState("");
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const maxLength = 100;
 
-  const handleBioChange = async (bio) => {
-    try {
-      const token = getToken();
-      const response = await axios.get("http://localhost:3000/changeBio", {
-        headers: {
-          authorization: token,
-        },
-        params: {
-          username: username,
-          bio: bio,
-        },
-      });
-      console.log(response.data);
-    } catch (error) {
-      if (error.response) {
-        // The server responded with a status code that falls out of the range of 2xx
-        console.error("Post Error:", error.response.data);
-        console.error("Status Code:", error.response.status);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("Request Error:", error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error:", error.message);
-      }
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= maxLength) {
+      setBio(value);
     }
   };
 
@@ -56,6 +37,35 @@ function UserProfile() {
     }
 
     return null;
+  };
+
+  const handleBioChange = async (userDetails) => {
+    try {
+      const token = getToken();
+      console.log(token);
+      const response = await axios.put(
+        "http://localhost:3000/changeBio",
+        userDetails,
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      if (error.response) {
+        // The server responded with a status code that falls out of the range of 2xx
+        console.error("Post Error:", error.response.data);
+        console.error("Status Code:", error.response.status);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("Request Error:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error:", error.message);
+      }
+    }
   };
 
   useEffect(() => {
@@ -91,23 +101,69 @@ function UserProfile() {
     getUserInfo();
   }, [username]);
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const userDetails = {
+      username: username,
+      bio: bio,
+    };
+    handleBioChange(userDetails);
+    setIsEditingBio(false);
+  };
+
   return (
     <>
       <section id="profile-section" className="section-container">
         <div id="user-details" className="column-section">
-          <div className="avatar">
-            <span>{username[0]}</span>
-          </div>
-          <p id="profile-username" className="profile-field">
-            {username}
-          </p>
-          {bio.length > 0 ? (
-            <p id="user-bio" className="profile-field">
-              {bio}
+          <div id="profile-name-bio" className="profile-details">
+            <div className="avatar">
+              <span>{username[0].toUpperCase()}</span>
+            </div>
+            <p id="profile-username" className="profile-field">
+              {username}
             </p>
-          ) : (
-            <textarea />
-          )}
+            {!isEditingBio ? (
+              <>
+                <p id="user-bio" className="profile-field">
+                  {bio}
+                </p>
+                <button
+                  id="edit-bio-btn"
+                  className="bio-btn"
+                  onClick={() => {
+                    setIsEditingBio(true);
+                  }}
+                >
+                  Edit Bio
+                </button>
+              </>
+            ) : (
+              <form id="user-profile-form" onSubmit={handleSubmit}>
+                <textarea
+                  className="bio"
+                  value={bio}
+                  maxLength={maxLength}
+                  onChange={handleChange}
+                  placeholder="Enter your bio..."
+                />
+                <div id="char-count">
+                  Char count: {maxLength - bio.length}/{maxLength}
+                </div>
+                <div className="bio-btn-group">
+                  <button id="submit-bio-btn" className="bio-btn" type="submit">
+                    Submit bio
+                  </button>
+                  <button
+                    id="cancel-btn"
+                    className="bio-btn"
+                    onClick={() => setIsEditingBio(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
         <div id="account-stats" className="column-section"></div>
       </section>

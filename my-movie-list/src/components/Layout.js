@@ -99,7 +99,8 @@ function Layout() {
           >
             MyMovieList
           </h1>
-          {getToken ? (
+
+          {getToken() ? (
             <div id="user-details-and-logout" className="button-group">
               <div className="dropdown">
                 <button

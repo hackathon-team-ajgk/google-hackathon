@@ -228,7 +228,7 @@ async function connectToDatabase() {
 
     app.put("/changeBio", authenticateToken, async (req, res) => {
       try {
-        const { username, bio } = req.query;
+        const { username, bio } = req.body;
 
         // Update the user's bio in the database
         await usersCollection.updateOne(
