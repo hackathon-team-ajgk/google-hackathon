@@ -1,12 +1,11 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const API_READ_ACCESS_TOKEN = process.env.API_READ_ACCESS_TOKEN;
-const { json } = require("express");
 const fetch = require("node-fetch");
 
 // Functions requiring API endpoints:
 // Working movie search
-function searchForMovie(search_query) {
+async function searchForMovie(search_query) {
   try {
     const formatted_query = search_query.replace(" ", "%20");
     const url = `https://api.themoviedb.org/3/search/movie?query=${formatted_query}&include_adult=false&language=en-US&page=1`;
@@ -18,29 +17,26 @@ function searchForMovie(search_query) {
       },
     };
 
-    return fetch(url, options)
-      .then((res) => res.json())
-      .then((json) => {
-        // console.log('API Response:', json); // Log the API response FOR TESTING THIS FUNC ONLY
-        if (!json || !json.results) {
-          console.error("Invalid API Response:", json); // Log if response is invalid
-          throw new Error("Invalid API Response");
-        }
-        // Iterate over each movie result to stringify the genre_ids array
-        const formattedResults = json.results.map((movie) => ({
-          ...movie,
-          genre_ids: JSON.stringify(movie.genre_ids), // Stringify the genre_ids array
-        }));
-        // console.log(json)
-        return json; // Return the JSON data from the resolved Promise
-      })
-      .catch((err) => {
-        console.error("Error fetching movie data:", err);
-        throw err; // Throw the error to propagate it to the caller
-      });
+    const res = await fetch(url, options);
+    const json = await res.json();
+
+    if (!json || !json.results) {
+      console.error("Invalid API Response:", json);
+      throw new Error("Invalid API Response");
+    }
+
+    const formattedResults = json.results.map((movie) => ({
+      ...movie,
+      genre_ids: JSON.stringify(movie.genre_ids),
+    }));
+
+    const formattedJson = await getMovieMetadataFromObject(json);
+    // console.log(formattedJson);
+    return formattedJson;
+
   } catch (error) {
     console.error("Error searching for movie(s)", error);
-    throw error; // Throw the error to propagate it to the caller
+    throw error;
   }
 }
 // searchForMovie("harry potter")
@@ -93,8 +89,8 @@ function getWatchProviderHandler() {
 async function getMovieMetadataFromObject(userInput) {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("Logging type of userInput");
-      console.log(typeof userInput);
+      // console.log("Logging type of userInput");
+      // console.log(typeof userInput);
       // console.log(userInput);
       // const movie_obj = await searchForMovie(userInput);
 
@@ -346,7 +342,7 @@ async function viewMovieMetadata() {
   // y = await getGenreRecommendations(10752) // War genre tag
   // z = await getTrendingMovies()
 }
-viewMovieMetadata();
+// viewMovieMetadata();
 
 module.exports = {
   searchForMovie,

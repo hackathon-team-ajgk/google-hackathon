@@ -138,3 +138,13 @@ Content-Type: application/json
     "movieTitle": "STAR WARS: ULTIMATE UNIVERSE TACO STAND",
     "userRating": 3
 }
+
+###
+# Testing getRecommendations-genre
+GET http://localhost:3000/getRecommendations-genre
+Content-Type: application/json
+
+{
+    "username": "Sarah",
+    "genres": "romance"
+}

@@ -7,20 +7,40 @@ const model = genAI.getGenerativeModel({model: "gemini-pro"})
 
 async function giveMovieSuggestionsBasedOnGenre(userText) {
     try {
-        const message = "Give me a list of ten movies in array format based on this genre without the year:  "
-    
-        //perform i/o validation 
+        console.log("Searching for " + userText + " movies...")
+        const message = 'Can you give 10 movie suggestions based on the given genre. Give me the movie suggestions in the following format: [movie1|movie2|movie3|etc]: '
+        
         const result = await model.generateContent(message+userText)
         const response = await result.response;
         const text = response.text()
-        console.log(text)
-    
-        return text
+        // console.log(text)
+        // Formatting AI recommendations
+        const regex = /\d+\./ //   \d+: Matches one or more digits and \. Matches a period
+        finalText = text.replace('[', '').replace(']', '').replace(regex, '').split('|')
+        // finalText.forEach(movie => console.log(movie)) // For testing only
+
+        // Checking for unwanted formatting or values
+        const nonEmptyMovies = outputFormatting(finalText)
+        console.log(nonEmptyMovies)
+
+        // Recursive call if array is empty
+        if (nonEmptyMovies.length === 1 && nonEmptyMovies[0] === '') {
+            console.log("Empty array detected. Generating new movie suggestions...")
+            return giveMovieSuggestionsBasedOnGenre(userText)
+        }
+
+        // console.log(nonEmptyMovies) // For testing only
+        return nonEmptyMovies
     } catch (error) {
         console.log("Error giving movie suggestions based on the genre: " + error)
     }
 }
 
+/* async function test() {
+    const x = await giveMovieSuggestionsBasedOnGenre("Romance")
+    console.log(x)
+}
+test() */
 //Tallies the most popular genres in the users movie list, and then returns movies that are related to those genres 
 async function tallyGenreInMovieList() {
     const fs = require('fs').promises; // Use fs.promises for promise-based file operations
@@ -143,7 +163,7 @@ async function callWithTimeout() {
         return null; // Or handle the error as needed
     }
 }
-callWithTimeout()
+// callWithTimeout()
 
 // Helper function
 function outputFormatting(finalText) {
@@ -180,6 +200,7 @@ function outputFormatting(finalText) {
         // Add non-empty movie to the new array
         nonEmptyMovies.push(movie);
     });
+    // console.log(nonEmptyMovies) // For testing only
     // Checking if entire list is empty
     if (nonEmptyMovies.length === 0) {
         return ['']; // Return an array with a single empty string
@@ -188,8 +209,13 @@ function outputFormatting(finalText) {
     return nonEmptyMovies; // Return the array containing non-empty movie names
 }
 
-
-
+module.exports = {
+    giveMovieSuggestionsBasedOnGenre,
+    tallyGenreInMovieList,
+    giveMovieSuggestionsBasedOnMovieList,
+    callWithTimeout,
+    outputFormatting
+  };
 /*
 TODO:
 - Output validation from AI response. Specifically, when there is an error with the dictionary. To test this,
