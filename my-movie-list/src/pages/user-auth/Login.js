@@ -16,7 +16,6 @@ function Login() {
         "http://localhost:3000/login",
         credentials
       );
-      console.log("Login Successful", response.data);
       // Handle successful login, such as storing auth tokens, redirecting, etc.
       handleLogin(username, response.data);
       nav("/");

@@ -1,5 +1,6 @@
 #hero-section {
   height: 500px;
+  margin-bottom: 20px;
   position: relative;
   background: none;
   position: relative;
@@ -106,6 +107,13 @@
   box-shadow: 6px 6px 20px 6px #0b0b0b;
 }
 
+.movie-label {
+  font-size: 24px;
+  text-shadow: 4px 4px 10px black;
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
 #popular-movies-section {
   height: 325px;
   overflow-x: auto;
@@ -150,7 +158,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 75%;
+  max-width: 60%;
   gap: 1rem;
 }
 
@@ -285,6 +293,7 @@
 
 #cta-div {
   width: 60%;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -393,6 +402,9 @@
   #movie-view-image {
     width: 200px;
   }
+  #ai-suggestions {
+    min-height: 680px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -409,13 +421,16 @@
     min-height: 800px;
   }
   #ai-suggestions {
-    min-height: 650px;
+    min-height: 750px;
   }
   #cta {
-    min-height: 800px;
+    min-height: 900px;
   }
   #movie-view-page {
     width: 350px;
+  }
+  #trending-movies-label {
+    margin-left: 10px;
   }
 }
 
@@ -425,5 +440,8 @@
   }
   .section-container {
     width: 100%;
+  }
+  #ai-suggestions {
+    min-height: 700px;
   }
 }

@@ -42,6 +42,9 @@ function MovieView({ movieInfo, toggleOverlay }) {
               ) : (
                 <input type="number" max="10" id="movie-rating-input" />
               )}
+              <p id="movie-status" className="movie-text">
+                {movieInfo.status}
+              </p>
             </p>
           </div>
         </div>
