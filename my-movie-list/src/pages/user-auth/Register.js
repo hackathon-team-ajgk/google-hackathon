@@ -38,8 +38,8 @@ function Register() {
       username: username,
       password: password,
       movieData: {
-        watchedMovies: {},
-        watchLaterList: {},
+        watchedMovies: [],
+        watchLaterList: [],
       },
       bio: "",
     };

@@ -3,7 +3,7 @@ function HeroMovies({ movies }) {
     <div className="hero-images">
       <div id="dune" className="listed-movie-card">
         <img
-          className="movie-image"
+          className="hero-image"
           src={movies[0].coverImage}
           alt="movie cover"
         />
@@ -11,7 +11,7 @@ function HeroMovies({ movies }) {
       </div>
       <div id="kfp" className="listed-movie-card">
         <img
-          className="movie-image"
+          className="hero-image"
           src={movies[1].coverImage}
           alt="movie cover"
         />
@@ -19,7 +19,7 @@ function HeroMovies({ movies }) {
       </div>
       <div id="immaculate" className="listed-movie-card">
         <img
-          className="movie-image"
+          className="hero-image"
           src={movies[2].coverImage}
           alt="movie cover"
         />

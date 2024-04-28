@@ -104,6 +104,30 @@ async function connectToDatabase() {
       }
     });
 
+    app.get("/getUserMovieData", authenticateToken, async (req, res) => {
+      try {
+        // Find the user directly using the username from the token
+        const user = await usersCollection.findOne({
+          username: req.user.username,
+        });
+        // Check if the user was found
+        if (user) {
+          // Extract the movieData field from the found user
+          const movieData = user.movieData;
+
+          // Send the movieData as a response
+          res.json(movieData);
+        } else {
+          // If no user is found, send an appropriate response
+          res.status(404).send("User not found");
+        }
+      } catch (error) {
+        // Handle errors that might occur during the database operation
+        console.error("Error retrieving user data:", error);
+        res.status(500).send("An error occurred while fetching user data.");
+      }
+    });
+
     app.get("/getMoviesFromSearch", async (req, res) => {
       try {
         const { movie } = req.query;
