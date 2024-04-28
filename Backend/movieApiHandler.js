@@ -392,6 +392,25 @@ module.exports = {
   getPopularMovieHandler,
 };
 
+async function getUpcomingMovies(){
+  const options = {
+    method: 'GET',
+    headers: {
+      accept:'application/json',
+      Authorization: `Bearer ${API_READ_ACCESS_TOKEN}`, },
+  };
+  const result = await fetch('https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1&region=US', options) 
+  .then((res) => res.json())
+  .catch((err) => console.error("error:" + err));
+  // make sure to filter the list to movies after todays date. 
+  const formattedResult = await getMovieMetadataFromObject(result)
+
+  console.log(formattedResult)
+  return formattedResult
+}
+
+
+getUpcomingMovies()
 /* 
 TO DO:
 - Only english movies?
