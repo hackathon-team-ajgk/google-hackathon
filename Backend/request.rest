@@ -4,7 +4,7 @@ GET http://localhost:3000/allUsers
 ###
 # Get user thast is signed in from DB 
 GET http://localhost:3000/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MDk4MjA0fQ.b7G_Hj8cWJc2S8QlzGutLqBJ0_EC0K5BigXNJkqbIJw
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MjU2MTkwfQ.eeCUBGkMEsZjZxrgJYb4J-R7U0gClZf9jy2FTRoSn0U
 
 ###
 # Testing registration
@@ -137,4 +137,23 @@ Content-Type: application/json
     "username": "Sarah",
     "movieTitle": "STAR WARS: ULTIMATE UNIVERSE TACO STAND",
     "userRating": 3
+}
+
+###
+# Testing getRecommendations-genre
+GET http://localhost:3000/getRecommendations-genre
+Content-Type: application/json
+
+{
+    "genres": "romance"
+}
+
+###
+# Testing getRecommendations-list
+GET http://localhost:3000/getRecommendations-list
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MjU2MjMwfQ.BeY7GdXNOfHpoyI7_4JXGt5fSOntAt46RRBtwrO1_K4
+Content-Type: application/json
+
+{
+    "username": "Sarah"
 }

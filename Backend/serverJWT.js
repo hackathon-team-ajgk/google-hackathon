@@ -1,6 +1,6 @@
 // THIS IS THE MOST UP TO DATE AND FUNCTIONAL VERSION
 // Run server and test with "requests.rest" file from top to bottom. Final request should return "Success" if working correctly.
-
+const geminiAPI = require("./geminiApiHandler");
 const movieAPI = require("./movieApiHandler");
 const express = require("express");
 const app = express();
@@ -405,6 +405,39 @@ async function connectToDatabase() {
       }
     });
 
+    app.get("/getRecommendations-genre", async (req, res) => {
+      try {
+        const userGenre = req.body.genres;
+        const movieSuggestions =
+          await geminiAPI.giveMovieSuggestionsBasedOnGenre(userGenre);
+        const movieMetadata = [];
+        for (const movie of movieSuggestions) {
+          const formattedMovie = await movieAPI.searchForMovieFromGemini(movie);
+          movieMetadata.push(formattedMovie);
+        }
+        res.send(movieMetadata);
+      } catch (error) {
+        console.error("Error getting recommendations:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+    app.get("/getRecommendations-list", authenticateToken, async (req, res) => {
+      // Same as above but from geminiAPI.giveMovieSuggestionsBasedOnMovieList instead
+      try {
+        const userGenre = req.body.genres;
+        const movieSuggestions = await geminiAPI.callWithTimeout();
+        const movieMetadata = [];
+        for (const movie of movieSuggestions) {
+          const formattedMovie = await movieAPI.searchForMovieFromGemini(movie);
+          movieMetadata.push(formattedMovie);
+        }
+        res.send(movieMetadata);
+      } catch (error) {
+        console.error("Error getting recommendations:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
     // Add other routes here...
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
