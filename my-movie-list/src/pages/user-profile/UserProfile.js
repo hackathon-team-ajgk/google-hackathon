@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import "./UserProfile.css";
 import axios from "axios";
+import { useAuth } from "../../contexts/AuthContext";
 
 function UserProfile() {
+  const { getToken, getUsername } = useAuth();
+  const username = getUsername();
   const [bio, setBio] = useState("");
   const [isEditingBio, setIsEditingBio] = useState(false);
   const maxLength = 100;
@@ -14,35 +17,9 @@ function UserProfile() {
     }
   };
 
-  // Function to get the user's username from localStorage
-  const getUsername = () => {
-    const userString = localStorage.getItem("user");
-    if (userString) {
-      const userObject = JSON.parse(userString);
-      const username = userObject.name;
-      return username;
-    }
-
-    return null;
-  };
-  const username = getUsername();
-
-  // Function to get the user's token from localStorage
-  const getToken = () => {
-    const userString = localStorage.getItem("user");
-    if (userString) {
-      const userObject = JSON.parse(userString);
-      const token = userObject.userToken;
-      return token;
-    }
-
-    return null;
-  };
-
   const handleBioChange = async (userDetails) => {
     try {
       const token = getToken();
-      console.log(token);
       const response = await axios.put(
         "http://localhost:3000/changeBio",
         userDetails,
@@ -72,7 +49,7 @@ function UserProfile() {
     const getUserInfo = async () => {
       try {
         const token = getToken();
-        console.log(token);
+        const username = getUsername();
         const response = await axios.get("http://localhost:3000/user", {
           headers: {
             authorization: token,
@@ -81,7 +58,6 @@ function UserProfile() {
             username: username,
           },
         });
-        console.log(response.data);
         const userBio = response.data[0].bio;
         setBio(userBio);
       } catch (error) {
@@ -99,7 +75,7 @@ function UserProfile() {
       }
     };
     getUserInfo();
-  }, [username]);
+  }, [getToken, getUsername]);
 
   const handleSubmit = (event) => {
     event.preventDefault();

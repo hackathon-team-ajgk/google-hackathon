@@ -25,6 +25,7 @@ function Movies() {
 
         const movies = response.data.movie;
         setTrendingMovies(movies);
+        console.log(movies);
       } catch (error) {
         // Handle error
         if (error.response) {
