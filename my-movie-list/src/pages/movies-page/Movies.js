@@ -79,7 +79,6 @@ function Movies() {
           params: { movie: searchedMovie },
         }
       );
-      console.log(response.data);
       setMoviesFromSearch(response.data.movie);
     } catch (error) {
       // Handle error
@@ -123,7 +122,7 @@ function Movies() {
             </button>
           </form>
           <span className="dropup" onClick={closeGrid}>
-            {isOpen && <ArrowDropUpIcon />}
+            {isOpen && <ArrowDropUpIcon fontSize="large" />}
           </span>
         </div>
         {moviesFromSearch.length > 0 && isOpen && (
