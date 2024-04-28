@@ -119,6 +119,7 @@
   overflow-x: auto;
   padding: 0 10px;
   gap: 10px;
+  overflow-y: hidden;
 }
 
 .movie-card {
@@ -130,6 +131,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  padding: 15px 0;
 }
 
 .movie-image {
@@ -140,12 +142,18 @@
 .movie-card:hover {
   box-shadow: 6px 6px 20px 6px #0b0b0b;
   background-color: #3c3c3c;
+  transform: scale(1.1);
 }
 
 .movie-title {
   text-align: center;
-  max-height: 22px;
-  font-weight: bold;
+  padding-left: 10px;
+  padding-right: 10px;
+  min-height: 22px;
+  max-height: fit-content;
+  font-weight: 900;
+  font-size: large;
+  font-family: "Gruppo";
 }
 
 #ai-suggestions {
@@ -206,6 +214,7 @@
 
 #movie-view-page {
   display: flex;
+  position: relative;
   gap: 2rem;
   width: 850px;
   border-radius: 10px;
@@ -222,7 +231,8 @@
   cursor: pointer;
   transition: filter 0.3s ease-in-out;
   height: fit-content;
-  margin-left: auto;
+  position: absolute;
+  right: 20px;
 }
 
 #close-button-div:hover {
@@ -237,9 +247,10 @@
 
 #movie-view-title {
   text-align: center;
-  font-size: 30px;
+  font-size: 35px;
   font-weight: bold;
   margin-bottom: 20px;
+  font-family: "Cuprum";
 }
 
 #movie-view-title-overview {

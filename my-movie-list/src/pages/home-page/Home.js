@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import axios from "axios";
-import MovieCard from "../../components/MovieCard";
 import HeroMovies from "../../components/HeroMovies";
+import MovieSlider from "../../components/MovieSlider";
 
 function Home() {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -31,7 +31,7 @@ function Home() {
       } catch (error) {
         // Handle error
         if (error.response) {
-          // The request was made and the server responded with a status code
+          // The request was made and the server responded with a status code not within 2xx
           console.error("Response Error:", error.response.data);
           console.error("Status Code:", error.response.status);
         } else if (error.request) {
@@ -78,14 +78,7 @@ function Home() {
           {heroMovies.length === 3 && <HeroMovies movies={heroMovies} />}
         </div>
       </section>
-      <p id="trending-movies-label" className="movie-label">
-        Trending
-      </p>
-      <section id="popular-movies-section" className="section-container">
-        {trendingMovies.map((val, key) => (
-          <MovieCard key={key} movie={val} />
-        ))}
-      </section>
+      <MovieSlider genre="Trending" movies={trendingMovies} />
       <section id="ai-suggestions" className="section-container">
         <div id="ai-sugg-text-container">
           <strong id="ai-sugg-main-text" className="home-text">

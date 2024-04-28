@@ -2,7 +2,7 @@ import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 
 function MovieView({ movieInfo, toggleOverlay }) {
   return (
-    <div className="overlay" onClick={toggleOverlay}>
+    <div className="overlay">
       <div id="movie-view-page">
         <img
           src={movieInfo.coverImage}
