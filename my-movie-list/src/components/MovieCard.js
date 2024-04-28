@@ -13,7 +13,11 @@ function MovieCard({ movie }) {
     <>
       <div className="movie-card" onClick={toggleOverlay}>
         <img className="movie-image" src={movie.coverImage} alt="movie cover" />
-        <p className="movie-title">{movie.title}</p>
+        <p className="movie-title">
+          {movie.title.length > 40
+            ? movie.title.slice(0, 40) + "..."
+            : movie.title}
+        </p>
       </div>
       {overlayOn && (
         <MovieView movieInfo={movie} toggleOverlay={toggleOverlay} />

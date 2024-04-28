@@ -104,9 +104,39 @@ async function connectToDatabase() {
       }
     });
 
+    app.get("/getMoviesFromSearch", async (req, res) => {
+      try {
+        const { movie } = req.query;
+        console.log(movie); // Undefined
+        movieAPI
+          .searchForMovie(movie)
+          .then((data) => {
+            console.log(data);
+            res.json(data);
+          })
+          .catch((error) => {
+            res.status(500).send("Error fetching movies.", error);
+          });
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
     app.get("/getTrendingMovies", (req, res) => {
       movieAPI
         .getTrendingMovies()
+        .then((data) => {
+          res.json(data);
+        })
+        .catch((error) => {
+          res.status(500).send("Error fetching popular movies.", error);
+        });
+    });
+
+    app.get("/getPopularMovies", (req, res) => {
+      movieAPI
+        .getPopularMovieHandler()
         .then((data) => {
           res.json(data);
         })

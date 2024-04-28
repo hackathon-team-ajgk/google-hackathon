@@ -6,7 +6,7 @@ const fetch = require("node-fetch");
 
 // Functions requiring API endpoints:
 // Working movie search
-function searchForMovie(search_query) {
+async function searchForMovie(search_query) {
   try {
     const formatted_query = search_query.replace(" ", "%20");
     const url = `https://api.themoviedb.org/3/search/movie?query=${formatted_query}&include_adult=false&language=en-US&page=1`;
@@ -32,7 +32,7 @@ function searchForMovie(search_query) {
           genre_ids: JSON.stringify(movie.genre_ids), // Stringify the genre_ids array
         }));
         // console.log(json)
-        return json; // Return the JSON data from the resolved Promise
+        return getMovieMetadataFromObject(json); // Return the JSON data from the resolved Promise
       })
       .catch((err) => {
         console.error("Error fetching movie data:", err);
@@ -46,7 +46,7 @@ function searchForMovie(search_query) {
 // searchForMovie("harry potter")
 
 // Working get list of popular movies
-function getPopularMovieHandler() {
+async function getPopularMovieHandler() {
   try {
     const url =
       "https://api.themoviedb.org/3/movie/popular?language=en-US&page=2";

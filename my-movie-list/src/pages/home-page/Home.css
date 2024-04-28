@@ -130,6 +130,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  padding: 15px 0;
 }
 
 .movie-image {
@@ -144,7 +145,10 @@
 
 .movie-title {
   text-align: center;
-  max-height: 22px;
+  padding-left: 10px;
+  padding-right: 10px;
+  min-height: 22px;
+  max-height: fit-content;
   font-weight: bold;
 }
 
@@ -206,6 +210,7 @@
 
 #movie-view-page {
   display: flex;
+  position: relative;
   gap: 2rem;
   width: 850px;
   border-radius: 10px;
@@ -222,7 +227,8 @@
   cursor: pointer;
   transition: filter 0.3s ease-in-out;
   height: fit-content;
-  margin-left: auto;
+  position: absolute;
+  right: 20px;
 }
 
 #close-button-div:hover {

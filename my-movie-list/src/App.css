@@ -133,7 +133,7 @@ main {
 
 .button:hover {
   background-color: #4c4c4c;
-  box-shadow: 6px 6px 20px #1b1b1b;
+  box-shadow: 6px 6px 20px #0d0d0d;
 }
 
 footer {
