@@ -226,6 +226,34 @@ async function connectToDatabase() {
       }
     });
 
+    app.delete("/delete-account", authenticateToken, async (req, res) => {
+      const user = req.user.username;
+      try {
+          // Find the user in the database
+          const userInDb = await usersCollection.findOne({
+              username: user
+          });
+  
+          // If user does not exist, return error
+          if (!userInDb) {
+              return res.status(400).send("Cannot find user");
+          }
+  
+          // Delete the user from the database
+          await usersCollection.deleteOne({
+              username: user
+          });
+  
+          // Return success message
+          return res.status(200).send("User deleted successfully");
+      } catch (error) {
+          // Handle any errors
+          console.error("Error deleting user:", error);
+          return res.status(500).send("Internal Server Error");
+      }
+  });
+  
+
     /**
      * Route to update the state of a movie.
      * @name PUT/edit-movie-state
