@@ -1,6 +1,6 @@
 import "./About.css";
 
-function Help() {
+function About() {
   return (
     <>
       <h1>About</h1>
@@ -8,4 +8,4 @@ function Help() {
   );
 }
 
-export default Help;
+export default About;

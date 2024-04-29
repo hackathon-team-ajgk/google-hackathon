@@ -117,6 +117,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
         {
           username: username,
           movieName: movieInfo.title,
+          status: movieStatus,
         },
         {
           headers: {
@@ -124,6 +125,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
           },
         }
       );
+      console.log(response.data);
       setMovieStatus("Not in List");
       setRating(0);
     } catch (error) {

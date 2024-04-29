@@ -3,9 +3,11 @@ import "./UserProfile.css";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import MovieSlider from "../../components/MovieSlider";
+import { useNavigate } from "react-router-dom";
 
 function UserProfile() {
-  const { getToken, getUsername } = useAuth();
+  const navigate = useNavigate();
+  const { getToken, getUsername, handleLogout } = useAuth();
   const username = getUsername();
   const [userData, setUserData] = useState({});
   const [userMovies, setUserMovies] = useState([]);
@@ -78,6 +80,35 @@ function UserProfile() {
     setIsEditingBio(false);
   };
 
+  const deleteAccount = async () => {
+    try {
+      const token = getToken();
+      const response = await axios.delete(
+        "http://localhost:3000/delete-account",
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
+      console.log(response.data);
+      handleLogout();
+      navigate("/login");
+    } catch (error) {
+      if (error.response) {
+        // The server responded with a status code that falls out of the range of 2xx
+        console.error("Delete Error:", error.response.data);
+        console.error("Status Code:", error.response.status);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("Request Error:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error:", error.message);
+      }
+    }
+  };
+
   return (
     <>
       <section id="profile-section" className="section-container">
@@ -134,6 +165,15 @@ function UserProfile() {
               Movies Watched:{" "}
               {userMovies.length > 0 && userData.movieData.watchedMovies.length}
             </p>
+            <button
+              id="delete-account-btn"
+              className="button"
+              onClick={() => {
+                deleteAccount();
+              }}
+            >
+              Delete Account
+            </button>
           </div>
         </div>
         <div id="account-stats" className="column-section">

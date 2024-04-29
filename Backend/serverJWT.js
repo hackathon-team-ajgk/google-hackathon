@@ -231,30 +231,29 @@ async function connectToDatabase() {
     app.delete("/delete-account", authenticateToken, async (req, res) => {
       const user = req.user.username;
       try {
-          // Find the user in the database
-          const userInDb = await usersCollection.findOne({
-              username: user
-          });
-  
-          // If user does not exist, return error
-          if (!userInDb) {
-              return res.status(400).send("Cannot find user");
-          }
-  
-          // Delete the user from the database
-          await usersCollection.deleteOne({
-              username: user
-          });
-  
-          // Return success message
-          return res.status(200).send("User deleted successfully");
+        // Find the user in the database
+        const userInDb = await usersCollection.findOne({
+          username: user,
+        });
+
+        // If user does not exist, return error
+        if (!userInDb) {
+          return res.status(400).send("Cannot find user");
+        }
+
+        // Delete the user from the database
+        await usersCollection.deleteOne({
+          username: user,
+        });
+
+        // Return success message
+        return res.status(200).send("User deleted successfully");
       } catch (error) {
-          // Handle any errors
-          console.error("Error deleting user:", error);
-          return res.status(500).send("Internal Server Error");
+        // Handle any errors
+        console.error("Error deleting user:", error);
+        return res.status(500).send("Internal Server Error");
       }
-  });
-  
+    });
 
     /**
      * Route to update the state of a movie.
@@ -336,7 +335,7 @@ async function connectToDatabase() {
      */
     app.put("/remove-movie", authenticateToken, async (req, res) => {
       try {
-        const { username, movieName } = req.body;
+        const { username, movieName, status } = req.body;
         if (!username || !movieName) {
           return res.status(400).send("Missing required fields");
         }
@@ -349,28 +348,33 @@ async function connectToDatabase() {
         let removedMovie = null;
 
         // Find and remove the movie from the watchedMovies list
-        if (user.movieData.watchedMovies) {
-          removedMovie = user.movieData.watchedMovies.find(
-            (movie) => movie.title === movieName
-          );
-          if (removedMovie) {
-            user.movieData.watchedMovies = user.movieData.watchedMovies.filter(
-              (movie) => movie.title !== movieName
+        if (status === "Watched") {
+          if (user.movieData.watchedMovies) {
+            removedMovie = user.movieData.watchedMovies.find(
+              (movie) => movie.title === movieName
             );
+            if (removedMovie) {
+              user.movieData.watchedMovies =
+                user.movieData.watchedMovies.filter(
+                  (movie) => movie.title !== movieName
+                );
+            }
           }
-        }
-
-        // Find and remove the movie from the watchLaterList
-        if (user.movieData.watchLaterList) {
-          removedMovie = user.movieData.watchLaterList.find(
-            (movie) => movie.title === movieName
-          );
-          if (removedMovie) {
-            user.movieData.watchLaterList =
-              user.movieData.watchLaterList.filter(
-                (movie) => movie.title !== movieName
-              );
+        } else if (status === "Watching Soon") {
+          // Find and remove the movie from the watchLaterList
+          if (user.movieData.watchLaterList) {
+            removedMovie = user.movieData.watchLaterList.find(
+              (movie) => movie.title === movieName
+            );
+            if (removedMovie) {
+              user.movieData.watchLaterList =
+                user.movieData.watchLaterList.filter(
+                  (movie) => movie.title !== movieName
+                );
+            }
           }
+        } else {
+          res.status(404).send(`Movie with name ${movieName} not found`);
         }
 
         // Update the user document in the database
