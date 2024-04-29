@@ -439,6 +439,7 @@ async function connectToDatabase() {
           await geminiAPI.giveMovieSuggestionsBasedOnGenre(userGenre);
         const movieMetadata = [];
         for (const movie of movieSuggestions) {
+          if (movie === "") continue;
           const formattedMovie = await movieAPI.searchForMovieFromGemini(movie);
           movieMetadata.push(formattedMovie);
         }
