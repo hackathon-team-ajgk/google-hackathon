@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import "./UserProfile.css";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
+import MovieSlider from "../../components/MovieSlider";
 
 function UserProfile() {
   const { getToken, getUsername } = useAuth();
   const username = getUsername();
+  const [userData, setUserData] = useState({});
+  const [userMovies, setUserMovies] = useState([]);
   const [bio, setBio] = useState("");
   const [isEditingBio, setIsEditingBio] = useState(false);
   const maxLength = 100;
@@ -46,36 +49,24 @@ function UserProfile() {
   };
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      try {
-        const token = getToken();
-        const username = getUsername();
-        const response = await axios.get("http://localhost:3000/user", {
-          headers: {
-            authorization: token,
-          },
-          params: {
-            username: username,
-          },
-        });
-        const userBio = response.data[0].bio;
-        setBio(userBio);
-      } catch (error) {
-        if (error.response) {
-          // The server responded with a status code that falls out of the range of 2xx
-          console.error("Get Error:", error.response.data);
-          console.error("Status Code:", error.response.status);
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.error("Request Error:", error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error("Error:", error.message);
-        }
+    const getUserData = () => {
+      const userString = localStorage.getItem("userData");
+      if (userString) {
+        const userObject = JSON.parse(userString);
+        console.log(userObject);
+        setUserData(userObject);
+        setBio(userObject.bio);
+        setUserMovies(
+          userObject.movieData.watchedMovies.concat(
+            userObject.movieData.watchLaterList
+          )
+        );
       }
+
+      return null;
     };
-    getUserInfo();
-  }, [getToken, getUsername]);
+    getUserData();
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -139,9 +130,17 @@ function UserProfile() {
                 </div>
               </form>
             )}
+            <p className="movies-stat">
+              Movies Watched:{" "}
+              {userMovies.length > 0 && userData.movieData.watchedMovies.length}
+            </p>
           </div>
         </div>
-        <div id="account-stats" className="column-section"></div>
+        <div id="account-stats" className="column-section">
+          {userMovies.length > 0 && (
+            <MovieSlider genre="Movies In List" movies={userMovies} />
+          )}
+        </div>
       </section>
     </>
   );

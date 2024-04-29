@@ -182,7 +182,7 @@ async function getMovieMetadataFromObject(userInput) {
           averageRating: movie.vote_average,
           overview: movie.overview,
           status: "NULL",
-          userRating: "NULL",
+          userRating: 0,
         }));
 
         const newData = {

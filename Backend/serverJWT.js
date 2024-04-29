@@ -431,7 +431,8 @@ async function connectToDatabase() {
 
     app.get("/getRecommendations-genre", async (req, res) => {
       try {
-        const userGenre = req.body.genres;
+        const userGenre = req.query.genre;
+        console.log(userGenre);
         const movieSuggestions =
           await geminiAPI.giveMovieSuggestionsBasedOnGenre(userGenre);
         const movieMetadata = [];
@@ -449,7 +450,6 @@ async function connectToDatabase() {
     app.get("/getRecommendations-list", authenticateToken, async (req, res) => {
       // Same as above but from geminiAPI.giveMovieSuggestionsBasedOnMovieList instead
       try {
-        const userGenre = req.body.genres;
         const movieSuggestions = await geminiAPI.callWithTimeout();
         const movieMetadata = [];
         for (const movie of movieSuggestions) {
