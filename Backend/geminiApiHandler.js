@@ -169,8 +169,12 @@ async function callWithTimeout() {
 // Helper function
 function outputFormatting(finalText) {
     const nonEmptyMovies = []; // Array to store non-empty movie names
+    const startsWithNewline = (str) => /^\n/.test(str);  // Function to check if a string starts with a newline character (\n)
 
     finalText.forEach((movie) => {
+        // Remove leading and ending white spaces
+        movie = movie.trim();
+
         // Max length
         if (movie.length >= 55) {
             return;
@@ -198,6 +202,11 @@ function outputFormatting(finalText) {
             return;
         }
 
+        // Checking if name starts with a newline character (\n)
+        if (startsWithNewline(movie)) {
+            return;
+        }
+
         // Add non-empty movie to the new array
         nonEmptyMovies.push(movie);
     });
@@ -209,6 +218,7 @@ function outputFormatting(finalText) {
 
     return nonEmptyMovies; // Return the array containing non-empty movie names
 }
+
 
 module.exports = {
     giveMovieSuggestionsBasedOnGenre,
