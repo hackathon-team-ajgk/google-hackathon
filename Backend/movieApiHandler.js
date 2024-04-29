@@ -19,6 +19,12 @@ async function searchForMovie(search_query) {
 
     const res = await fetch(url, options);
     const json = await res.json();
+    // console.log(json) // For testing only
+    // Handling invalid movie names
+    if (json.total_results === 0) {
+      console.log("Could not find movie in database")
+      return
+    }
 
     if (!json || !json.results) {
       console.error("Invalid API Response:", json);
@@ -29,16 +35,16 @@ async function searchForMovie(search_query) {
       ...movie,
       genre_ids: JSON.stringify(movie.genre_ids),
     }));
-
+    
     const formattedJson = await getMovieMetadataFromObject(json);
-    console.log(formattedJson);
+    // console.log(formattedJson);
     return formattedJson;
   } catch (error) {
     console.error("Error searching for movie(s)", error);
     throw error;
   }
 }
-// searchForMovie("star wars")
+// searchForMovie("harry potter")
 
 // Working movie search
 async function searchForMovieFromGemini(search_query) {
