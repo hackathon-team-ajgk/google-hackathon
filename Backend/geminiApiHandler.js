@@ -102,7 +102,7 @@ async function giveMovieSuggestionsBasedOnMovieList(movieData) {
         const dictionary = await tallyGenreInMovieList(movieData)
         const formattedDictionary = JSON.stringify(dictionary)
 
-        // Checking if dictionary is empty (problems loading dict)
+        // Checking if dictionary is empty (problems loading dict). THIS COULD BE THE THING GIVING PROBLEMS RENDERING TWICE IN FRONTEND
         if (!formattedDictionary.trim()) {
             console.log("Formatted dictionary is empty. Exiting...")
             return giveMovieSuggestionsBasedOnMovieList();
@@ -136,7 +136,7 @@ async function giveMovieSuggestionsBasedOnMovieList(movieData) {
 // giveMovieSuggestionsBasedOnMovieList()
 
 // giveMovieSuggestionsBasedOnMovieList function but with a timer
-async function callWithTimeout() {
+async function callWithTimeout(movieList) {
     const timeoutMs = 3500; // Max # ms allowed. Works with 3s unless list needs to be regenerated. 3.5s otherwise 
 
     const movieSuggestionsPromise = giveMovieSuggestionsBasedOnMovieList(movieList);
