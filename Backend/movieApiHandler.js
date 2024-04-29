@@ -62,6 +62,12 @@ async function searchForMovieFromGemini(search_query) {
     const res = await fetch(url, options);
     const json = await res.json();
 
+    // Handling invalid movie names
+    if (json.total_results === 0) {
+      console.log("Could not find movie in database")
+      return
+    }
+
     if (!json || !json.results) {
       console.error("Invalid API Response:", json);
       throw new Error("Invalid API Response");
