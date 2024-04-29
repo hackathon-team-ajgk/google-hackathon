@@ -216,7 +216,7 @@ async function connectToDatabase() {
           const username = req.body.username;
           const user = { username: username };
           const accessToken = jwt.sign(user, process.env.JWT_SECRET);
-          // console.log(accessToken);
+          console.log("Successfully logged in");
           res.send(accessToken);
         } else {
           res.status(401).send("Incorrect password");
@@ -251,8 +251,7 @@ async function connectToDatabase() {
           console.error("Error deleting user:", error);
           return res.status(500).send("Internal Server Error");
       }
-  });
-  
+    });
 
     /**
      * Route to update the state of a movie.
@@ -475,10 +474,17 @@ async function connectToDatabase() {
     });
 
     app.get("/getRecommendations-list", authenticateToken, async (req, res) => {
-      // Same as above but from geminiAPI.giveMovieSuggestionsBasedOnMovieList instead
       try {
-        const userGenre = req.body.genres;
-        const movieSuggestions = await geminiAPI.callWithTimeout();
+        // Find the user in the database
+        const userInDb = await usersCollection.findOne({
+          username: req.user.username
+        });
+        // Check if the user exists
+        if (!userInDb) {
+          return res.status(404).send("User not found");
+        }
+        const movieList = userInDb.movieData;
+        const movieSuggestions = await geminiAPI.callWithTimeout(movieList);
         const movieMetadata = [];
         for (const movie of movieSuggestions) {
           const formattedMovie = await movieAPI.searchForMovieFromGemini(movie);

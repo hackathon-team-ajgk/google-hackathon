@@ -42,14 +42,8 @@ async function giveMovieSuggestionsBasedOnGenre(userText) {
 }
 test() */
 //Tallies the most popular genres in the users movie list, and then returns movies that are related to those genres 
-async function tallyGenreInMovieList() {
-    const fs = require('fs').promises; // Use fs.promises for promise-based file operations
-
+async function tallyGenreInMovieList(movieData) {
     try {
-        // HAVE TO CHANGE THIS SO IT IS ON A PER USER BASIS
-        const data = await fs.readFile(path.join(__dirname, './object.json'), 'utf-8');
-        const jsonData = JSON.parse(data);
-
         const genreTallyTotal = {
             "Action": 0,
             "Adventure": 0,
@@ -72,41 +66,40 @@ async function tallyGenreInMovieList() {
             "Western": 0
         };
 
-        const watchedMoviesList = jsonData.movieData.watchedMovies;
-        const watchLaterList = jsonData.movieData.watchLaterList;
-        // console.log(watchedMoviesList)
-        // console.log(watchLaterList)
+        const watchedMoviesList = movieData.watchedMovies || [];
+        const watchLaterList = movieData.watchLaterList || [];
 
         watchedMoviesList.forEach(movie => {
             movie.genreNames.split(',').forEach(item => {
-                if (item in genreTallyTotal) {
-                    genreTallyTotal[item] += 1;
+                const trimmedItem = item.trim(); // Remove leading/trailing spaces
+                if (trimmedItem in genreTallyTotal) {
+                    genreTallyTotal[trimmedItem] += 1;
                 }
             });
         });
 
         watchLaterList.forEach(movie => {
             movie.genreNames.split(',').forEach(item => {
-                if (item in genreTallyTotal) {
-                    genreTallyTotal[item] += 1;
+                const trimmedItem = item.trim(); // Remove leading/trailing spaces
+                if (trimmedItem in genreTallyTotal) {
+                    genreTallyTotal[trimmedItem] += 1;
                 }
             });
         });
 
-        // console.log(genreTallyTotal);
-        return genreTallyTotal
+        return genreTallyTotal;
         
     } catch (error) {
-        console.error('Error reading user file:', error);
+        console.error('Error tallying genres:', error);
         throw error; // Re-throw the error to handle it outside this function
     }
 }
 // tallyGenreInMovieList()
 
 // Make function that takes dictionary as input to gemini
-async function giveMovieSuggestionsBasedOnMovieList() {
+async function giveMovieSuggestionsBasedOnMovieList(movieData) {
     try {
-        const dictionary = await tallyGenreInMovieList()
+        const dictionary = await tallyGenreInMovieList(movieData)
         const formattedDictionary = JSON.stringify(dictionary)
 
         // Checking if dictionary is empty (problems loading dict)
@@ -146,7 +139,7 @@ async function giveMovieSuggestionsBasedOnMovieList() {
 async function callWithTimeout() {
     const timeoutMs = 3500; // Max # ms allowed. Works with 3s unless list needs to be regenerated. 3.5s otherwise 
 
-    const movieSuggestionsPromise = giveMovieSuggestionsBasedOnMovieList();
+    const movieSuggestionsPromise = giveMovieSuggestionsBasedOnMovieList(movieList);
     const timeoutPromise = new Promise((resolve) => setTimeout(resolve, timeoutMs));
 
     try {

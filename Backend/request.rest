@@ -4,7 +4,7 @@ GET http://localhost:3000/allUsers
 ###
 # Get user thast is signed in from DB 
 GET http://localhost:3000/user
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MjU2MTkwfQ.eeCUBGkMEsZjZxrgJYb4J-R7U0gClZf9jy2FTRoSn0U
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0NDI4MjM5fQ.VZNVhrmGk4Su5uosJoRutcZP_CTqFfdXcvYFR7Z1Gug
 
 ###
 # Testing registration
@@ -151,8 +151,18 @@ Content-Type: application/json
 ###
 # Testing getRecommendations-list
 GET http://localhost:3000/getRecommendations-list
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0MjU2MjMwfQ.BeY7GdXNOfHpoyI7_4JXGt5fSOntAt46RRBtwrO1_K4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoIiwiaWF0IjoxNzE0NDI4MjM5fQ.VZNVhrmGk4Su5uosJoRutcZP_CTqFfdXcvYFR7Z1Gug
 Content-Type: application/json
+
+{
+    "username": "Sarah"
+}
+
+###
+# Testing delete-account
+DELETE http://localhost:3000/delete-account
+Authorization: Bearer
+Content-Content-Type: application/json
 
 {
     "username": "Sarah"
