@@ -1,9 +1,9 @@
-import "./Help.css";
+import "./About.css";
 
 function Help() {
   return (
     <>
-      <h1>Help</h1>
+      <h1>About</h1>
     </>
   );
 }

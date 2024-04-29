@@ -88,7 +88,11 @@ function MovieView({ movieInfo, toggleOverlay }) {
         }
       );
       console.log(response.data);
-      setMovieStatus("In List");
+      if (action === "watch") {
+        setMovieStatus("Watched");
+      } else {
+        setMovieStatus("Watching Soon");
+      }
     } catch (error) {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
@@ -120,7 +124,6 @@ function MovieView({ movieInfo, toggleOverlay }) {
           },
         }
       );
-      console.log(response.data);
       setMovieStatus("Not in List");
       setRating(0);
     } catch (error) {
@@ -193,33 +196,42 @@ function MovieView({ movieInfo, toggleOverlay }) {
           <CloseFullscreenIcon fontSize="large" />
         </div>
         <div id="edit-button-group" className="button-group">
-          <button
-            className="button"
-            onClick={() => {
-              addToList("watch");
-            }}
-          >
-            Add to Watched
-          </button>
-          <button
-            className="button"
-            onClick={() => {
-              addToList("watch-later");
-            }}
-          >
-            Add to Watching Soon
-          </button>
-          {movieStatus === "Not in List" ? (
-            <></>
+          {movieStatus !== "Watched" ? (
+            <button
+              className="button"
+              onClick={() => {
+                addToList("watch");
+              }}
+            >
+              Add to Watched
+            </button>
           ) : (
             <button
-              id="remove-button"
               className="button"
               onClick={() => {
                 removeFromList();
               }}
             >
-              Remove from List
+              Remove from Watched
+            </button>
+          )}
+          {movieStatus !== "Watching Soon" ? (
+            <button
+              className="button"
+              onClick={() => {
+                addToList("watch-later");
+              }}
+            >
+              Add to Watch Later
+            </button>
+          ) : (
+            <button
+              className="button"
+              onClick={() => {
+                removeFromList();
+              }}
+            >
+              Remove from Watch Later
             </button>
           )}
         </div>

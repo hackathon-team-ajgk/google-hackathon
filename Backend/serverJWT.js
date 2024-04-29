@@ -135,7 +135,9 @@ async function connectToDatabase() {
         movieAPI
           .searchForMovie(movie)
           .then((data) => {
-            console.log(data);
+            if (data === undefined) {
+              res.status(404).send("No movie data found for search");
+            }
             res.json(data);
           })
           .catch((error) => {

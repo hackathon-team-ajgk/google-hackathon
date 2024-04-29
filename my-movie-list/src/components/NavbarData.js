@@ -12,7 +12,7 @@ export const NavbarData = [
     path: "/your-list",
   },
   {
-    name: "Help",
-    path: "/help",
+    name: "About",
+    path: "/about",
   },
 ];

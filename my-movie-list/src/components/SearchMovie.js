@@ -16,7 +16,6 @@ function SearchMovie() {
   const handleSubmit = (event) => {
     event.preventDefault();
     getMovieBySearch();
-    setIsOpen(true);
   };
 
   const getMovieBySearch = async () => {
@@ -28,12 +27,14 @@ function SearchMovie() {
         }
       );
       setMoviesFromSearch(response.data.movie);
+      setIsOpen(true);
     } catch (error) {
       // Handle error
       if (error.response) {
         // The request was made and the server responded with a status code
         console.error("Response Error:", error.response.data);
         console.error("Status Code:", error.response.status);
+        window.alert(error.response.data);
       } else if (error.request) {
         // The request was made but no response was received
         console.error("Request Error:", error.request);
