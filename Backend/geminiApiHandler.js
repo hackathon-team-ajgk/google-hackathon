@@ -102,34 +102,15 @@ async function tallyGenreInMovieList(movieData) {
 
 // Make function that takes dictionary as input to gemini
 async function giveMovieSuggestionsBasedOnMovieList(movieData) {
-    try {
-        const dictionary = await tallyGenreInMovieList(movieData)
-        const formattedDictionary = JSON.stringify(dictionary)
+  try {
+    const dictionary = await tallyGenreInMovieList(movieData);
+    const formattedDictionary = JSON.stringify(dictionary);
 
-        // Checking if dictionary is empty (problems loading dict). THIS COULD BE THE THING GIVING PROBLEMS RENDERING TWICE IN FRONTEND
-        if (!formattedDictionary.trim()) {
-            console.log("Formatted dictionary is empty. Exiting...")
-            return giveMovieSuggestionsBasedOnMovieList();
-        }
-        
-        const message = 'Can you give 10 movie suggestions based on the two highest genres in this dictionary. Give me this informantion in the following format: [movie1|movie2|movie3|etc]' 
-        const result = await model.generateContent(message+formattedDictionary)
-        const response = await result.response;
-        const text = response.text()
-
-        // Formatting AI recommendations
-        const regex = /\d+\./ //   \d+: Matches one or more digits and \. Matches a period
-        finalText = text.replace('[', '').replace(']', '').replace(regex, '').split('|')
-        // finalText.forEach(movie => console.log(movie)) // For testing only
-
-        // Checking for unwanted formatting or values
-        const nonEmptyMovies = outputFormatting(finalText) 
-
-        // Recursive call if array is empty
-        if (nonEmptyMovies.length === 1 && nonEmptyMovies[0] === '') {
-            console.log("Empty array detected. Generating new movie suggestions...")
-            return giveMovieSuggestionsBasedOnMovieList()
-        }
+    // Checking if dictionary is empty (problems loading dict). THIS COULD BE THE THING GIVING PROBLEMS RENDERING TWICE IN FRONTEND
+    if (!formattedDictionary.trim()) {
+      console.log("Formatted dictionary is empty. Exiting...");
+      return giveMovieSuggestionsBasedOnMovieList();
+    }
 
     const message =
       "Can you give 10 movie suggestions based on the two highest genres in this dictionary. Give me this informantion in the following format: [movie1|movie2|movie3|etc]";
@@ -168,25 +149,26 @@ async function giveMovieSuggestionsBasedOnMovieList(movieData) {
 
 // giveMovieSuggestionsBasedOnMovieList function but with a timer
 async function callWithTimeout(movieList) {
+  const timeoutMs = 3500; // Max # ms allowed. Works with 3s unless list needs to be regenerated. 3.5s otherwise
 
-    const timeoutMs = 3500; // Max # ms allowed. Works with 3s unless list needs to be regenerated. 3.5s otherwise 
+  const movieSuggestionsPromise =
+    giveMovieSuggestionsBasedOnMovieList(movieList);
+  const timeoutPromise = new Promise((resolve) =>
+    setTimeout(resolve, timeoutMs)
+  );
 
-    const movieSuggestionsPromise = giveMovieSuggestionsBasedOnMovieList(movieList);
-    const timeoutPromise = new Promise((resolve) => setTimeout(resolve, timeoutMs));
-
-    try {
-        const result = await Promise.race([movieSuggestionsPromise, timeoutPromise]);
-        if (result !== undefined) {
-            console.log("Movie suggestions call completed:")
-            console.log(result);
-            return result;
-        } else {
-            console.log("Function execution timed out");
-            return null; // Or handle the timeout error as needed
-        }
-    } catch (error) {
-        console.log("Function execution failed:", error);
-        return null; // Or handle the error as needed
+  try {
+    const result = await Promise.race([
+      movieSuggestionsPromise,
+      timeoutPromise,
+    ]);
+    if (result !== undefined) {
+      console.log("Movie suggestions call completed:");
+      console.log(result);
+      return result;
+    } else {
+      console.log("Function execution timed out");
+      return null; // Or handle the timeout error as needed
     }
   } catch (error) {
     console.log("Function execution failed:", error);
