@@ -19,10 +19,10 @@ export const teamInfo = [
   {
     name: "Gabriel Toro",
     role: "Front-end Dev",
-    image: "",
-    bio: "",
-    github: "",
-    linkedIn: "",
+    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAHUNlP8YNrVxDQgaVzoZSHSFOW2gdNahpVw4YoFlp03pnep_0xgvN5eSgtnWf32zPC5pFQpfdcj7_CA4M3keMJMI6pW-kUK1IieqRgB9VdoxygsvtcnGx8Atkiu0YZ0Si7CBLFfkmiBQ/s1600/great+teacher+onizuka.jpg",
+    bio: "A Computer Information Systems major who likes to learn languages, travel, and play games on his spare time. Will always try to get out of my comfort zone. Reach out if you have any questions!",
+    github: "https://github.com/MrMoustache1",
+    linkedIn: "https://www.linkedin.com/in/gabriel-toro-a6b79429a/",
   },
   {
     name: "Jose Sanchez",
