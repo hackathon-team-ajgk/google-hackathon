@@ -2,25 +2,29 @@ import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
+import Rating from "@mui/material/Rating";
 
 function MovieView({ movieInfo, toggleOverlay }) {
   const { getUsername, getToken, getUserMovieData } = useAuth();
   const [movieStatus, setMovieStatus] = useState("Not in List");
+  const [rating, setRating] = useState(movieInfo.userRating);
 
   useEffect(() => {
     const checkMovieInList = () => {
       const movieData = getUserMovieData();
-      const inWatchLater = movieData.watchLaterList.some(
+      const watchLater = movieData.watchLaterList.find(
         (movie) => movie.movieId === movieInfo.movieId
       );
-      if (inWatchLater) {
+      if (watchLater !== undefined) {
+        console.log(watchLater);
         setMovieStatus("Watching Soon");
       } else {
-        const inWatched = movieData.watchedMovies.some(
+        const watched = movieData.watchedMovies.find(
           (movie) => movie.movieId === movieInfo.movieId
         );
-        if (inWatched) {
+        if (watched !== undefined) {
           setMovieStatus("Watched");
+          setRating(watched.userRating);
         } else {
           setMovieStatus("Not in List");
         }
@@ -28,6 +32,43 @@ function MovieView({ movieInfo, toggleOverlay }) {
     };
     checkMovieInList();
   }, [getUserMovieData, movieInfo]);
+
+  const updateMovieRating = async (movieRating) => {
+    try {
+      const token = getToken();
+      const username = getUsername();
+      const response = await axios.put(
+        "http://localhost:3000/update-user-rating",
+        {
+          username: username,
+          movieTitle: movieInfo.title,
+          userRating: movieRating,
+        },
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      if (error.response) {
+        // The server responded with a status code that falls out of the range of 2xx
+        window.alert(
+          "The movie is not in your watched list. Please add it to your list of watched movies first."
+        );
+        console.error("Post Error:", error.response.data);
+        console.error("Status Code:", error.response.status);
+        setRating(0);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("Request Error:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error:", error.message);
+      }
+    }
+  };
 
   const addToList = async (action) => {
     try {
@@ -47,6 +88,11 @@ function MovieView({ movieInfo, toggleOverlay }) {
         }
       );
       console.log(response.data);
+      if (action === "watch") {
+        setMovieStatus("Watched");
+      } else {
+        setMovieStatus("Watching Soon");
+      }
     } catch (error) {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
@@ -71,6 +117,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
         {
           username: username,
           movieName: movieInfo.title,
+          status: movieStatus,
         },
         {
           headers: {
@@ -79,6 +126,8 @@ function MovieView({ movieInfo, toggleOverlay }) {
         }
       );
       console.log(response.data);
+      setMovieStatus("Not in List");
+      setRating(0);
     } catch (error) {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
@@ -123,18 +172,22 @@ function MovieView({ movieInfo, toggleOverlay }) {
               {movieInfo.releaseDate}
             </p>
             <div id="movie-user-rating" className="movie-text">
-              <label
-                id="movie-rating-label"
-                className="movie-metadata"
-                htmlFor="movie-rating-input"
-              >
+              <label id="movie-rating-label" className="movie-metadata">
                 User Rating:
               </label>
-              {movieInfo.userRating !== "NULL" ? (
-                <>{movieInfo.userRating}</>
-              ) : (
-                <input type="number" max="10" id="movie-rating-input" />
-              )}
+              <Rating
+                name="simple-controlled"
+                value={rating}
+                sx={{
+                  "& .MuiRating-icon": {
+                    color: "white",
+                  },
+                }}
+                onChange={(event, newRating) => {
+                  setRating(newRating);
+                  updateMovieRating(newRating);
+                }}
+              />
             </div>
             <p id="movie-status" className="movie-text">
               {movieStatus}
@@ -145,33 +198,42 @@ function MovieView({ movieInfo, toggleOverlay }) {
           <CloseFullscreenIcon fontSize="large" />
         </div>
         <div id="edit-button-group" className="button-group">
-          <button
-            className="button"
-            onClick={() => {
-              addToList("watch");
-            }}
-          >
-            Add to Watched
-          </button>
-          <button
-            className="button"
-            onClick={() => {
-              addToList("watch-later");
-            }}
-          >
-            Add to Watching Soon
-          </button>
-          {movieStatus === "Not in List" ? (
-            <></>
+          {movieStatus !== "Watched" ? (
+            <button
+              className="button"
+              onClick={() => {
+                addToList("watch");
+              }}
+            >
+              Add to Watched
+            </button>
           ) : (
             <button
-              id="remove-button"
               className="button"
               onClick={() => {
                 removeFromList();
               }}
             >
-              Remove from List
+              Remove from Watched
+            </button>
+          )}
+          {movieStatus !== "Watching Soon" ? (
+            <button
+              className="button"
+              onClick={() => {
+                addToList("watch-later");
+              }}
+            >
+              Add to Watch Later
+            </button>
+          ) : (
+            <button
+              className="button"
+              onClick={() => {
+                removeFromList();
+              }}
+            >
+              Remove from Watch Later
             </button>
           )}
         </div>

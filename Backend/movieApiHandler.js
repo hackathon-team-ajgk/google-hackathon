@@ -220,7 +220,7 @@ async function getMovieMetadataFromObject(userInput) {
           averageRating: movie.vote_average,
           overview: movie.overview,
           status: "NULL",
-          userRating: "NULL",
+          userRating: 0,
         }));
 
         const newData = {
@@ -448,7 +448,6 @@ module.exports = {
 };
 
 /* 
-TO DO:
-- Only english movies?
-- More optimizing function calls and interactions so load times are as low as possible
+Improvements to be Made:
+- More optimizing function calls and interactions to reduce load times
 */

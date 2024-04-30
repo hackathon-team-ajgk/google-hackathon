@@ -1,7 +1,7 @@
 #profile-section {
   height: 500px;
   display: grid;
-  grid-template-columns: 350px 1286px;
+  grid-template-columns: repeat(2, minmax(350px, auto));
   grid-template-rows: 100%;
 }
 
@@ -10,6 +10,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+#account-stats {
+  padding: 0 40px;
 }
 
 .profile-details {
@@ -106,4 +110,27 @@ textarea::placeholder {
   display: flex;
   justify-content: space-evenly;
   width: 100%;
+}
+
+.movies-stat {
+  font-size: 20px;
+}
+
+@media (max-width: 1280px) {
+  #popular-movies-section {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  #profile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 850px;
+  }
+  #user-details {
+    border-right: none;
+    border-bottom: 1px solid #3c3c3c;
+  }
 }
