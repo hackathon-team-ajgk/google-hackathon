@@ -35,9 +35,9 @@ export const teamInfo = [
   {
     name: "Kiaan B",
     role: "Front-end Dev",
-    image: "",
-    bio: "",
-    github: "",
-    linkedIn: "",
+    image: "https://i.ytimg.com/vi/xXmXM0qRMbo/maxresdefault.jpg",
+    bio: "I am a Mathematics and Computer Science student at the University of Calgary. I love to travel, draw, workout and learn new things in general. Check out my LinkedIn profile and let's connect!",
+    github: "https://github.com/thestarcar",
+    linkedIn: "https://www.linkedin.com/in/kiaan-braganza-145b31214/",
   },
 ];
