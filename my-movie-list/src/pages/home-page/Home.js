@@ -99,14 +99,8 @@ function Home() {
             get personalized recommendations based on movies you've watched or
             will be watching soon!
           </p>
-          <input
-            id="ai-sugg-input"
-            placeholder="Enter your prompt here."
-            type="text"
-          />
         </div>
       </section>
-      {/* {section below should only be rendered if user is not logged in} */}
       {!getToken() && (
         <section id="cta" className="section-container">
           <div id="cta-div">
