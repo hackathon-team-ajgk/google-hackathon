@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useCallback, useContext } from "react";
 
 // Create the context with a default undefined value
 const AuthContext = createContext(undefined);
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Function to get the user's token from localStorage
-  const getToken = () => {
+  const getToken = useCallback(() => {
     const userString = localStorage.getItem("userSession");
     if (userString) {
       const userObject = JSON.parse(userString);
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return null;
-  };
+  }, []);
 
   const getUserMovieData = () => {
     const userString = localStorage.getItem("userData");
