@@ -22,6 +22,7 @@ function Register() {
         // The server responded with a status code that falls out of the range of 2xx
         console.error("Registration Error:", error.response.data);
         console.error("Status Code:", error.response.status);
+        window.alert("User already exists in database.");
       } else if (error.request) {
         // The request was made but no response was received
         console.error("Registration Request Error:", error.request);
