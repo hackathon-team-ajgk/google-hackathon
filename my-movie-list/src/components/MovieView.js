@@ -176,24 +176,26 @@ function MovieView({ movieInfo, toggleOverlay }) {
               <strong className="movie-metadata">Release Date:</strong>{" "}
               {movieInfo.releaseDate}
             </p>
-            <div id="movie-user-rating" className="movie-text">
-              <label id="movie-rating-label" className="movie-metadata">
-                User Rating:
-              </label>
-              <Rating
-                name="simple-controlled"
-                value={rating}
-                sx={{
-                  "& .MuiRating-icon": {
-                    color: "white",
-                  },
-                }}
-                onChange={(event, newRating) => {
-                  setRating(newRating);
-                  updateMovieRating(newRating);
-                }}
-              />
-            </div>
+            {getToken() && (
+              <div id="movie-user-rating" className="movie-text">
+                <label id="movie-rating-label" className="movie-metadata">
+                  Your Rating:
+                </label>
+                <Rating
+                  name="simple-controlled"
+                  value={rating}
+                  sx={{
+                    "& .MuiRating-icon": {
+                      color: "white",
+                    },
+                  }}
+                  onChange={(event, newRating) => {
+                    setRating(newRating);
+                    updateMovieRating(newRating);
+                  }}
+                />
+              </div>
+            )}
             <p id="movie-status" className="movie-text">
               {movieStatus}
             </p>
