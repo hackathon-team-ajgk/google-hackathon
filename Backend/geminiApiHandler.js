@@ -270,4 +270,5 @@ Improvements to be Made:
 - Potentially more I/O validation
 - More optimization
 - Increasing variety of movie recommendations
+- Using gemini streaming to serve information faster
  */
