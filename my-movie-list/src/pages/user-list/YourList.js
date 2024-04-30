@@ -81,8 +81,8 @@ function YourList() {
     <>
       {getToken() ? (
         <>
-          <MovieSlider genre="Watched Movies" movies={watched} />
-          <MovieSlider genre="Watching Soon" movies={watchLater} />
+          <MovieSlider genre="Watched" movies={watched} />
+          <MovieSlider genre="Watch Later" movies={watchLater} />
           {suggestionsByList.length > 0 && (
             <MovieSlider
               genre="Recommendations From List"

@@ -19,7 +19,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
         );
         if (watchLater !== undefined) {
           console.log(watchLater);
-          setMovieStatus("Watching Soon");
+          setMovieStatus("Watch Later");
         } else {
           const watched = movieData.watchedMovies.find(
             (movie) => movie.movieId === movieInfo.movieId
@@ -94,7 +94,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
       if (action === "watch") {
         setMovieStatus("Watched");
       } else {
-        setMovieStatus("Watching Soon");
+        setMovieStatus("Watch Later");
       }
     } catch (error) {
       if (error.response) {
@@ -224,7 +224,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
               Remove from Watched
             </button>
           )}
-          {movieStatus !== "Watching Soon" ? (
+          {movieStatus !== "Watch Later" ? (
             <button
               className="button"
               onClick={() => {

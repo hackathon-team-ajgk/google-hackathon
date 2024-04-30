@@ -10,6 +10,7 @@ function MovieSlider({ movies, genre }) {
         {movies.map((val, key) => (
           <MovieCard key={`${genre}-${key}`} movie={val} />
         ))}
+        {movies.length === 0 && <h2>Your List Is Empty.</h2>}
       </section>
     </>
   );
