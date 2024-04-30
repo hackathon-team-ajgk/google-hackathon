@@ -3,8 +3,13 @@ require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const API_READ_ACCESS_TOKEN = process.env.API_READ_ACCESS_TOKEN;
 const fetch = require("node-fetch");
 
-// Functions requiring API endpoints:
-// Working movie search
+/**
+ * Searches for a movie based on the provided query.
+ * @name searchForMovie
+ * @param {string} search_query - The query string to search for a movie.
+ * @returns {Promise<object>} - A promise that resolves to the formatted movie data.
+ * @throws {Error} - If there is an error during the movie search process.
+ */
 async function searchForMovie(search_query) {
   try {
     const formatted_query = search_query.replace(" ", "%20");
@@ -19,6 +24,12 @@ async function searchForMovie(search_query) {
 
     const res = await fetch(url, options);
     const json = await res.json();
+    // console.log(json) // For testing only
+    // Handling invalid movie names
+    if (json.total_results === 0) {
+      console.log("Could not find movie in database")
+      return
+    }
 
     if (!json || !json.results) {
       console.error("Invalid API Response:", json);
@@ -29,18 +40,24 @@ async function searchForMovie(search_query) {
       ...movie,
       genre_ids: JSON.stringify(movie.genre_ids),
     }));
-
+    
     const formattedJson = await getMovieMetadataFromObject(json);
-    console.log(formattedJson);
+    // console.log(formattedJson);
     return formattedJson;
   } catch (error) {
     console.error("Error searching for movie(s)", error);
     throw error;
   }
 }
-// searchForMovie("star wars")
+// searchForMovie("harry potter")
 
-// Working movie search
+/**
+ * Searches for a movie from Gemini based on the provided query.
+ * @name searchForMovieFromGemini
+ * @param {string} search_query - The query string to search for a movie.
+ * @returns {Promise<object>} A promise that resolves to the formatted movie data.
+ * @throws {Error} If there is an error during the movie search process.
+ */
 async function searchForMovieFromGemini(search_query) {
   try {
     const formatted_query = search_query.replace(" ", "%20");
@@ -55,6 +72,12 @@ async function searchForMovieFromGemini(search_query) {
 
     const res = await fetch(url, options);
     const json = await res.json();
+
+    // Handling invalid movie names
+    if (json.total_results === 0) {
+      console.log("Could not find movie in database")
+      return
+    }
 
     if (!json || !json.results) {
       console.error("Invalid API Response:", json);
@@ -76,7 +99,12 @@ async function searchForMovieFromGemini(search_query) {
 }
 // searchForMovieFromGemini("star wars")
 
-// Working get list of popular movies
+/**
+ * Retrieves popular movies from the MovieDB API.
+ * @name getPopularMovieHandler
+ * @returns {Promise<object>} A promise that resolves to the metadata of popular movies.
+ * @throws {Error} If there is an error during the process of retrieving popular movies.
+ */
 async function getPopularMovieHandler() {
   try {
     const url =
@@ -100,7 +128,12 @@ async function getPopularMovieHandler() {
 }
 // getPopularMovieHandler()
 
-// DOESNT WORK AS INTENDED. Not sure why
+/**
+ * NOT WORKING... Retrieves watch providers for a specific movie from the MovieDB API.
+ * @name getWatchProviderHandler
+ * @returns {Promise<void>} A promise that resolves with the watch providers information for the specified movie.
+ * @throws {Error} If there is an error during the process of retrieving watch providers.
+ */
 function getWatchProviderHandler() {
   const movie_id = "140607";
   const url = `https://api.themoviedb.org/3/movie/${movie_id}/watch/providers`;
@@ -119,8 +152,13 @@ function getWatchProviderHandler() {
 }
 // getWatchProviderHandler()
 
-// Functions for parsing information
-// Working Parses and formats movie information from object input.
+/**
+ * Retrieves movie metadata from the MovieDB API response object.
+ * @name getMovieMetadataFromObject
+ * @param {Object} userInput - The response object obtained from the MovieDB API.
+ * @returns {Promise<Object>} A promise that resolves with the movie metadata extracted from the API response.
+ * @throws {Error} If there is an error during the process of retrieving movie metadata.
+ */
 async function getMovieMetadataFromObject(userInput) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -182,7 +220,7 @@ async function getMovieMetadataFromObject(userInput) {
           averageRating: movie.vote_average,
           overview: movie.overview,
           status: "NULL",
-          userRating: "NULL",
+          userRating: 0,
         }));
 
         const newData = {
@@ -204,7 +242,13 @@ async function getMovieMetadataFromObject(userInput) {
   });
 }
 
-// Working Parses and formats movie information from string input.
+/**
+ * Retrieves movie metadata from the MovieDB API based on a search query string.
+ * @name getMovieMetadataFromString
+ * @param {string} userInput - The search query string.
+ * @returns {Promise<Object>} A promise that resolves with the movie metadata extracted from the API response.
+ * @throws {Error} If there is an error during the process of retrieving movie metadata.
+ */
 async function getMovieMetadataFromString(userInput) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -286,7 +330,12 @@ async function getMovieMetadataFromString(userInput) {
   });
 }
 
-// Working movie filter to put NULL for values that might be problematic for frontend
+/**
+ * Filters movie metadata to remove invalid or incomplete entries and standardizes certain properties.
+ * @name filterMovieData
+ * @param {Object} movieMetadata - The movie metadata object to be filtered.
+ * @returns {void}
+ */
 function filterMovieData(movieMetadata) {
   try {
     // Iterate through each movie object
@@ -316,7 +365,12 @@ function filterMovieData(movieMetadata) {
   }
 }
 
-// Working recommendations (FROM MOVIE API) given genre input
+/**
+ * Retrieves movie recommendations based on a specified genre ID.
+ * @name getGenreRecommendations
+ * @param {number} genreID - The ID of the genre for which movie recommendations are requested.
+ * @returns {Promise<Object|null>} A promise that resolves to an object containing movie recommendations, or null if an error occurs.
+ */
 async function getGenreRecommendations(genreID) {
   const options = {
     method: "GET",
@@ -347,7 +401,11 @@ async function getGenreRecommendations(genreID) {
   }
 }
 
-// Working return trending movies (FROM MOVIE API)
+/**
+ * Retrieves trending movies.
+ * @name getTrendingMovies
+ * @returns {Promise<Object>} A promise that resolves to an object containing trending movies.
+ */
 async function getTrendingMovies() {
   const options = {
     method: "GET",
@@ -390,7 +448,6 @@ module.exports = {
 };
 
 /* 
-TO DO:
-- Only english movies?
-- Remember to optimize function calls and interactions so load times are as low as possible
+Improvements to be Made:
+- More optimizing function calls and interactions to reduce load times
 */

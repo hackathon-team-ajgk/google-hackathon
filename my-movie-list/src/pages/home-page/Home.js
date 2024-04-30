@@ -4,8 +4,10 @@ import "./Home.css";
 import axios from "axios";
 import HeroMovies from "../../components/HeroMovies";
 import MovieSlider from "../../components/MovieSlider";
+import { useAuth } from "../../contexts/AuthContext";
 
 function Home() {
+  const { getToken } = useAuth();
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [heroMovies, setHeroMovies] = useState([]);
 
@@ -86,41 +88,41 @@ function Home() {
           </strong>
           <p id="ai-sugg-secondary-text" className="home-text">
             Use <strong>Google’s AI Gemini</strong> to generate movie
-            suggestions based on your prompt!
+            suggestions based on a genre or your list!
           </p>
           <p className="home-text">
-            Ask any prompt relevant to movies, for example, “My favourite movies
-            are the star wars movies, lord of the rings, and dune. What movies
-            would you suggest I watch based off these movies?”
+            Go to our movies page and select a genre from the dropdown then get
+            Gemini's movie recommendations based on the chosen genre.{" "}
           </p>
-          <input
-            id="ai-sugg-input"
-            placeholder="Enter your prompt here."
-            type="text"
-          />
+          <p className="home-text">
+            <strong>Or even better,</strong> add to your movie list today and
+            get personalized recommendations based on movies you've watched or
+            will be watching soon!
+          </p>
         </div>
       </section>
-      {/* {section below should only be rendered if user is not logged in} */}
-      <section id="cta" className="section-container">
-        <div id="cta-div">
-          <strong id="cta-title" className="cta-text">
-            Create an Account Today!
-          </strong>
-          <p className="cta-text">
-            Join the community and start adding to your own movie list today.
-            Always have something to watch next and an AI tool that gives you
-            suggestions if you're still not sure!
-          </p>
-          <button
-            className="home-button"
-            onClick={() => {
-              navigate("/register");
-            }}
-          >
-            Register Now
-          </button>
-        </div>
-      </section>
+      {!getToken() && (
+        <section id="cta" className="section-container">
+          <div id="cta-div">
+            <strong id="cta-title" className="cta-text">
+              Create an Account Today!
+            </strong>
+            <p className="cta-text">
+              Join the community and start adding to your own movie list today.
+              Always have something to watch next and an AI tool that gives you
+              suggestions if you're still not sure!
+            </p>
+            <button
+              className="home-button"
+              onClick={() => {
+                navigate("/register");
+              }}
+            >
+              Register Now
+            </button>
+          </div>
+        </section>
+      )}
     </>
   );
 }

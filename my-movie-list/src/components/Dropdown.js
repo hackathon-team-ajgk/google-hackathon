@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
 
-function Dropdown({ toggle }) {
+function Dropdown({ toggle, logout }) {
   const navigate = useNavigate();
-  const { handleLogout } = useAuth();
 
   return (
     <div className="dropdown-menu">
@@ -42,7 +40,7 @@ function Dropdown({ toggle }) {
         className="dropdown-link"
         onClick={() => {
           toggle();
-          handleLogout();
+          logout();
           navigate("/login");
         }}
       >

@@ -59,12 +59,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 310px;
 }
 
 .hero-images {
   position: relative;
-  width: 100%;
-  height: 100%;
+}
+
+.hero-image {
+  max-height: 80%;
 }
 
 #dune {
@@ -86,6 +89,7 @@
 
 .movie-user-status {
   font-size: large;
+  max-height: 20%;
 }
 
 .images {
@@ -118,12 +122,12 @@
   height: 325px;
   padding: 0 10px;
   gap: 10px;
-  overflow-x: auto;
+  max-width: 100%;
   overflow-y: hidden;
 }
 
 .movie-card {
-  max-height: fit-content;
+  max-height: 317px;
   min-width: 190px;
   display: flex;
   flex-direction: column;
@@ -135,7 +139,7 @@
 }
 
 .movie-image {
-  height: 225px;
+  height: 80%;
   border-radius: 5px;
 }
 
@@ -150,17 +154,17 @@
   text-align: center;
   padding-left: 10px;
   padding-right: 10px;
+  max-width: 175px;
   min-height: 22px;
-  max-height: fit-content;
+  max-height: 20%;
   font-weight: 900;
   font-size: large;
   font-family: "Gruppo";
 }
 
 #ai-suggestions {
-  height: 500px;
+  min-height: 350px;
   justify-content: center;
-  max-height: 800px;
 }
 
 #ai-sugg-text-container {
@@ -168,7 +172,6 @@
   flex-direction: column;
   align-items: center;
   max-width: 60%;
-  gap: 1rem;
 }
 
 .home-text {
@@ -183,21 +186,6 @@
 
 #ai-sugg-secondary-text {
   font-size: 24px;
-}
-
-#ai-sugg-input {
-  width: 100%;
-  border-radius: 5px;
-  font-size: large;
-  color: white;
-  padding: 10px;
-  background-color: #4c4c4c;
-  border: none;
-  margin-top: 20px;
-}
-
-#ai-sugg-input::placeholder {
-  color: white;
 }
 
 .overlay {
@@ -259,21 +247,24 @@
 }
 
 #movie-overview {
-  text-align: center;
+  text-align: justify;
   font-size: 16px;
-}
-
-#other-movie-information {
-  height: fit-content;
 }
 
 #other-movie-information {
   display: grid;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   grid-template-rows: 50px 50px;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+#movie-user-rating {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 #movie-rating-label {
@@ -286,6 +277,30 @@
   height: 30px;
   width: 40px;
   font-size: large;
+  background-color: #4c4c4c;
+  border: none;
+  color: white;
+  padding-left: 10px;
+}
+
+#movie-release-date {
+  margin-bottom: 20px;
+}
+
+#movie-status {
+  margin-top: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#edit-button-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
 }
 
 #cta {
@@ -331,6 +346,9 @@
   .hero-images {
     left: 100px;
   }
+  #ai-suggestions {
+    min-height: 400px;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -360,9 +378,6 @@
   #hero-section {
     min-height: 700px;
   }
-  #ai-suggestions {
-    min-height: 600px;
-  }
   #cta {
     min-height: 700px;
   }
@@ -388,6 +403,13 @@
     width: fit-content;
     max-width: 475px;
   }
+  #edit-button-group {
+    position: static;
+    align-items: center;
+  }
+  #movie-overview {
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {
@@ -397,12 +419,13 @@
   .section-container {
     max-width: 640px;
   }
+
   #dune {
-    right: 250px;
+    right: 225px;
   }
   #immaculate {
-    top: 375px;
-    right: 250px;
+    top: 350px;
+    right: 225px;
   }
   #hero-button {
     width: 300px;
@@ -413,9 +436,6 @@
   }
   #movie-view-image {
     width: 200px;
-  }
-  #ai-suggestions {
-    min-height: 680px;
   }
 }
 
@@ -433,7 +453,7 @@
     min-height: 800px;
   }
   #ai-suggestions {
-    min-height: 750px;
+    min-height: 825px;
   }
   #cta {
     min-height: 900px;
@@ -444,6 +464,9 @@
   #trending-movies-label {
     margin-left: 10px;
   }
+  #ai-suggestions {
+    min-height: 500px;
+  }
 }
 
 @media (max-width: 475px) {
@@ -452,8 +475,5 @@
   }
   .section-container {
     width: 100%;
-  }
-  #ai-suggestions {
-    min-height: 700px;
   }
 }

@@ -27,7 +27,8 @@ app.use((req, res, next) => {
 });
 
 /**
- * Middleware to authenticate JWT token.
+ * Middleware to authenticate JWT token
+ * @name authenticateToken
  * @param {object} req - Express request object
  * @param {object} res - Express response object
  * @param {function} next - Express next function
@@ -52,7 +53,7 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
-// Connect to the MongoDB server
+// Connect to the MongoDB server and then take any route
 async function connectToDatabase() {
   try {
     await client.connect();
@@ -67,7 +68,7 @@ async function connectToDatabase() {
      * @name GET/user
      * @param {object} req - Express request object
      * @param {object} res - Express response object
-     * @returns {void}
+     * @returns {object} - All the data about the signed-in user
      */
     app.get("/user", authenticateToken, async (req, res) => {
       try {
@@ -91,7 +92,7 @@ async function connectToDatabase() {
      * @name GET/allUsers
      * @param {object} req - Express request object
      * @param {object} res - Express response object
-     * @returns {void}
+     * @returns {object} - All the data about all the users in the database. Only used for development purposes
      */
     app.get("/allUsers", async (req, res) => {
       try {
@@ -104,6 +105,44 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Retrieves movie data associated with the authenticated user
+     * @name GET/getUserMovieData
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {object} - The movie data associated with the user
+     */
+    app.get("/getUserMovieData", authenticateToken, async (req, res) => {
+      try {
+        // Find the user directly using the username from the token
+        const user = await usersCollection.findOne({
+          username: req.user.username,
+        });
+        // Check if the user was found
+        if (user) {
+          // Extract the movieData field from the found user
+          const movieData = user.movieData;
+
+          // Send the movieData as a response
+          res.json(movieData);
+        } else {
+          // If no user is found, send an appropriate response
+          res.status(404).send("User not found");
+        }
+      } catch (error) {
+        // Handle errors that might occur during the database operation
+        console.error("Error retrieving user data:", error);
+        res.status(500).send("An error occurred while fetching user data.");
+      }
+    });
+
+    /**
+     * Retrieves movies from the search query
+     * @name GET/getMoviesFromSearch
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/getMoviesFromSearch", async (req, res) => {
       try {
         const { movie } = req.query;
@@ -111,7 +150,9 @@ async function connectToDatabase() {
         movieAPI
           .searchForMovie(movie)
           .then((data) => {
-            console.log(data);
+            if (data === undefined) {
+              res.status(404).send("No movie data found for search");
+            }
             res.json(data);
           })
           .catch((error) => {
@@ -123,6 +164,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Retrieves trending movies
+     * @name GET/getTrendingMovies
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/getTrendingMovies", (req, res) => {
       movieAPI
         .getTrendingMovies()
@@ -134,6 +182,13 @@ async function connectToDatabase() {
         });
     });
 
+    /**
+     * Retrieves popular movies.
+     * @name GET/getPopularMovies
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/getPopularMovies", (req, res) => {
       movieAPI
         .getPopularMovieHandler()
@@ -154,6 +209,13 @@ async function connectToDatabase() {
      */
     app.post("/register", async (req, res) => {
       try {
+        // Testing if username already exists in DB
+        if (user = await usersCollection.findOne({
+          username: req.body.username
+        })) {
+          return res.status(400).send("User with that username already exists");
+        }
+
         // Hash the password
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -192,7 +254,7 @@ async function connectToDatabase() {
           const username = req.body.username;
           const user = { username: username };
           const accessToken = jwt.sign(user, process.env.JWT_SECRET);
-          // console.log(accessToken);
+          console.log("Successfully logged in");
           res.send(accessToken);
         } else {
           res.status(401).send("Incorrect password");
@@ -203,7 +265,41 @@ async function connectToDatabase() {
     });
 
     /**
-     * Route to update the state of a movie.
+     * Route to delete an authenticated user and all their data from the database
+     * @name DELETE/delete-account
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
+    app.delete("/delete-account", authenticateToken, async (req, res) => {
+      const user = req.user.username;
+      try {
+        // Find the user in the database
+        const userInDb = await usersCollection.findOne({
+          username: user,
+        });
+
+        // If user does not exist, return error
+        if (!userInDb) {
+          return res.status(400).send("Cannot find user");
+        }
+
+        // Delete the user from the database
+        await usersCollection.deleteOne({
+          username: user,
+        });
+
+        // Return success message
+        return res.status(200).send("User deleted successfully");
+      } catch (error) {
+        // Handle any errors
+        console.error("Error deleting user:", error);
+        return res.status(500).send("Internal Server Error");
+      }
+    });
+
+    /**
+     * Route to update the state of a movie for an authenticated user
      * @name PUT/edit-movie-state
      * @param {object} req - Express request object
      * @param {object} res - Express response object
@@ -215,25 +311,46 @@ async function connectToDatabase() {
         if (!username || !action || !movie) {
           return res.status(400).send("Missing required fields");
         }
-
+    
         // Retrieve the user from the database
         const user = await usersCollection.findOne({ username });
         if (!user) {
           return res.status(404).send("User not found");
         }
-        /*   
-        console.log('User:', user);
-        console.log('Action:', action);
-        console.log('Movie:', movie);
-        */
+    
         // Update the movie state based on the action
         if (action === "watch" || action === "watch-later") {
           // Determine which list to update
           const listToUpdate =
             action === "watch" ? "watchedMovies" : "watchLaterList";
-          // Ensure that the movieData object and the listToUpdate exist
+          // Determine the list to remove the movie from
+          const listToRemove = listToUpdate === "watchedMovies" ? "watchLaterList" : "watchedMovies";
+          
+          // Ensure that the movieData object and the lists exist
           user.movieData = user.movieData || {};
           user.movieData[listToUpdate] = user.movieData[listToUpdate] || [];
+          user.movieData[listToRemove] = user.movieData[listToRemove] || [];
+          
+          // Check if the movie already exists in the specified list
+          const movieIndex = user.movieData[listToUpdate].findIndex(
+            (m) => m.id === movie.id
+          );
+          
+          // If the movie exists in the target list, return a message
+          if (movieIndex !== -1) {
+            return res.status(400).send(`Movie already exists in the '${listToUpdate}' list`);
+          }
+          
+          // Find the index of the movie in the other list
+          const indexInOtherList = user.movieData[listToRemove].findIndex(
+            (m) => m.id === movie.id
+          );
+          
+          // If the movie exists in the other list, remove it
+          if (indexInOtherList !== -1) {
+            user.movieData[listToRemove].splice(indexInOtherList, 1);
+          }
+    
           // Add the movie to the specified list
           user.movieData[listToUpdate].push(movie);
           // Update the user document in the database
@@ -242,10 +359,10 @@ async function connectToDatabase() {
             { $set: { movieData: user.movieData } }
           );
           console.log(
-            `${movie.title} added to ${listToUpdate} successfully for user ${username}`
+            `${movie.title} moved to ${listToUpdate} successfully for user ${username}`
           );
           res.send(
-            `Movie '${movie.title}' added to '${listToUpdate}' successfully`
+            `Movie '${movie.title}' moved to '${listToUpdate}' successfully`
           );
         } else {
           res.status(400).send("Invalid action");
@@ -254,8 +371,15 @@ async function connectToDatabase() {
         console.error("Error updating movie state:", error);
         res.status(500).send("Internal Server Error");
       }
-    });
+    });    
 
+    /**
+     * Route to update the state of a movie for an authenticated user
+     * @name PUT/changeBio
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.put("/changeBio", authenticateToken, async (req, res) => {
       try {
         const { username, bio } = req.body;
@@ -274,7 +398,7 @@ async function connectToDatabase() {
     });
 
     /**
-     * Route to remove a movie from user's lists.
+     * Route to remove a movie from user's lists
      * @name PUT/remove-movie
      * @param {object} req - Express request object
      * @param {object} res - Express response object
@@ -282,7 +406,7 @@ async function connectToDatabase() {
      */
     app.put("/remove-movie", authenticateToken, async (req, res) => {
       try {
-        const { username, movieName } = req.body;
+        const { username, movieName, status } = req.body;
         if (!username || !movieName) {
           return res.status(400).send("Missing required fields");
         }
@@ -295,28 +419,33 @@ async function connectToDatabase() {
         let removedMovie = null;
 
         // Find and remove the movie from the watchedMovies list
-        if (user.movieData.watchedMovies) {
-          removedMovie = user.movieData.watchedMovies.find(
-            (movie) => movie.title === movieName
-          );
-          if (removedMovie) {
-            user.movieData.watchedMovies = user.movieData.watchedMovies.filter(
-              (movie) => movie.title !== movieName
+        if (status === "Watched") {
+          if (user.movieData.watchedMovies) {
+            removedMovie = user.movieData.watchedMovies.find(
+              (movie) => movie.title === movieName
             );
+            if (removedMovie) {
+              user.movieData.watchedMovies =
+                user.movieData.watchedMovies.filter(
+                  (movie) => movie.title !== movieName
+                );
+            }
           }
-        }
-
-        // Find and remove the movie from the watchLaterList
-        if (user.movieData.watchLaterList) {
-          removedMovie = user.movieData.watchLaterList.find(
-            (movie) => movie.title === movieName
-          );
-          if (removedMovie) {
-            user.movieData.watchLaterList =
-              user.movieData.watchLaterList.filter(
-                (movie) => movie.title !== movieName
-              );
+        } else if (status === "Watching Soon") {
+          // Find and remove the movie from the watchLaterList
+          if (user.movieData.watchLaterList) {
+            removedMovie = user.movieData.watchLaterList.find(
+              (movie) => movie.title === movieName
+            );
+            if (removedMovie) {
+              user.movieData.watchLaterList =
+                user.movieData.watchLaterList.filter(
+                  (movie) => movie.title !== movieName
+                );
+            }
           }
+        } else {
+          res.status(404).send(`Movie with name ${movieName} not found`);
         }
 
         // Update the user document in the database
@@ -344,7 +473,7 @@ async function connectToDatabase() {
     });
 
     /**
-     * Route to update user's rating for a movie.
+     * Route to update user's rating for a movie
      * @name PUT/update-user-rating
      * @param {object} req - Express request object
      * @param {object} res - Express response object
@@ -405,11 +534,52 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to get movie recommendations based on a given genre
+     * @name GET/getRecommendations-genre
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/getRecommendations-genre", async (req, res) => {
       try {
-        const userGenre = req.body.genres;
+        const userGenre = req.query.genre;
+        console.log(userGenre);
         const movieSuggestions =
           await geminiAPI.giveMovieSuggestionsBasedOnGenre(userGenre);
+        const movieMetadata = [];
+        for (const movie of movieSuggestions) {
+          if (movie === "") continue;
+          const formattedMovie = await movieAPI.searchForMovieFromGemini(movie);
+          movieMetadata.push(formattedMovie);
+        }
+        res.send(movieMetadata);
+      } catch (error) {
+        console.error("Error getting recommendations:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+    /**
+     * Route to get movie recommendations based on the authenticated user's movie lists
+     * @name GET/getRecommendations-list
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
+    app.get("/getRecommendations-list", authenticateToken, async (req, res) => {
+      try {
+        // Find the user in the database
+        const userInDb = await usersCollection.findOne({
+          username: req.user.username,
+        });
+        // Check if the user exists
+        if (!userInDb) {
+          return res.status(404).send("User not found");
+        }
+        const movieList = userInDb.movieData;
+        console.log(movieList);
+        const movieSuggestions = await geminiAPI.callWithTimeout(movieList);
         const movieMetadata = [];
         for (const movie of movieSuggestions) {
           const formattedMovie = await movieAPI.searchForMovieFromGemini(movie);
@@ -422,22 +592,6 @@ async function connectToDatabase() {
       }
     });
 
-    app.get("/getRecommendations-list", authenticateToken, async (req, res) => {
-      // Same as above but from geminiAPI.giveMovieSuggestionsBasedOnMovieList instead
-      try {
-        const userGenre = req.body.genres;
-        const movieSuggestions = await geminiAPI.callWithTimeout();
-        const movieMetadata = [];
-        for (const movie of movieSuggestions) {
-          const formattedMovie = await movieAPI.searchForMovieFromGemini(movie);
-          movieMetadata.push(formattedMovie);
-        }
-        res.send(movieMetadata);
-      } catch (error) {
-        console.error("Error getting recommendations:", error);
-        res.status(500).send("Internal Server Error");
-      }
-    });
     // Add other routes here...
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
@@ -453,8 +607,8 @@ connectToDatabase().then(() => {
 });
 
 /* 
-TO DO:
-- More error handling (more detailed error messages)
+Improvements to be Made:
+- More error handling (more detailed and/or specific error messages)
 - Input validation
-- More security (should be fine???)
+- Increase security (Enabling SSL or TSL)
 */
