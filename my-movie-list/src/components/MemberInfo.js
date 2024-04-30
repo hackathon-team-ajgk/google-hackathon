@@ -3,7 +3,7 @@ export const teamInfo = [
     name: "Alessandro Baldassarre",
     role: "Front-end Lead",
     image:
-      "https://images.immediate.co.uk/production/volatile/sites/3/2023/08/a35145e8fe1ddf12c8c945b2e5bdf3361664333053main-Cropped-d26b98e.png",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFITUPUodBkWDXleFadu70R83OsQBLt1xiAgncq3Us0Q&s",
     bio: "I am a Software Engineering student at the University of Calgary. I love boxing, hiking, anime, and much more. Connect with me on LinkedIn!",
     github: "https://github.com/aleabalda",
     linkedIn: "https://www.linkedin.com/in/aleabalda/",
