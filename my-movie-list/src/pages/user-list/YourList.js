@@ -79,13 +79,19 @@ function YourList() {
 
   return (
     <>
-      <MovieSlider genre="Watched Movies" movies={watched} />
-      <MovieSlider genre="Watching Soon" movies={watchLater} />
-      {suggestionsByList.length > 0 && (
-        <MovieSlider
-          genre="Recommendations From List"
-          movies={suggestionsByList}
-        />
+      {getToken() ? (
+        <>
+          <MovieSlider genre="Watched Movies" movies={watched} />
+          <MovieSlider genre="Watching Soon" movies={watchLater} />
+          {suggestionsByList.length > 0 && (
+            <MovieSlider
+              genre="Recommendations From List"
+              movies={suggestionsByList}
+            />
+          )}
+        </>
+      ) : (
+        <h1>You must be a user to have a list.</h1>
       )}
     </>
   );

@@ -162,7 +162,7 @@ function UserProfile() {
               </form>
             )}
             <p className="movies-stat">
-              Movies Watched:{" "}
+              Movies Watched:
               {userMovies.length > 0 && userData.movieData.watchedMovies.length}
             </p>
             <button
@@ -178,7 +178,7 @@ function UserProfile() {
         </div>
         <div id="account-stats" className="column-section">
           {userMovies.length > 0 && (
-            <MovieSlider genre="Movies In List" movies={userMovies} />
+            <MovieSlider genre="Movies In Lists" movies={userMovies} />
           )}
         </div>
       </section>
