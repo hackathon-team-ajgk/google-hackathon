@@ -163,9 +163,8 @@
 }
 
 #ai-suggestions {
-  height: 500px;
+  min-height: 350px;
   justify-content: center;
-  max-height: 800px;
 }
 
 #ai-sugg-text-container {
@@ -187,21 +186,6 @@
 
 #ai-sugg-secondary-text {
   font-size: 24px;
-}
-
-#ai-sugg-input {
-  width: 100%;
-  border-radius: 5px;
-  font-size: large;
-  color: white;
-  padding: 10px;
-  background-color: #4c4c4c;
-  border: none;
-  margin-top: 20px;
-}
-
-#ai-sugg-input::placeholder {
-  color: white;
 }
 
 .overlay {
@@ -363,7 +347,7 @@
     left: 100px;
   }
   #ai-suggestions {
-    min-height: 600px;
+    min-height: 400px;
   }
 }
 
@@ -453,9 +437,6 @@
   #movie-view-image {
     width: 200px;
   }
-  #ai-suggestions {
-    min-height: 725px;
-  }
 }
 
 @media (max-width: 640px) {
@@ -483,6 +464,9 @@
   #trending-movies-label {
     margin-left: 10px;
   }
+  #ai-suggestions {
+    min-height: 500px;
+  }
 }
 
 @media (max-width: 475px) {
@@ -491,8 +475,5 @@
   }
   .section-container {
     width: 100%;
-  }
-  #ai-suggestions {
-    min-height: 700px;
   }
 }
