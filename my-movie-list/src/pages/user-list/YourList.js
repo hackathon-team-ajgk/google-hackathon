@@ -11,28 +11,36 @@ function YourList() {
   const [watchLater, setWatchLater] = useState([]);
   const [suggestionsByList, setSuggestionsByList] = useState([]);
 
-  // useEffect(() => {
-  //   const getUserRecommendationsByList = async () => {
-  //     try {
-  //       const token = getToken();
-  //       const response = await axios.get(
-  //         "http://localhost:3000/getRecommendations-list"
-  //       );
-  //     } catch (error) {
-  //       if (error.response) {
-  //         // The server responded with a status code that falls out of the range of 2xx
-  //         console.error("Get Error:", error.response.data);
-  //         console.error("Status Code:", error.response.status);
-  //       } else if (error.request) {
-  //         // The request was made but no response was received
-  //         console.error("Request Error:", error.request);
-  //       } else {
-  //         // Something happened in setting up the request that triggered an Error
-  //         console.error("Error:", error.message);
-  //       }
-  //     }
-  //   };
-  // }, []);
+  useEffect(() => {
+    const getUserRecommendationsByList = async () => {
+      try {
+        const token = getToken();
+        const response = await axios.get(
+          "http://localhost:3000/getRecommendations-list",
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+        console.log(response.data);
+        setSuggestionsByList(response.data);
+      } catch (error) {
+        if (error.response) {
+          // The server responded with a status code that falls out of the range of 2xx
+          console.error("Get Error:", error.response.data);
+          console.error("Status Code:", error.response.status);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error("Request Error:", error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error("Error:", error.message);
+        }
+      }
+    };
+    getUserRecommendationsByList();
+  }, [getToken]);
 
   useEffect(() => {
     const getUserMovieData = async () => {
@@ -73,7 +81,12 @@ function YourList() {
     <>
       <MovieSlider genre="Watched Movies" movies={watched} />
       <MovieSlider genre="Watching Soon" movies={watchLater} />
-      {/* <MovieGrid searchResult={suggestionsByList} /> */}
+      {suggestionsByList.length > 0 && (
+        <MovieSlider
+          genre="Recommendations From List"
+          movies={suggestionsByList}
+        />
+      )}
     </>
   );
 }
