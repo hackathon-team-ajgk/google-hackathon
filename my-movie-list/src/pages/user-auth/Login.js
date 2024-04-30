@@ -23,6 +23,7 @@ function Login() {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
         console.error("Login Error:", error.response.data);
+        window.alert('Username or Password is Incorrect')
         console.error("Status Code:", error.response.status);
       } else if (error.request) {
         // The request was made but no response was received
@@ -40,7 +41,7 @@ function Login() {
       username: username,
       password: password,
     };
-    loginUser(credentials);
+
   };
 
   return (
