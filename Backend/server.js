@@ -1,5 +1,4 @@
-// THIS IS THE MOST UP TO DATE AND FUNCTIONAL VERSION
-// Run server and test with "requests.rest" file from top to bottom. Final request should return "Success" if working correctly.
+// THIS IS THE MOST UP TO DATE AND FUNCTIONAL VERSION (without using JWT's)
 
 const express = require("express");
 const app = express();

@@ -5,6 +5,12 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(API_READ_ACCESS_TOKEN);
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
+/**
+ * Provides movie suggestions based on the specified genre.
+ * @name giveMovieSuggestionsBasedOnGenre
+ * @param {string} userText - The genre for which movie suggestions are requested.
+ * @returns {Promise<Array<string>>} - An array of movie suggestions.
+ */
 async function giveMovieSuggestionsBasedOnGenre(userText) {
   try {
     console.log("Searching for " + userText + " movies...");
@@ -41,12 +47,19 @@ async function giveMovieSuggestionsBasedOnGenre(userText) {
   }
 }
 
+// ONLY FOR TESTING:
 /* async function test() {
     const x = await giveMovieSuggestionsBasedOnGenre("Romance")
     console.log(x)
 }
 test() */
-//Tallies the most popular genres in the users movie list, and then returns movies that are related to those genres
+
+/**
+ * Tallies the most popular genres in the user's movie list and returns related movies.
+ * @name tallyGenreInMovieList
+ * @param {Object} movieData - The user's movie data containing watched and watch later lists.
+ * @returns {Promise<Object>} - A dictionary containing tallied genres and their counts.
+ */
 async function tallyGenreInMovieList(movieData) {
   try {
     const genreTallyTotal = {
@@ -100,36 +113,22 @@ async function tallyGenreInMovieList(movieData) {
 }
 // tallyGenreInMovieList()
 
-// Make function that takes dictionary as input to gemini
+/**
+ * Provides movie suggestions based on the user's movie list.
+ * @name giveMovieSuggestionsBasedOnMovieList
+ * @param {Object} movieData - The user's movie data containing watched and watch later lists.
+ * @returns {Promise<Array<string>>} - An array of movie suggestions.
+ */
 async function giveMovieSuggestionsBasedOnMovieList(movieData) {
-    try {
-        const dictionary = await tallyGenreInMovieList(movieData)
-        const formattedDictionary = JSON.stringify(dictionary)
+  try {
+    const dictionary = await tallyGenreInMovieList(movieData);
+    const formattedDictionary = JSON.stringify(dictionary);
 
-        // Checking if dictionary is empty (problems loading dict). THIS COULD BE THE THING GIVING PROBLEMS RENDERING TWICE IN FRONTEND
-        if (!formattedDictionary.trim()) {
-            console.log("Formatted dictionary is empty. Exiting...")
-            return giveMovieSuggestionsBasedOnMovieList();
-        }
-        
-        const message = 'Can you give 10 movie suggestions based on the two highest genres in this dictionary. Give me this informantion in the following format: [movie1|movie2|movie3|etc]' 
-        const result = await model.generateContent(message+formattedDictionary)
-        const response = await result.response;
-        const text = response.text()
-
-        // Formatting AI recommendations
-        const regex = /\d+\./ //   \d+: Matches one or more digits and \. Matches a period
-        finalText = text.replace('[', '').replace(']', '').replace(regex, '').split('|')
-        // finalText.forEach(movie => console.log(movie)) // For testing only
-
-        // Checking for unwanted formatting or values
-        const nonEmptyMovies = outputFormatting(finalText) 
-
-        // Recursive call if array is empty
-        if (nonEmptyMovies.length === 1 && nonEmptyMovies[0] === '') {
-            console.log("Empty array detected. Generating new movie suggestions...")
-            return giveMovieSuggestionsBasedOnMovieList()
-        }
+    // Checking if dictionary is empty (problems loading dict). THIS COULD BE THE THING GIVING PROBLEMS RENDERING TWICE IN FRONTEND
+    if (!formattedDictionary.trim()) {
+      console.log("Formatted dictionary is empty. Exiting...");
+      return giveMovieSuggestionsBasedOnMovieList();
+    }
 
     const message =
       "Can you give 10 movie suggestions based on the two highest genres in this dictionary. Give me this informantion in the following format: [movie1|movie2|movie3|etc]";
@@ -166,27 +165,33 @@ async function giveMovieSuggestionsBasedOnMovieList(movieData) {
 }
 // giveMovieSuggestionsBasedOnMovieList()
 
-// giveMovieSuggestionsBasedOnMovieList function but with a timer
+/**
+ * Calls the function to generate movie suggestions with a timeout.
+ * @name callWithTimeout
+ * @param {Object} movieList - The user's movie list.
+ * @returns {Promise<Array<string>>} - An array of movie suggestions.
+ */
 async function callWithTimeout(movieList) {
+  const timeoutMs = 3500; // Max # ms allowed. Works with 3s unless list needs to be regenerated. 3.5s otherwise
 
-    const timeoutMs = 3500; // Max # ms allowed. Works with 3s unless list needs to be regenerated. 3.5s otherwise 
+  const movieSuggestionsPromise =
+    giveMovieSuggestionsBasedOnMovieList(movieList);
+  const timeoutPromise = new Promise((resolve) =>
+    setTimeout(resolve, timeoutMs)
+  );
 
-    const movieSuggestionsPromise = giveMovieSuggestionsBasedOnMovieList(movieList);
-    const timeoutPromise = new Promise((resolve) => setTimeout(resolve, timeoutMs));
-
-    try {
-        const result = await Promise.race([movieSuggestionsPromise, timeoutPromise]);
-        if (result !== undefined) {
-            console.log("Movie suggestions call completed:")
-            console.log(result);
-            return result;
-        } else {
-            console.log("Function execution timed out");
-            return null; // Or handle the timeout error as needed
-        }
-    } catch (error) {
-        console.log("Function execution failed:", error);
-        return null; // Or handle the error as needed
+  try {
+    const result = await Promise.race([
+      movieSuggestionsPromise,
+      timeoutPromise,
+    ]);
+    if (result !== undefined) {
+      console.log("Movie suggestions call completed:");
+      console.log(result);
+      return result;
+    } else {
+      console.log("Function execution timed out");
+      return null; // Or handle the timeout error as needed
     }
   } catch (error) {
     console.log("Function execution failed:", error);
@@ -195,7 +200,12 @@ async function callWithTimeout(movieList) {
 }
 // callWithTimeout()
 
-// Helper function
+/**
+ * Formats the final list of movie names, filtering out invalid entries.
+ * @name outputFormatting
+ * @param {string[]} finalText - The final list of movie names to be formatted.
+ * @returns {string[]} - An array containing non-empty and valid movie names.
+ */
 function outputFormatting(finalText) {
   const nonEmptyMovies = []; // Array to store non-empty movie names
   const startsWithNewline = (str) => /^\n/.test(str); // Function to check if a string starts with a newline character (\n)
@@ -256,13 +266,8 @@ module.exports = {
   outputFormatting,
 };
 /*
-TODO:
-- Output validation from AI response. Specifically, when there is an error with the dictionary. To test this,
-  try removing the await from the first line after the 'try{' in the giveMovieSuggestionsBasedOnMovieList function
-- Output validation for AI response in giveMovieSuggestionsBasedOnMovieList function. Run the function many times and 
-  deal with (or decide that its safe not to) random characters and formatting that shouldnt be the way it is
-- More I/O validation
-- MORE OUTPUT validation. SUPER weird outputs sometimes recieved from AI in giveMovieSuggestionsBasedOnMovieList function
-- Think about optimization
-- READ API USAGE LIMITS ON THE DOCUMENTATION. Make sure we have enough leeway for every potential user and for regenerating when invalid responses
+Improvements to be Made:
+- Potentially more I/O validation
+- More optimization
+- Increasing variety of movie recommendations
  */
