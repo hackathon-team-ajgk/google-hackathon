@@ -2,14 +2,8 @@
   text-align: center;
 }
 
-li.react-multi-carousel-item.react-multi-carousel-item--active {
-  display: grid;
-  justify-content: center;
-  width: 500px;
-}
-
-.react-multi-carousel-track {
-  gap: 1rem;
+.react-multi-carousel-list {
+  max-width: 100%;
 }
 
 .card {
@@ -48,12 +42,6 @@ li.react-multi-carousel-item.react-multi-carousel-item--active {
   border: 3px solid #4c4c4c;
   padding: 5px;
   text-align: center;
-}
-
-.text-container {
-  background-color: #f0f0f0;
-  padding: 0 20px;
-  border-radius: 5px;
 }
 
 .profile-text {
@@ -99,6 +87,7 @@ a:visited {
 
 #about-container {
   flex-direction: column;
+  align-items: center;
 }
 
 .about-text {
@@ -106,4 +95,80 @@ a:visited {
   font-size: 20px;
   margin: 0;
   padding: 0 10px 20px;
+}
+
+.contact-us {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 600px;
+  height: 500px;
+  background-color: #4c4c4c;
+  margin-bottom: 40px;
+  border-radius: 10px;
+}
+
+#form-heading {
+  text-align: start;
+  margin-top: 0;
+  margin-bottom: 20px;
+  width: 524px;
+}
+
+.form-field {
+  display: flex;
+  gap: 1rem;
+}
+
+.contact-input {
+  height: 50px;
+  width: 250px;
+  padding-left: 10px;
+
+  font-size: large;
+  border: none;
+  color: #f0f0f0;
+  background-color: #3c3c3c;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.contact-input::placeholder {
+  font-size: large;
+  padding-left: 10px;
+  color: #f0f0f0;
+}
+
+.contact-input:hover {
+  box-shadow: 2px 2px 6px black;
+}
+
+#address-input {
+  width: 528px;
+}
+
+#contact-textarea {
+  margin: 0;
+  max-width: 518px;
+  background-color: #1b1b1b;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+#contact-textarea::placeholder {
+  padding-top: 5px;
+  padding-left: 15px;
+}
+
+#contact-textarea:hover {
+  box-shadow: 2px 2px 6px black;
+}
+
+#contact-button {
+  background-color: #3c3c3c;
+  width: 100px;
+  height: 50px;
+  border-radius: 20px;
 }

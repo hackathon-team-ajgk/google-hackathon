@@ -91,7 +91,7 @@ function YourList() {
           )}
         </>
       ) : (
-        <h1 id= "">You must be a user to have a list</h1>
+        <h1>You must be a user to have a list.</h1>
       )}
     </>
   );

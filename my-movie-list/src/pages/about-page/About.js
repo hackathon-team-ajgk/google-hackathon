@@ -4,6 +4,7 @@ import "react-multi-carousel/lib/styles.css";
 import ProfileCard from "../../components/ProfileCard";
 import { teamInfo } from "../../components/MemberInfo";
 import "../../App.css";
+import Contact from "../../components/Contact";
 
 function About() {
   const responsive = {
@@ -25,6 +26,8 @@ function About() {
       items: 1,
     },
   };
+
+  console.log(teamInfo);
 
   return (
     <>
@@ -78,6 +81,8 @@ function About() {
             <ProfileCard key={`member-${key}`} member={val} />
           ))}
         </Carousel>
+        <h2 className="page-heading">Contact Us</h2>
+        <Contact />
       </section>
     </>
   );

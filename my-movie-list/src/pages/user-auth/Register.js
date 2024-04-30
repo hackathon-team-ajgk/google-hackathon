@@ -57,9 +57,11 @@ function Register() {
           id="username-field"
           className="form-input"
           type="text"
+          value={username}
           onChange={(e) => {
             setUsername(e.target.value);
           }}
+          placeholder="Enter Username:"
           autoComplete="username"
           required
         />
@@ -73,7 +75,11 @@ function Register() {
           onChange={(e) => {
             setPassword(e.target.value);
           }}
-          autoComplete="current-password"
+          value={password}
+          placeholder="Enter Password:"
+          title="Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+          autoComplete="new-password"
           required
         />
         <button
