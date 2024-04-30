@@ -27,7 +27,8 @@ app.use((req, res, next) => {
 });
 
 /**
- * Middleware to authenticate JWT token.
+ * Middleware to authenticate JWT token
+ * @name authenticateToken
  * @param {object} req - Express request object
  * @param {object} res - Express response object
  * @param {function} next - Express next function
@@ -52,7 +53,7 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
-// Connect to the MongoDB server
+// Connect to the MongoDB server and then take any route
 async function connectToDatabase() {
   try {
     await client.connect();
@@ -67,7 +68,7 @@ async function connectToDatabase() {
      * @name GET/user
      * @param {object} req - Express request object
      * @param {object} res - Express response object
-     * @returns {void}
+     * @returns {object} - All the data about the signed-in user
      */
     app.get("/user", authenticateToken, async (req, res) => {
       try {
@@ -91,7 +92,7 @@ async function connectToDatabase() {
      * @name GET/allUsers
      * @param {object} req - Express request object
      * @param {object} res - Express response object
-     * @returns {void}
+     * @returns {object} - All the data about all the users in the database. Only used for development purposes
      */
     app.get("/allUsers", async (req, res) => {
       try {
@@ -104,6 +105,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Retrieves movie data associated with the authenticated user
+     * @name GET/getUserMovieData
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {object} - The movie data associated with the user
+     */
     app.get("/getUserMovieData", authenticateToken, async (req, res) => {
       try {
         // Find the user directly using the username from the token
@@ -128,6 +136,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Retrieves movies from the search query
+     * @name GET/getMoviesFromSearch
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/getMoviesFromSearch", async (req, res) => {
       try {
         const { movie } = req.query;
@@ -147,6 +162,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Retrieves trending movies
+     * @name GET/getTrendingMovies
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/getTrendingMovies", (req, res) => {
       movieAPI
         .getTrendingMovies()
@@ -158,6 +180,13 @@ async function connectToDatabase() {
         });
     });
 
+    /**
+     * Retrieves popular movies.
+     * @name GET/getPopularMovies
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/getPopularMovies", (req, res) => {
       movieAPI
         .getPopularMovieHandler()
@@ -226,6 +255,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to delete an authenticated user and all their data from the database
+     * @name DELETE/delete-account
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.delete("/delete-account", authenticateToken, async (req, res) => {
       const user = req.user.username;
       try {
@@ -254,7 +290,7 @@ async function connectToDatabase() {
     });
 
     /**
-     * Route to update the state of a movie.
+     * Route to update the state of a movie for an authenticated user
      * @name PUT/edit-movie-state
      * @param {object} req - Express request object
      * @param {object} res - Express response object
@@ -307,6 +343,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to update the state of a movie for an authenticated user
+     * @name PUT/changeBio
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.put("/changeBio", authenticateToken, async (req, res) => {
       try {
         const { username, bio } = req.body;
@@ -325,7 +368,7 @@ async function connectToDatabase() {
     });
 
     /**
-     * Route to remove a movie from user's lists.
+     * Route to remove a movie from user's lists
      * @name PUT/remove-movie
      * @param {object} req - Express request object
      * @param {object} res - Express response object
@@ -395,7 +438,7 @@ async function connectToDatabase() {
     });
 
     /**
-     * Route to update user's rating for a movie.
+     * Route to update user's rating for a movie
      * @name PUT/update-user-rating
      * @param {object} req - Express request object
      * @param {object} res - Express response object
@@ -456,6 +499,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to get movie recommendations based on a given genre
+     * @name GET/getRecommendations-genre
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/getRecommendations-genre", async (req, res) => {
       try {
         const userGenre = req.body.genres;
@@ -473,6 +523,13 @@ async function connectToDatabase() {
       }
     });
 
+    /**
+     * Route to get movie recommendations based on the authenticated user's movie lists
+     * @name GET/getRecommendations-list
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns {void}
+     */
     app.get("/getRecommendations-list", authenticateToken, async (req, res) => {
       try {
         // Find the user in the database
@@ -496,6 +553,7 @@ async function connectToDatabase() {
         res.status(500).send("Internal Server Error");
       }
     });
+
     // Add other routes here...
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);

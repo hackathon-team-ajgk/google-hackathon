@@ -1,5 +1,4 @@
 // THIS IS A SERVER IN DEVELOPMENT
-// Run server and test with "requests.rest" file from top to bottom. Final request should return "Success" if working correctly.
 
 const movieAPI = require("./movieApiHandler");
 const express = require("express");

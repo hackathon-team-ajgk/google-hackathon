@@ -5,6 +5,12 @@ const { GoogleGenerativeAI } = require("@google/generative-ai")
 const genAI = new GoogleGenerativeAI(API_READ_ACCESS_TOKEN)
 const model = genAI.getGenerativeModel({model: "gemini-pro"})
 
+/**
+ * Provides movie suggestions based on the specified genre.
+ * @name giveMovieSuggestionsBasedOnGenre
+ * @param {string} userText - The genre for which movie suggestions are requested.
+ * @returns {Promise<Array<string>>} - An array of movie suggestions.
+ */
 async function giveMovieSuggestionsBasedOnGenre(userText) {
     try {
         console.log("Searching for " + userText + " movies...")
@@ -36,12 +42,19 @@ async function giveMovieSuggestionsBasedOnGenre(userText) {
     }
 }
 
+// ONLY FOR TESTING:
 /* async function test() {
     const x = await giveMovieSuggestionsBasedOnGenre("Romance")
     console.log(x)
 }
 test() */
-//Tallies the most popular genres in the users movie list, and then returns movies that are related to those genres 
+
+/**
+ * Tallies the most popular genres in the user's movie list and returns related movies.
+ * @name tallyGenreInMovieList
+ * @param {Object} movieData - The user's movie data containing watched and watch later lists.
+ * @returns {Promise<Object>} - A dictionary containing tallied genres and their counts.
+ */
 async function tallyGenreInMovieList(movieData) {
     try {
         const genreTallyTotal = {
@@ -96,7 +109,12 @@ async function tallyGenreInMovieList(movieData) {
 }
 // tallyGenreInMovieList()
 
-// Make function that takes dictionary as input to gemini
+/**
+ * Provides movie suggestions based on the user's movie list.
+ * @name giveMovieSuggestionsBasedOnMovieList
+ * @param {Object} movieData - The user's movie data containing watched and watch later lists.
+ * @returns {Promise<Array<string>>} - An array of movie suggestions.
+ */
 async function giveMovieSuggestionsBasedOnMovieList(movieData) {
     try {
         const dictionary = await tallyGenreInMovieList(movieData)
@@ -135,7 +153,12 @@ async function giveMovieSuggestionsBasedOnMovieList(movieData) {
 }
 // giveMovieSuggestionsBasedOnMovieList()
 
-// giveMovieSuggestionsBasedOnMovieList function but with a timer
+/**
+ * Calls the function to generate movie suggestions with a timeout.
+ * @name callWithTimeout
+ * @param {Object} movieList - The user's movie list.
+ * @returns {Promise<Array<string>>} - An array of movie suggestions.
+ */
 async function callWithTimeout(movieList) {
     const timeoutMs = 3500; // Max # ms allowed. Works with 3s unless list needs to be regenerated. 3.5s otherwise 
 
@@ -159,7 +182,12 @@ async function callWithTimeout(movieList) {
 }
 // callWithTimeout()
 
-// Helper function
+/**
+ * Formats the final list of movie names, filtering out invalid entries.
+ * @name outputFormatting
+ * @param {string[]} finalText - The final list of movie names to be formatted.
+ * @returns {string[]} - An array containing non-empty and valid movie names.
+ */
 function outputFormatting(finalText) {
     const nonEmptyMovies = []; // Array to store non-empty movie names
     const startsWithNewline = (str) => /^\n/.test(str);  // Function to check if a string starts with a newline character (\n)
@@ -211,7 +239,6 @@ function outputFormatting(finalText) {
 
     return nonEmptyMovies; // Return the array containing non-empty movie names
 }
-
 
 module.exports = {
     giveMovieSuggestionsBasedOnGenre,
