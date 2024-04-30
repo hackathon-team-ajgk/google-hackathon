@@ -9,6 +9,13 @@ function MovieCard({ movie }) {
   const toggleOverlay = () => {
     setOverlayOn(!overlayOn);
   };
+
+  // Function toggle overlay visibility OFF
+  const removeOverlay = () => {
+    if (overlayOn === true) {
+      setOverlayOn(!overlayOn)
+    }
+  };
   return (
     <>
       <div className="movie-card" onClick={toggleOverlay}>
