@@ -96,3 +96,14 @@ a:visited {
 .see-more-less:hover {
   text-decoration: underline;
 }
+
+#about-container {
+  flex-direction: column;
+}
+
+.about-text {
+  text-align: justify;
+  font-size: 20px;
+  margin: 0;
+  padding: 0 10px 20px;
+}
