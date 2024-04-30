@@ -1,9 +1,9 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const API_READ_ACCESS_TOKEN = process.env.GEMINI_API;
-const { GoogleGenerativeAI } = require("@google/generative-ai")
-const genAI = new GoogleGenerativeAI(API_READ_ACCESS_TOKEN)
-const model = genAI.getGenerativeModel({ model: "gemini-pro" })
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const genAI = new GoogleGenerativeAI(API_READ_ACCESS_TOKEN);
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 /**
  * Provides movie suggestions based on the specified genre.

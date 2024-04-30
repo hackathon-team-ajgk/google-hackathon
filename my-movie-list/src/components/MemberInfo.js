@@ -11,7 +11,8 @@ export const teamInfo = [
   {
     name: "Ernesto",
     role: "Back-end Lead",
-    image: "https://media.tenor.com/o-wNCEq_6f0AAAAe/pompo-the-cinephile-typing-fast.png",
+    image:
+      "https://media.tenor.com/o-wNCEq_6f0AAAAe/pompo-the-cinephile-typing-fast.png",
     bio: "Software Engineering and Business student at the University of Calgary. I love to read, mountain bike, travel, learn languages, and watch anime. Visit my LinkedIn to tell me what we can improve 🙋!",
     github: "https://github.com/Ernesto-B",
     linkedIn: "linkedin.com/in/ernesto-barreto-58a9b0258",
@@ -19,7 +20,8 @@ export const teamInfo = [
   {
     name: "Gabriel Toro",
     role: "Front-end Dev",
-    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAHUNlP8YNrVxDQgaVzoZSHSFOW2gdNahpVw4YoFlp03pnep_0xgvN5eSgtnWf32zPC5pFQpfdcj7_CA4M3keMJMI6pW-kUK1IieqRgB9VdoxygsvtcnGx8Atkiu0YZ0Si7CBLFfkmiBQ/s1600/great+teacher+onizuka.jpg",
+    image:
+      "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAHUNlP8YNrVxDQgaVzoZSHSFOW2gdNahpVw4YoFlp03pnep_0xgvN5eSgtnWf32zPC5pFQpfdcj7_CA4M3keMJMI6pW-kUK1IieqRgB9VdoxygsvtcnGx8Atkiu0YZ0Si7CBLFfkmiBQ/s1600/great+teacher+onizuka.jpg",
     bio: "A Computer Information Systems major who likes to learn languages, travel, and play games on his spare time. Will always try to get out of my comfort zone. Reach out if you have any questions!",
     github: "https://github.com/MrMoustache1",
     linkedIn: "https://www.linkedin.com/in/gabriel-toro-a6b79429a/",

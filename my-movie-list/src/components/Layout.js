@@ -150,7 +150,9 @@ function Layout() {
           <Navbar />
         </div>
         <div id="footer-copyright" className="footer-container">
-          <p id="footer-title">MyMovieList &copy; 2024</p>
+          <p id="footer-title">
+            MyMovieList <span id="copyright">&copy; 2024</span>
+          </p>
         </div>
       </footer>
     </div>

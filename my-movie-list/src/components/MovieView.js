@@ -10,28 +10,31 @@ function MovieView({ movieInfo, toggleOverlay }) {
   const [rating, setRating] = useState(movieInfo.userRating);
 
   useEffect(() => {
-    const checkMovieInList = () => {
-      const movieData = getUserMovieData();
-      const watchLater = movieData.watchLaterList.find(
-        (movie) => movie.movieId === movieInfo.movieId
-      );
-      if (watchLater !== undefined) {
-        console.log(watchLater);
-        setMovieStatus("Watching Soon");
-      } else {
-        const watched = movieData.watchedMovies.find(
+    if (getToken()) {
+      const checkMovieInList = () => {
+        console.log("hello");
+        const movieData = getUserMovieData();
+        const watchLater = movieData.watchLaterList.find(
           (movie) => movie.movieId === movieInfo.movieId
         );
-        if (watched !== undefined) {
-          setMovieStatus("Watched");
-          setRating(watched.userRating);
+        if (watchLater !== undefined) {
+          console.log(watchLater);
+          setMovieStatus("Watching Soon");
         } else {
-          setMovieStatus("Not in List");
+          const watched = movieData.watchedMovies.find(
+            (movie) => movie.movieId === movieInfo.movieId
+          );
+          if (watched !== undefined) {
+            setMovieStatus("Watched");
+            setRating(watched.userRating);
+          } else {
+            setMovieStatus("Not in List");
+          }
         }
-      }
-    };
-    checkMovieInList();
-  }, [getUserMovieData, movieInfo]);
+      };
+      checkMovieInList();
+    }
+  }, [getUserMovieData, getToken, movieInfo]);
 
   const updateMovieRating = async (movieRating) => {
     try {
@@ -143,6 +146,8 @@ function MovieView({ movieInfo, toggleOverlay }) {
     }
   };
 
+  console.log(movieInfo);
+
   return (
     <div className="overlay">
       <div id="movie-view-page">
@@ -165,7 +170,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
             </p>
             <p id="movie-average-rating" className="movie-text">
               <strong className="movie-metadata">Average Rating:</strong>{" "}
-              {movieInfo.averageRating}
+              {parseFloat(movieInfo.averageRating.toFixed(1))}
             </p>
             <p id="movie-release-date" className="movie-text">
               <strong className="movie-metadata">Release Date:</strong>{" "}
