@@ -1,6 +1,7 @@
 function Contact() {
   return (
     <form className="contact-us">
+      <h2 id="form-heading">Get in Touch</h2>
       <div className="form-field">
         <input
           id="first-name-input"

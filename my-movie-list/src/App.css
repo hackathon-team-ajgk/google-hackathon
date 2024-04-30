@@ -135,7 +135,7 @@ main {
 
 .button:hover {
   background-color: #4c4c4c;
-  box-shadow: 6px 6px 20px #0d0d0d;
+  box-shadow: 4px 4px 8px #0d0d0d;
 }
 
 footer {
