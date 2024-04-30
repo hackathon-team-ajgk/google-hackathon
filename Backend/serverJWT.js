@@ -493,6 +493,7 @@ async function connectToDatabase() {
           return res.status(404).send("User not found");
         }
         const movieList = userInDb.movieData;
+        console.log(movieList);
         const movieSuggestions = await geminiAPI.callWithTimeout(movieList);
         const movieMetadata = [];
         for (const movie of movieSuggestions) {

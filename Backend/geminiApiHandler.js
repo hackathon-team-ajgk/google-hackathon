@@ -91,7 +91,7 @@ async function tallyGenreInMovieList(movieData) {
         }
       });
     });
-
+    console.log(genreTallyTotal);
     return genreTallyTotal;
   } catch (error) {
     console.error("Error tallying genres:", error);
@@ -148,7 +148,7 @@ async function giveMovieSuggestionsBasedOnMovieList(movieData) {
 // giveMovieSuggestionsBasedOnMovieList()
 
 // giveMovieSuggestionsBasedOnMovieList function but with a timer
-async function callWithTimeout() {
+async function callWithTimeout(movieList) {
   const timeoutMs = 6000; // Max # ms allowed. Works with 3s unless list needs to be regenerated. 3.5s otherwise
 
   const movieSuggestionsPromise =
