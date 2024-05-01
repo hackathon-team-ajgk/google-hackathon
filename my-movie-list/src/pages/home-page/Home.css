@@ -125,17 +125,28 @@
   margin: 40px 0;
   box-shadow: 4px 4px 20px 2px black;
   border-radius: 10px;
+  max-width: 1552px;
 }
 
 .movie-slider {
   height: 325px;
-  padding: 0 10px;
-  gap: 10px;
-  max-width: 100%;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;
   max-width: 1552px;
+}
+
+.progress-div {
+  width: 100%;
+  max-width: 1552px;
+}
+
+.empty-list-msg {
+  padding-left: 20px;
+  font-size: 30px;
 }
 
 .movie-card {

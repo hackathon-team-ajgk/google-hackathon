@@ -81,8 +81,18 @@ function YourList() {
     <div className="sub-page">
       {getToken() ? (
         <>
-          <MovieSlider genre="Watched" movies={watched} />
-          <MovieSlider genre="Watch Later" movies={watchLater} />
+          <MovieSlider
+            genre="Watched"
+            movies={watched}
+            isList={true}
+            isEmpty={watched.length === 0}
+          />
+          <MovieSlider
+            genre="Watch Later"
+            movies={watchLater}
+            isList={true}
+            isEmpty={watchLater.length === 0}
+          />
 
           {suggestionsByList.length > 0 && (
             <MovieSlider
@@ -99,7 +109,7 @@ function YourList() {
           </button>
         </>
       ) : (
-        <h1>You must be a user to have a list.</h1>
+        <h1 id="guest-msg">You must be a user to have a list.</h1>
       )}
     </div>
   );

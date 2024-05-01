@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 function authenticateToken(req, res, next) {
   const token = req.headers["authorization"];
   // const token = authHeader && authHeader.split(" ")[1];
-  if (token == null) return res.send("No token");
+  if (token == null) return res.status(401).send("No token");
 
   jwt.verify(token, process.env.JWT_SECRET, (err, body) => {
     if (err) return res.send("Unverified token");
@@ -438,7 +438,7 @@ async function connectToDatabase() {
                 );
             }
           }
-        } else if (status === "Watching Soon") {
+        } else if (status === "Watch Later") {
           // Find and remove the movie from the watchLaterList
           if (user.movieData.watchLaterList) {
             removedMovie = user.movieData.watchLaterList.find(
@@ -452,7 +452,7 @@ async function connectToDatabase() {
             }
           }
         } else {
-          res.status(404).send(`Movie with name ${movieName} not found`);
+          return res.status(404).send(`Movie with name ${movieName} not found`);
         }
 
         // Update the user document in the database

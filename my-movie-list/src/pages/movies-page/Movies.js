@@ -8,6 +8,8 @@ import MovieRecs from "../../components/MovieRecs";
 function Movies() {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
+  const [searchedMovies, setSearchedMovies] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
     const getTrendingMovies = async () => {
@@ -65,10 +67,26 @@ function Movies() {
     getPopularMovies();
   }, []);
 
+  const handleSearch = (searchResult) => {
+    setSearchedMovies(searchResult);
+  };
+
+  const handleRecommendations = (recommendations) => {
+    setRecommendations(recommendations);
+  };
+
   return (
     <div className="sub-page">
-      <SearchMovie />
-      <MovieRecs />
+      <div className="search-recs-container">
+        <SearchMovie onSearch={handleSearch} />
+        <MovieRecs onChange={handleRecommendations} />
+      </div>
+      {searchedMovies.length > 0 && (
+        <MovieSlider genre="Search Results" movies={searchedMovies} />
+      )}
+      {recommendations.length > 0 && (
+        <MovieSlider genre={`Recommendations`} movies={recommendations} />
+      )}
       <MovieSlider genre="Trending" movies={trendingMovies} />
       <MovieSlider genre="Popular" movies={popularMovies} />
     </div>
