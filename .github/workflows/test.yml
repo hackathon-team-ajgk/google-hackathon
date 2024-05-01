@@ -1,0 +1,26 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }} # This will always be main in this case
+      - name: Echo message
+        run: echo "This is a test"
+        shell: bash
+
+  test2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo message
+        run: echo "This is the end of the test"
+        shell: bash
