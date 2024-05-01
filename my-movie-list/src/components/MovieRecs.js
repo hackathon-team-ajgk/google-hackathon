@@ -27,6 +27,7 @@ function MovieRecs() {
 
   const [genre, setGenre] = useState("Action");
   const [suggestionsByGenre, setSuggestionsByGenre] = useState([]);
+  const [buttonState, setButtonState] = useState("Get Recommendations");
 
   // Function to update the state based on the option selected by the user
   const handleGenreChange = (event) => {
@@ -35,6 +36,7 @@ function MovieRecs() {
 
   const getRecommendationsByGenre = async () => {
     try {
+      setButtonState("Loading...");
       const response = await axios.get(
         "http://localhost:3000/getRecommendations-genre",
         {
@@ -56,6 +58,7 @@ function MovieRecs() {
         console.error("Error:", error.message);
       }
     }
+    setButtonState("Get Recommendations");
   };
 
   const handleGetRecsSubmit = (event) => {
@@ -81,7 +84,7 @@ function MovieRecs() {
             ))}
           </select>
           <button id="get-recs-btn" type="submit" className="button">
-            Get Recommendations
+            {buttonState}
           </button>
         </form>
       </section>
