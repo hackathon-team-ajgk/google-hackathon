@@ -131,8 +131,6 @@
 .movie-slider {
   height: 325px;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;
@@ -186,6 +184,7 @@
 #ai-suggestions {
   min-height: 350px;
   justify-content: center;
+  margin: 20px 0;
 }
 
 #ai-sugg-text-container {

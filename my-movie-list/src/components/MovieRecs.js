@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { CircularProgress } from "@mui/material";
 
 function MovieRecs({ onChange }) {
   const genres = [
@@ -77,9 +78,13 @@ function MovieRecs({ onChange }) {
               </option>
             ))}
           </select>
-          <button id="get-recs-btn" className="button" disabled={isLoading}>
-            {isLoading ? "Loading..." : "Get Recommendations"}
-          </button>
+          {isLoading ? (
+            <CircularProgress color="inherit" />
+          ) : (
+            <button id="get-recs-btn" className="button">
+              Get Recommendations
+            </button>
+          )}
         </form>
       </section>
       {/* {suggestionsByGenre.length > 0 && (

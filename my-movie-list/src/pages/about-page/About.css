@@ -136,7 +136,7 @@ a:visited {
   width: 100%;
   display: grid;
   justify-content: center;
-  margin: 100px 0;
+  margin-top: 80px;
 }
 
 .about-text {

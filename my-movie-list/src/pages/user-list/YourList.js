@@ -3,6 +3,7 @@ import MovieSlider from "../../components/MovieSlider";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function YourList() {
   const { getToken, getUsername } = useAuth();
@@ -10,11 +11,11 @@ function YourList() {
   const [watched, setWatched] = useState([]);
   const [watchLater, setWatchLater] = useState([]);
   const [suggestionsByList, setSuggestionsByList] = useState([]);
-  const [buttonState, setButtonState] = useState("Generate Recommendations");
+  const [isLoading, setIsLoading] = useState(false);
 
   const getUserRecommendationsByList = async () => {
     try {
-      setButtonState("Loading...");
+      setIsLoading(true);
       const token = getToken();
       const response = await axios.get(
         "http://localhost:3000/getRecommendations-list",
@@ -26,7 +27,6 @@ function YourList() {
       );
       console.log(response.data);
       setSuggestionsByList(response.data);
-      setButtonState("Generate New Recommendations");
     } catch (error) {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
@@ -40,6 +40,7 @@ function YourList() {
         console.error("Error:", error.message);
       }
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -100,13 +101,17 @@ function YourList() {
               movies={suggestionsByList}
             />
           )}
-          <button
-            id="generate-recs-list"
-            className="button"
-            onClick={getUserRecommendationsByList}
-          >
-            {buttonState}
-          </button>
+          {isLoading ? (
+            <CircularProgress color="inherit" />
+          ) : (
+            <button
+              id="generate-recs-list"
+              className="button"
+              onClick={getUserRecommendationsByList}
+            >
+              Get Recommendations
+            </button>
+          )}
         </>
       ) : (
         <h1 id="guest-msg">You must be a user to have a list.</h1>

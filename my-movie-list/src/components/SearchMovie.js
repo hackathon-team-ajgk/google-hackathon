@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function SearchMovie({ onSearch }) {
   const [searchedMovie, setSearchedMovie] = useState("");
@@ -51,14 +52,14 @@ function SearchMovie({ onSearch }) {
                 setSearchedMovie(e.target.value);
               }}
             />
-            <button
-              id="search-submit-btn"
-              className="button"
-              type="submit"
-              disabled={isLoading}
-            >
-              {isLoading ? "Loading..." : "Search"}
-            </button>
+
+            {isLoading ? (
+              <CircularProgress color="inherit" />
+            ) : (
+              <button id="search-submit-btn" className="button" type="submit">
+                Search
+              </button>
+            )}
           </form>
         </div>
       </section>

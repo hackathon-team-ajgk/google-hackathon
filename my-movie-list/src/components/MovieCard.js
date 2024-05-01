@@ -8,9 +8,6 @@ function MovieCard({ movie }) {
 
   // Function to toggle overlay visibility
   const toggleOverlay = () => {
-    if (overlayOn) {
-      window.location.reload();
-    }
     setOverlayOn(!overlayOn);
   };
 

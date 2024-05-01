@@ -27,17 +27,18 @@ function MovieView({ movieInfo, toggleOverlay }) {
         if (getToken()) {
           const usersWatched = userData.movieData.watchedMovies;
           const usersWatchLater = userData.movieData.watchLaterList;
-          const movieInWatched = usersWatched.some(
+          const movieInWatched = usersWatched.find(
             (movie) => movie.movieId === movieInfo.movieId
           );
-          if (movieInWatched) {
+          if (movieInWatched !== undefined) {
             setInWatched(true);
             setStatus("Watched");
+            setRating(movieInWatched.userRating);
           } else {
-            const movieInWatchLater = usersWatchLater.some(
+            const movieInWatchLater = usersWatchLater.find(
               (movie) => movie.movieId === movieInfo.movieId
             );
-            if (movieInWatchLater) {
+            if (movieInWatchLater !== undefined) {
               setInWatchLater(true);
               setStatus("Watch Later");
             }
@@ -58,6 +59,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
             removeFromList(status, movieInfo);
             setInWatched(false);
             setStatus("Not in List");
+            resetRating();
           }}
         >
           Remove from Watched
@@ -103,6 +105,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
             setStatus("Watch Later");
             setInWatchLater(true);
             setInWatched(false);
+            resetRating();
           }}
         >
           Add to Watch Later
