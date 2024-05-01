@@ -25,7 +25,7 @@ jobs:
           MONGO_USERNAME:  ${{ secrets.MONGO_USERNAME }}
           MONGO_PASSWORD:  ${{ secrets.MONGO_PASSWORD }}
           MOVIE_API:  ${{ secrets.MOVIE_API }}
-      run: echo "processed all the environment variables" ; echo "this is the mongo username ${{secrets.MONGO_USERNAME}}"; echo "this is the mongo username ${{secrets.MONGO_PASSWORD}}"
+      run: echo "processed all the environment variables" ; echo "this is the mongo username $MONGO_USERNAME"; echo "this is the mongo username $MONGO_PASSWORD"
       shell: bash
 
     - name: Start front and backend
