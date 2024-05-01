@@ -27,6 +27,10 @@ jobs:
           MOVIE_API:  ${{ secrets.MOVIE_API }}
       run: echo "processed all the environment variables" 
       shell: bash
+
+    - name: Start front and backend
+      run: cd Backend ; node serverJWT.js ; cd ../my-movie-list; npm start ; echo "started the application"
+      shell: bash
   
   
     
