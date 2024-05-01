@@ -28,7 +28,7 @@
 
 .page-heading {
   text-align: center;
-  font-size: 50px;
+  font-size: 60px;
 }
 
 #carousel-container {
@@ -140,7 +140,7 @@ a:visited {
 }
 
 .about-text {
-  font-size: 30px;
+  font-size: 40px;
   margin: 0;
   padding: 0 20px;
   text-align: center;
@@ -148,6 +148,16 @@ a:visited {
 
 .features {
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 0;
+}
+
+.feature {
+  font-size: 40px;
+  text-align: center;
+  padding: 20px;
 }
 
 .contact-us {
@@ -230,9 +240,6 @@ a:visited {
   #about-heading {
     left: 300px;
   }
-  .page-heading {
-    font-size: 35px;
-  }
   .about-sub-container {
     max-width: 1552px;
   }
@@ -242,8 +249,17 @@ a:visited {
   #about-heading {
     left: 300px;
   }
+  .page-heading {
+    font-size: 50px;
+  }
   .about-sub-container {
     max-width: 1280px;
+  }
+  .about-text {
+    font-size: 30px;
+  }
+  .feature {
+    font-size: 30px;
   }
 }
 
@@ -266,6 +282,10 @@ a:visited {
   .about-text {
     font-size: 20px;
   }
+  .feature {
+    max-height: 60px;
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 825px) {
@@ -276,16 +296,30 @@ a:visited {
     font-size: 25px;
   }
   .about-sub-container {
-    max-width: 500px;
+    max-width: 600px;
   }
   .about-text {
     font-size: 18px;
+  }
+  .features {
+    width: 600px;
+    align-items: center;
+    gap: 0;
+  }
+  .feature {
+    min-height: 120px;
   }
 }
 
 @media (max-width: 640px) {
   .about-sub-container {
     max-width: 475px;
+  }
+  .features {
+    max-width: 475px;
+  }
+  #second-feature {
+    margin-bottom: 20px;
   }
   #form-heading {
     text-align: center;

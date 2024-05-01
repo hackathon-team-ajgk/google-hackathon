@@ -17,7 +17,7 @@ function About() {
         <section className="about-section">
           <div className="about-sub-container">
             <h2 className="page-heading">Our Objective</h2>
-            <p className="about-text">
+            <p id="objective" className="about-text">
               Our objective with this project was to faciliate the movie
               watching process for users. We wanted to create a website where
               users could create their own personalized list of movies and give
@@ -33,20 +33,20 @@ function About() {
           <div className="about-sub-container">
             <h2 className="page-heading">Our Features</h2>
             <ul className="features">
-              <li className="about-text">
+              <li className="feature">
                 Users can browse trending and popular movies in the database
                 from the TMDB API. Movie names, titles, or even just keywords
                 can be entered into the search bar to find a specific movie or
                 movies with similar names.
               </li>
-              <li className="about-text">
+              <li id="second-feature" className="feature">
                 Users can click on a movie to reveal movie metadata including
                 the movie title, overview, genres, release date, etc. On this
                 same screen users can give movies rating, but only if the movie
                 is in their list and set to "Watched". Ratings range from 1-5 in
                 the form of stars.
               </li>
-              <li className="about-text">
+              <li className="feature">
                 Users can save movies to their list, more specifically either
                 their "Watched" list or their "Watching Soon" list. Users will
                 then get recommendations based on the movies in their list. This
@@ -61,7 +61,6 @@ function About() {
           <MemberCarousel />
         </section>
         <section id="contact-section">
-          <h2 className="page-heading">Contact Us</h2>
           <Contact />
         </section>
       </div>
