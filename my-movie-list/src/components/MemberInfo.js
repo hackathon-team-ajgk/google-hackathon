@@ -29,7 +29,8 @@ export const teamInfo = [
   {
     name: "Jose Sanchez",
     role: "Back-end Dev",
-    image: "",
+    image:
+      "https://thicc.mywaifulist.moe/waifus/4234/598b4b1806115a5ac68260eb844ce050efbcee7a25189864632c27fc418163d1_thumb.jpg",
     bio: "",
     github: "",
     linkedIn: "",

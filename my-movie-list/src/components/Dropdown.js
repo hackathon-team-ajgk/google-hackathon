@@ -26,16 +26,6 @@ function Dropdown({ toggle, logout }) {
         List
       </div>
       <div
-        id="settings-link"
-        className="dropdown-link"
-        onClick={() => {
-          toggle();
-          navigate("/settings");
-        }}
-      >
-        Settings
-      </div>
-      <div
         id="logout-link"
         className="dropdown-link"
         onClick={() => {

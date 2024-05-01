@@ -66,13 +66,12 @@ function Movies() {
   }, []);
 
   return (
-    <>
+    <div className="sub-page">
       <SearchMovie />
       <MovieRecs />
-
       <MovieSlider genre="Trending" movies={trendingMovies} />
       <MovieSlider genre="Popular" movies={popularMovies} />
-    </>
+    </div>
   );
 }
 
