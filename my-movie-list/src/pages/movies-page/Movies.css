@@ -36,6 +36,7 @@
   background-color: #4c4c4c;
   color: #ffffff;
   padding: 10px;
+  margin-right: 20px;
   transition: box-shadow 0.3s ease-in-out, filter 0.3s ease-in-out;
 }
 
@@ -45,7 +46,6 @@
 }
 
 #search-submit-btn {
-  margin-left: 20px;
   height: 50px;
 }
 

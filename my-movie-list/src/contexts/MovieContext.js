@@ -65,6 +65,7 @@ export const MovieProvider = ({ children }) => {
         }
       );
       console.log(response.data);
+      window.location.reload();
     } catch (error) {
       if (error.response) {
         // setErrorMessage("You must be a user to add to list.");
@@ -99,6 +100,7 @@ export const MovieProvider = ({ children }) => {
         }
       );
       console.log(response.data);
+      window.location.reload();
     } catch (error) {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
