@@ -149,7 +149,7 @@ function MovieView({ movieInfo, toggleOverlay }) {
   console.log(movieInfo);
 
   return (
-    <div className="overlay">
+    <>
       <div id="movie-view-page">
         <img
           src={movieInfo.coverImage}
@@ -245,7 +245,8 @@ function MovieView({ movieInfo, toggleOverlay }) {
           )}
         </div>
       </div>
-    </div>
+      <div className="overlay" onClick={toggleOverlay}></div>
+    </>
   );
 }
 
