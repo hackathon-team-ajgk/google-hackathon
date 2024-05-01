@@ -7,6 +7,7 @@ import { useAuth } from "../../contexts/AuthContext";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const { handleLogin } = useAuth();
   const nav = useNavigate();
 
@@ -16,6 +17,7 @@ function Login() {
         "http://localhost:3000/login",
         credentials
       );
+      
       // Handle successful login, such as storing auth tokens, redirecting, etc.
       handleLogin(username, response.data);
       nav("/");
@@ -23,7 +25,8 @@ function Login() {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
         console.error("Login Error:", error.response.data);
-        window.alert("Username or Password is Incorrect");
+        setMessage("Incorrect Password/Username. Please try again");
+        // window.alert("Username or Password is Incorrect");
         console.error("Status Code:", error.response.status);
       } else if (error.request) {
         // The request was made but no response was received
@@ -48,6 +51,7 @@ function Login() {
     <div className="auth-page">
       <h1 id="login-title">Login</h1>
       <form className="user-auth-form" onSubmit={handleSubmit}>
+        {message !== "" && <p style={{color: message.includes('') ? 'darkred' : 'green'}}>{message}</p>}
         <label className="form-label" htmlFor="username-field">
           Username:
         </label>

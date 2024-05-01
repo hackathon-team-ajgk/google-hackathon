@@ -6,6 +6,8 @@ import "./Auth.css";
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("")
   const nav = useNavigate();
 
   const registerUser = async (userData) => {
@@ -44,13 +46,21 @@ function Register() {
       },
       bio: "",
     };
-    registerUser(credentials);
+    if (confirmPassword !== password) {
+      setMessage("Your password is not the same. Please try again")
+    }else {
+      registerUser(credentials);
+    }
+   
   };
 
   return (
     <div className="auth-page">
       <h1 id="register-title">Register</h1>
       <form className="user-auth-form" onSubmit={handleSubmit}>
+
+      {message !== "" && <p style={{color: message.includes('') ? 'darkred' : 'green'}}>{message}</p>}
+
         <label className="form-label" htmlFor="username-field">
           Username:
         </label>
@@ -74,6 +84,7 @@ function Register() {
           className="form-input"
           type="password"
           onChange={(e) => {
+            console.log(e.target.value);
             setPassword(e.target.value);
           }}
           value={password}
@@ -83,6 +94,25 @@ function Register() {
           autoComplete="new-password"
           required
         />
+
+        <label className="form-label" htmlFor="password-field">
+          Re-enter Password:
+        </label>
+        <input
+          // id="password-field"
+          className="form-input"
+          type="password"
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+          }}
+          value={confirmPassword}
+          placeholder="Enter Password"
+          title=""
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+          autoComplete="new-password"
+          required
+        />
+
         <button
           id="register-submit-button"
           className="submit-button"
