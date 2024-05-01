@@ -77,6 +77,9 @@ function MovieView({ movieInfo, toggleOverlay }) {
     try {
       const username = getUsername();
       const token = getToken();
+      console.log(username);
+      console.log(action);
+      console.log(movieInfo);
       const response = await axios.put(
         "http://localhost:3000/edit-movie-state",
         {
@@ -170,7 +173,9 @@ function MovieView({ movieInfo, toggleOverlay }) {
             </p>
             <p id="movie-average-rating" className="movie-text">
               <strong className="movie-metadata">Average Rating:</strong>{" "}
-              {parseFloat(movieInfo.averageRating.toFixed(1))}
+              {movieInfo.averageRating !== "NULL"
+                ? parseFloat(movieInfo.averageRating.toFixed(1))
+                : "DNE"}
             </p>
             <p id="movie-release-date" className="movie-text">
               <strong className="movie-metadata">Release Date:</strong>{" "}

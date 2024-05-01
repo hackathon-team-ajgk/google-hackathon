@@ -155,7 +155,7 @@ main {
 }
 
 .sub-page {
-  width: 1552px;
+  max-width: 1552px;
 }
 
 footer {

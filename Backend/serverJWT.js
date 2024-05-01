@@ -210,9 +210,11 @@ async function connectToDatabase() {
     app.post("/register", async (req, res) => {
       try {
         // Testing if username already exists in DB
-        if (user = await usersCollection.findOne({
-          username: req.body.username
-        })) {
+        if (
+          (user = await usersCollection.findOne({
+            username: req.body.username,
+          }))
+        ) {
           return res.status(400).send("User with that username already exists");
         }
 
@@ -311,46 +313,51 @@ async function connectToDatabase() {
         if (!username || !action || !movie) {
           return res.status(400).send("Missing required fields");
         }
-    
+
         // Retrieve the user from the database
         const user = await usersCollection.findOne({ username });
         if (!user) {
           return res.status(404).send("User not found");
         }
-    
+
         // Update the movie state based on the action
         if (action === "watch" || action === "watch-later") {
           // Determine which list to update
           const listToUpdate =
             action === "watch" ? "watchedMovies" : "watchLaterList";
           // Determine the list to remove the movie from
-          const listToRemove = listToUpdate === "watchedMovies" ? "watchLaterList" : "watchedMovies";
-          
+          const listToRemove =
+            listToUpdate === "watchedMovies"
+              ? "watchLaterList"
+              : "watchedMovies";
+
           // Ensure that the movieData object and the lists exist
           user.movieData = user.movieData || {};
           user.movieData[listToUpdate] = user.movieData[listToUpdate] || [];
           user.movieData[listToRemove] = user.movieData[listToRemove] || [];
-          
+
           // Check if the movie already exists in the specified list
-          const movieIndex = user.movieData[listToUpdate].findIndex(
-            (m) => m.id === movie.id
-          );
-          
+          const movieIndex = user.movieData[listToUpdate].findIndex((m) => {
+            m.movieId === movie.movieId;
+          });
+
           // If the movie exists in the target list, return a message
           if (movieIndex !== -1) {
-            return res.status(400).send(`Movie already exists in the '${listToUpdate}' list`);
+            return res
+              .status(400)
+              .send(`Movie already exists in the '${listToUpdate}' list`);
           }
-          
+
           // Find the index of the movie in the other list
           const indexInOtherList = user.movieData[listToRemove].findIndex(
-            (m) => m.id === movie.id
+            (m) => m.movieId === movie.movieId
           );
-          
+
           // If the movie exists in the other list, remove it
           if (indexInOtherList !== -1) {
             user.movieData[listToRemove].splice(indexInOtherList, 1);
           }
-    
+
           // Add the movie to the specified list
           user.movieData[listToUpdate].push(movie);
           // Update the user document in the database
@@ -371,7 +378,7 @@ async function connectToDatabase() {
         console.error("Error updating movie state:", error);
         res.status(500).send("Internal Server Error");
       }
-    });    
+    });
 
     /**
      * Route to update the state of a movie for an authenticated user

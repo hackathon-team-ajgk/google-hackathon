@@ -10,12 +10,6 @@ function MovieCard({ movie }) {
     setOverlayOn(!overlayOn);
   };
 
-  // Function toggle overlay visibility OFF
-  const removeOverlay = () => {
-    if (overlayOn === true) {
-      setOverlayOn(!overlayOn)
-    }
-  };
   return (
     <>
       {movie && (
