@@ -16,10 +16,7 @@ export function useFetchUserData() {
               authorization: token,
             },
           });
-          console.log(response.data[0]);
           setUserData(response.data[0]);
-          const userData = JSON.stringify(response.data[0]);
-          localStorage.setItem("userData", userData);
         } catch (error) {
           if (error.response) {
             // The server responded with a status code that falls out of the range of 2xx

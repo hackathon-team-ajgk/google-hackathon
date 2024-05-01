@@ -1,4 +1,13 @@
+import { useState } from "react";
+
 function Contact() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [message, setMessage] = useState("");
+
   return (
     <form className="contact-us">
       <h2 id="form-heading">Get in Touch</h2>
@@ -8,6 +17,8 @@ function Contact() {
           className="contact-input"
           type="text"
           placeholder="First Name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
           required
         />
         <input
@@ -15,6 +26,8 @@ function Contact() {
           className="contact-input"
           type="text"
           placeholder="Last Name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
           required
         />
       </div>
@@ -25,6 +38,8 @@ function Contact() {
           type="email"
           placeholder="Email"
           autoComplete="current-email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
         <input
@@ -32,6 +47,9 @@ function Contact() {
           className="contact-input"
           type="text"
           placeholder="Phone Number"
+          pattern="[0-9]{10}"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
           required
         />
       </div>
@@ -40,12 +58,17 @@ function Contact() {
         className="contact-input"
         type="text"
         placeholder="Address"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
         required
       />
       <textarea
         id="contact-textarea"
         className="form-textarea"
         placeholder="Type your message here"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        required
       />
       <button type="submit" id="contact-button" className="button">
         Submit

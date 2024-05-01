@@ -200,6 +200,7 @@ footer {
   gap: 0.5rem;
   font-size: 30px;
   margin: 0;
+  pointer-events: none;
 }
 
 #copyright {

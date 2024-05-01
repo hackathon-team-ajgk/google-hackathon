@@ -113,6 +113,11 @@ textarea::placeholder {
 
 .movies-stat {
   font-size: 20px;
+  pointer-events: none;
+}
+
+.watched-movies {
+  padding-left: 5px;
 }
 
 #delete-account-btn {

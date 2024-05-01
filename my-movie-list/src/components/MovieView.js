@@ -164,22 +164,28 @@ function MovieView({ movieInfo, toggleOverlay }) {
                 />
               </div>
             )}
-            <p id="movie-status" className="movie-text">
-              {status === "" ? "Not in List" : status}
-            </p>
           </div>
+          <p id="movie-status" className="movie-text">
+            {status === "" ? "Not in List" : status}
+          </p>
         </div>
         <div id="close-button-div" onClick={toggleOverlay}>
           <CloseFullscreenIcon fontSize="large" />
         </div>
-        <div id="edit-button-group" className="button-group">
-          {userData ? buttonsWatched() : <CircularProgress color="inherit" />}
-          {userData ? (
-            buttonsWatchLater()
-          ) : (
-            <CircularProgress color="inherit" />
-          )}
-        </div>
+        {getToken() ? (
+          <div id="edit-button-group" className="button-group">
+            {userData ? buttonsWatched() : <CircularProgress color="inherit" />}
+            {userData ? (
+              buttonsWatchLater()
+            ) : (
+              <CircularProgress color="inherit" />
+            )}
+          </div>
+        ) : (
+          <p id="guest-list-msg" className="guest-msg">
+            Create an account to add to list.
+          </p>
+        )}
       </div>
       <div className="overlay" onClick={toggleOverlay}></div>
     </>

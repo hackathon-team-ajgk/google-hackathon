@@ -2,7 +2,6 @@ import "./About.css";
 import "../../App.css";
 import Contact from "../../components/Contact";
 import MemberCarousel from "../../components/MemberCarousel";
-import arrow from "../../assets/images/Arrow.jpg";
 
 function About() {
   return (
@@ -12,7 +11,6 @@ function About() {
           <h1 id="about-heading" className="page-heading">
             About Us
           </h1>
-          <img id="arrow-image" src={arrow} alt="arrow" />
         </section>
         <section className="about-section">
           <div className="about-sub-container">

@@ -13,4 +13,5 @@
 
 #guest-msg {
   text-align: center;
+  pointer-events: none;
 }

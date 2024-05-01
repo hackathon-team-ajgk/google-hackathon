@@ -4,12 +4,13 @@ import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import MovieSlider from "../../components/MovieSlider";
 import { useNavigate } from "react-router-dom";
+import { useFetchUserData } from "../../hooks/useFetchUserData";
 
 function UserProfile() {
   const navigate = useNavigate();
   const { getToken, getUsername, handleLogout } = useAuth();
   const username = getUsername();
-  const [userData, setUserData] = useState({});
+  const usersData = useFetchUserData();
   const [userMovies, setUserMovies] = useState([]);
   const [bio, setBio] = useState("");
   const [isEditingBio, setIsEditingBio] = useState(false);
@@ -50,26 +51,6 @@ function UserProfile() {
     }
   };
 
-  useEffect(() => {
-    const getUserData = () => {
-      const userString = localStorage.getItem("userData");
-      if (userString) {
-        const userObject = JSON.parse(userString);
-        console.log(userObject);
-        setUserData(userObject);
-        setBio(userObject.bio);
-        setUserMovies(
-          userObject.movieData.watchedMovies.concat(
-            userObject.movieData.watchLaterList
-          )
-        );
-      }
-
-      return null;
-    };
-    getUserData();
-  }, []);
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const userDetails = {
@@ -108,6 +89,14 @@ function UserProfile() {
       }
     }
   };
+
+  useEffect(() => {
+    if (usersData) {
+      const watchedMovies = usersData.movieData.watchedMovies;
+      const watchLater = usersData.movieData.watchLaterList;
+      setUserMovies(watchedMovies.concat(watchLater));
+    }
+  }, [usersData, setUserMovies]);
 
   return (
     <>
@@ -162,8 +151,10 @@ function UserProfile() {
               </form>
             )}
             <p className="movies-stat">
-              Movies Watched:
-              {userMovies.length > 0 && userData.movieData.watchedMovies.length}
+              Movies in List:
+              <span className="watched-movies">
+                {userMovies.length === 0 ? 0 : userMovies.length}
+              </span>
             </p>
             <button
               id="delete-account-btn"
