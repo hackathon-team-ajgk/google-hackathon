@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "devStart": "nodemon serverExperimental.js"
+    "devStart": "nodemon serverExperimental.js",
+    "build": "",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@google/generative-ai": "^0.6.0",
