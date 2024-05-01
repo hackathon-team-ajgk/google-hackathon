@@ -1,6 +1,3 @@
-import MovieGrid from "./MovieGrid";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import axios from "axios";
 import { useState } from "react";
 import MovieSlider from "./MovieSlider";
@@ -8,11 +5,7 @@ import MovieSlider from "./MovieSlider";
 function SearchMovie() {
   const [searchedMovie, setSearchedMovie] = useState("");
   const [moviesFromSearch, setMoviesFromSearch] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleGrid = () => {
-    setIsOpen(!isOpen);
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -21,6 +14,7 @@ function SearchMovie() {
 
   const getMovieBySearch = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get(
         "http://localhost:3000/getMoviesFromSearch",
         {
@@ -28,7 +22,6 @@ function SearchMovie() {
         }
       );
       setMoviesFromSearch(response.data.movie);
-      setIsOpen(true);
     } catch (error) {
       // Handle error
       if (error.response) {
@@ -44,6 +37,7 @@ function SearchMovie() {
         console.error("Error:", error.message);
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -61,16 +55,15 @@ function SearchMovie() {
                 setSearchedMovie(e.target.value);
               }}
             />
-            <button id="search-submit-btn" className="button" type="submit">
-              Search
+            <button
+              id="search-submit-btn"
+              className="button"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? "Loading..." : "Search"}
             </button>
           </form>
-          <span className="dropup" onClick={toggleGrid}>
-            {isOpen && <ArrowDropUpIcon fontSize="large" />}
-            {!isOpen && moviesFromSearch.length > 0 && (
-              <ArrowDropDownIcon fontSize="large" />
-            )}
-          </span>
         </div>
       </section>
       {moviesFromSearch.length > 0 && (
