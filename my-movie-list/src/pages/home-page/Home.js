@@ -56,7 +56,7 @@ function Home() {
   }, [trendingMovies, getHeroMovies]);
 
   return (
-    <>
+    <div className="sub-page">
       <section id="hero-section" className="section-container">
         <div id="text-container">
           <p className="hero-section-text">
@@ -123,7 +123,7 @@ function Home() {
           </div>
         </section>
       )}
-    </>
+    </div>
   );
 }
 

@@ -1,1 +1,13 @@
+#generate-recs-list {
+  background-color: #4c4c4c;
+  box-shadow: 2px 2px 4px black;
+  margin-bottom: 30px;
+  font-size: 20px;
+  width: 350px;
+  height: 50px;
+}
 
+#generate-recs-list:hover {
+  box-shadow: 4px 4px 8px black;
+  filter: brightness(80%);
+}

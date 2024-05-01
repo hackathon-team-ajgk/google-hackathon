@@ -3,6 +3,7 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import axios from "axios";
 import { useState } from "react";
+import MovieSlider from "./MovieSlider";
 
 function SearchMovie() {
   const [searchedMovie, setSearchedMovie] = useState("");
@@ -72,8 +73,8 @@ function SearchMovie() {
           </span>
         </div>
       </section>
-      {moviesFromSearch.length > 0 && isOpen && (
-        <MovieGrid searchResult={moviesFromSearch} />
+      {moviesFromSearch.length > 0 && (
+        <MovieSlider genre="Search Results" movies={moviesFromSearch} />
       )}
     </>
   );
