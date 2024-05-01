@@ -129,14 +129,11 @@
 
 .movie-slider {
   height: 325px;
-<<<<<<< HEAD
   padding: 0 10px;
   gap: 10px;
   max-width: 100%;
-=======
   display: flex;
   overflow-x: auto;
->>>>>>> main
   overflow-y: hidden;
   max-width: 1552px;
 }
@@ -161,11 +158,6 @@
 .movie-card:hover {
   box-shadow: 6px 6px 20px 6px #0b0b0b;
   background-color: #3c3c3c;
-<<<<<<< HEAD
-  transform: scale(1.2);
-  z-index: 1;
-=======
->>>>>>> main
 }
 
 .movie-title {
