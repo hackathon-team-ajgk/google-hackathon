@@ -1,26 +1,38 @@
-name: test
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-    
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }} # This will always be main in this case
-      - name: Echo message
-        run: echo "This is a test"
-        shell: bash
 
-  test2:
+jobs:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Echo message
-        run: echo "This is the end of the test"
-        shell: bash
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and deploy to GitHub Pages
+        env:
+          GEMINI_API: ${{ secrets.GEMINI_API }}
+          MOVIE_API: ${{ secrets.MOVIE_API }}
+          API_READ_ACCESS_TOKEN: ${{secrets.API_READ_ACCESS_TOKEN}}
+          MovieSiteDB_API: ${{secrets.MovieSiteDB_API}}
+          MONGO_USERNAME: ${{secrets.MONGO_USERNAME}}
+          MONGO_PASSWORD: ${{secrets.MONGO_PASSWORD}}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          # Add other secrets as needed in future updates
+        run: |
+          # Add your deployment script here
+          # For example, if you're using npm and gh-pages:
+          npm run build
+          npm run deploy
