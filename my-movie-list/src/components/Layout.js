@@ -96,7 +96,7 @@ function Layout() {
 
   return (
     <div className="app">
-      <div className="header-container">
+      <div id="header-container" className="section-container">
         <div className="sub-header-container">
           <h1
             id="title"

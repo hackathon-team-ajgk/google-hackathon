@@ -2,7 +2,7 @@ import { useState } from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
-function ProfileCard(memberInfo) {
+function ProfileCard({ member }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleIsOpen = () => setIsOpen(!isOpen);
@@ -10,22 +10,22 @@ function ProfileCard(memberInfo) {
   return (
     <div className="card">
       <div className="profile-cover">
-        <img src={memberInfo.member.image} alt="pfp" className="pfp" />
+        <img src={member.image} alt="pfp" className="pfp" />
       </div>
       <div className="profile-card-info">
         <div className="profile-user-info">
           <p id="profile-name" className="profile-title">
-            {memberInfo.member.name}
+            {member.name}
           </p>
           <p id="profile-role" className="profile-title">
-            {memberInfo.member.role}
+            {member.role}
           </p>
           <div id="profile-socials" className="button-group">
             <a
               className="social-icon"
               target="_blank"
               rel="noreferrer"
-              href={memberInfo.member.github}
+              href={member.github}
             >
               <GitHubIcon fontSize="large" />
             </a>
@@ -33,12 +33,12 @@ function ProfileCard(memberInfo) {
               className="social-icon"
               target="_blank"
               rel="noreferrer"
-              href={memberInfo.member.linkedIn}
+              href={member.linkedIn}
             >
               <LinkedInIcon fontSize="large" />
             </a>
           </div>
-          {isOpen && <p className="profile-text">{memberInfo.member.bio}</p>}
+          {isOpen && <p className="profile-text">{member.bio}</p>}
           <button onClick={toggleIsOpen} className="see-more-less">
             {isOpen ? "See Less" : "See More"}
           </button>

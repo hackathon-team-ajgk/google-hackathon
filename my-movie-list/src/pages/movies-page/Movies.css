@@ -53,7 +53,6 @@
   display: grid;
   overflow-y: auto;
   grid-template-columns: repeat(auto-fit, 200px);
-  gap: 1rem;
   max-height: 400px;
   width: 100%;
 }
