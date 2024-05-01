@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import SearchMovie from "../../components/SearchMovie";
 import MovieRecs from "../../components/MovieRecs";
+import { Reveal } from "../../components/Reveal";
 
 function Movies() {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -77,18 +78,28 @@ function Movies() {
 
   return (
     <div className="sub-page">
-      <div className="search-recs-container">
-        <SearchMovie onSearch={handleSearch} />
-        <MovieRecs onChange={handleRecommendations} />
-      </div>
-      {searchedMovies.length > 0 && (
-        <MovieSlider genre="Search Results" movies={searchedMovies} />
-      )}
-      {recommendations.length > 0 && (
-        <MovieSlider genre={`Recommendations`} movies={recommendations} />
-      )}
-      <MovieSlider genre="Trending" movies={trendingMovies} />
-      <MovieSlider genre="Popular" movies={popularMovies} />
+      <Reveal>
+        <div className="search-recs-container">
+          <SearchMovie onSearch={handleSearch} />
+          <MovieRecs onChange={handleRecommendations} />
+        </div>
+      </Reveal>
+      <Reveal>
+        {searchedMovies.length > 0 && (
+          <MovieSlider genre="Search Results" movies={searchedMovies} />
+        )}
+      </Reveal>
+      <Reveal>
+        {recommendations.length > 0 && (
+          <MovieSlider genre={`Recommendations`} movies={recommendations} />
+        )}
+      </Reveal>
+      <Reveal>
+        <MovieSlider genre="Trending" movies={trendingMovies} />
+      </Reveal>
+      <Reveal>
+        <MovieSlider genre="Popular" movies={popularMovies} />
+      </Reveal>
     </div>
   );
 }

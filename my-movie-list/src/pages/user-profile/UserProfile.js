@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import MovieSlider from "../../components/MovieSlider";
 import { useNavigate } from "react-router-dom";
 import { useFetchUserData } from "../../hooks/useFetchUserData";
+import { Reveal } from "../../components/Reveal";
 
 function UserProfile() {
   const navigate = useNavigate();
@@ -100,79 +101,85 @@ function UserProfile() {
 
   return (
     <>
-      <section id="profile-section" className="section-container">
-        <div id="user-details" className="column-section">
-          <div id="profile-name-bio" className="profile-details">
-            <div className="avatar">
-              <span>{username[0].toUpperCase()}</span>
-            </div>
-            <p id="profile-username" className="profile-field">
-              {username}
-            </p>
-            {!isEditingBio ? (
-              <>
-                <p id="user-bio" className="profile-field">
-                  {bio}
-                </p>
-                <button
-                  id="edit-bio-btn"
-                  className="bio-btn"
-                  onClick={() => {
-                    setIsEditingBio(true);
-                  }}
-                >
-                  Edit Bio
-                </button>
-              </>
-            ) : (
-              <form id="user-profile-form" onSubmit={handleSubmit}>
-                <textarea
-                  className="bio"
-                  value={bio}
-                  maxLength={maxLength}
-                  onChange={handleChange}
-                  placeholder="Enter your bio..."
-                />
-                <div id="char-count">
-                  Char count: {maxLength - bio.length}/{maxLength}
-                </div>
-                <div className="bio-btn-group">
-                  <button id="submit-bio-btn" className="bio-btn" type="submit">
-                    Submit bio
-                  </button>
+      <Reveal width="fit-content">
+        <section id="profile-section" className="section-container">
+          <div id="user-details" className="column-section">
+            <div id="profile-name-bio" className="profile-details">
+              <div className="avatar">
+                <span>{username[0].toUpperCase()}</span>
+              </div>
+              <p id="profile-username" className="profile-field">
+                {username}
+              </p>
+              {!isEditingBio ? (
+                <>
+                  <p id="user-bio" className="profile-field">
+                    {bio}
+                  </p>
                   <button
-                    id="cancel-btn"
+                    id="edit-bio-btn"
                     className="bio-btn"
-                    onClick={() => setIsEditingBio(false)}
+                    onClick={() => {
+                      setIsEditingBio(true);
+                    }}
                   >
-                    Cancel
+                    Edit Bio
                   </button>
-                </div>
-              </form>
-            )}
-            <p className="movies-stat">
-              Movies in List:
-              <span className="watched-movies">
-                {userMovies.length === 0 ? 0 : userMovies.length}
-              </span>
-            </p>
-            <button
-              id="delete-account-btn"
-              className="button"
-              onClick={() => {
-                deleteAccount();
-              }}
-            >
-              Delete Account
-            </button>
+                </>
+              ) : (
+                <form id="user-profile-form" onSubmit={handleSubmit}>
+                  <textarea
+                    className="bio"
+                    value={bio}
+                    maxLength={maxLength}
+                    onChange={handleChange}
+                    placeholder="Enter your bio..."
+                  />
+                  <div id="char-count">
+                    Char count: {maxLength - bio.length}/{maxLength}
+                  </div>
+                  <div className="bio-btn-group">
+                    <button
+                      id="submit-bio-btn"
+                      className="bio-btn"
+                      type="submit"
+                    >
+                      Submit bio
+                    </button>
+                    <button
+                      id="cancel-btn"
+                      className="bio-btn"
+                      onClick={() => setIsEditingBio(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+              <p className="movies-stat">
+                Movies in List:
+                <span className="watched-movies">
+                  {userMovies.length === 0 ? 0 : userMovies.length}
+                </span>
+              </p>
+              <button
+                id="delete-account-btn"
+                className="button"
+                onClick={() => {
+                  deleteAccount();
+                }}
+              >
+                Delete Account
+              </button>
+            </div>
           </div>
-        </div>
-        <div id="account-stats" className="column-section">
-          {userMovies.length > 0 && (
-            <MovieSlider genre="Movies In Lists" movies={userMovies} />
-          )}
-        </div>
-      </section>
+          <div id="account-stats" className="column-section">
+            {userMovies.length > 0 && (
+              <MovieSlider genre="Movies In Lists" movies={userMovies} />
+            )}
+          </div>
+        </section>
+      </Reveal>
     </>
   );
 }

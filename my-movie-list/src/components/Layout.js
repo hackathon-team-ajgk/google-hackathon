@@ -1,6 +1,5 @@
 import { useNavigate, Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
-// import axios from "axios";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";

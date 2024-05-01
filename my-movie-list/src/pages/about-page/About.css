@@ -42,8 +42,8 @@
   pointer-events: none;
 }
 
-#carousel-container {
-  max-width: 1536px;
+#carousel-section {
+  max-width: 1552px;
 }
 
 .slick-slide > div {
