@@ -10,11 +10,11 @@ function YourList() {
   const [watched, setWatched] = useState([]);
   const [watchLater, setWatchLater] = useState([]);
   const [suggestionsByList, setSuggestionsByList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [buttonState, setButtonState] = useState("Generate Recommendations");
 
   const getUserRecommendationsByList = async () => {
     try {
-      setIsLoading(true);
+      setButtonState("Loading...");
       const token = getToken();
       const response = await axios.get(
         "http://localhost:3000/getRecommendations-list",
@@ -26,6 +26,7 @@ function YourList() {
       );
       console.log(response.data);
       setSuggestionsByList(response.data);
+      setButtonState("Generate New Recommendations");
     } catch (error) {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
@@ -39,7 +40,6 @@ function YourList() {
         console.error("Error:", error.message);
       }
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -94,9 +94,8 @@ function YourList() {
             id="generate-recs-list"
             className="button"
             onClick={getUserRecommendationsByList}
-            disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "Get Recommendations"}
+            {buttonState}
           </button>
         </>
       ) : (
