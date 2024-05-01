@@ -11,3 +11,7 @@
   box-shadow: 4px 4px 8px black;
   filter: brightness(80%);
 }
+
+#guest-msg {
+  text-align: center;
+}

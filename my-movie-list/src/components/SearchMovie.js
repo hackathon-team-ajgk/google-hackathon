@@ -1,10 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
-import MovieSlider from "./MovieSlider";
 
-function SearchMovie() {
+function SearchMovie({ onSearch }) {
   const [searchedMovie, setSearchedMovie] = useState("");
-  const [moviesFromSearch, setMoviesFromSearch] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (event) => {
@@ -21,7 +19,7 @@ function SearchMovie() {
           params: { movie: searchedMovie },
         }
       );
-      setMoviesFromSearch(response.data.movie);
+      onSearch(response.data.movie);
     } catch (error) {
       // Handle error
       if (error.response) {
@@ -45,12 +43,10 @@ function SearchMovie() {
       <section id="search-movie-container" className="section-container">
         <div id="search-bar-container">
           <form id="search-form" onSubmit={handleSubmit}>
-            <label htmlFor="search-input" id="search-label">
-              Search for any movie by movie name:
-            </label>
             <input
               type="text"
               id="search-input"
+              placeholder="Search Movie Here"
               onChange={(e) => {
                 setSearchedMovie(e.target.value);
               }}
@@ -66,9 +62,9 @@ function SearchMovie() {
           </form>
         </div>
       </section>
-      {moviesFromSearch.length > 0 && (
+      {/* {moviesFromSearch.length > 0 && (
         <MovieSlider genre="Search Results" movies={moviesFromSearch} />
-      )}
+      )} */}
     </>
   );
 }

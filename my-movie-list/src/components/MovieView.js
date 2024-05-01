@@ -1,155 +1,115 @@
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
-import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
+import { useMovieContext } from "../contexts/MovieContext";
+import { useFetchUserData } from "../hooks/useFetchUserData";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function MovieView({ movieInfo, toggleOverlay }) {
-  const { getUsername, getToken, getUserMovieData } = useAuth();
-  const [movieStatus, setMovieStatus] = useState("Not in List");
+  const { getToken } = useAuth();
   const [rating, setRating] = useState(movieInfo.userRating);
+  const [inWatched, setInWatched] = useState(false);
+  const [inWatchLater, setInWatchLater] = useState(false);
+  const [status, setStatus] = useState("");
+  const { addToList, removeFromList, updateMovieRating } = useMovieContext();
+  // const [errorMessage, setErrorMessage] = useState("");
+
+  const userData = useFetchUserData();
+
+  const resetRating = () => {
+    setRating(0);
+  };
 
   useEffect(() => {
-    if (getToken()) {
+    if (userData) {
       const checkMovieInList = () => {
-        console.log("hello");
-        const movieData = getUserMovieData();
-        const watchLater = movieData.watchLaterList.find(
-          (movie) => movie.movieId === movieInfo.movieId
-        );
-        if (watchLater !== undefined) {
-          console.log(watchLater);
-          setMovieStatus("Watch Later");
-        } else {
-          const watched = movieData.watchedMovies.find(
+        if (getToken()) {
+          const usersWatched = userData.movieData.watchedMovies;
+          const usersWatchLater = userData.movieData.watchLaterList;
+          const movieInWatched = usersWatched.some(
             (movie) => movie.movieId === movieInfo.movieId
           );
-          if (watched !== undefined) {
-            setMovieStatus("Watched");
-            setRating(watched.userRating);
+          if (movieInWatched) {
+            setInWatched(true);
+            setStatus("Watched");
           } else {
-            setMovieStatus("Not in List");
+            const movieInWatchLater = usersWatchLater.some(
+              (movie) => movie.movieId === movieInfo.movieId
+            );
+            if (movieInWatchLater) {
+              setInWatchLater(true);
+              setStatus("Watch Later");
+            }
           }
         }
       };
       checkMovieInList();
+      console.log("ran side effect");
     }
-  }, [getUserMovieData, getToken, movieInfo]);
+  }, [movieInfo, getToken, userData]);
 
-  const updateMovieRating = async (movieRating) => {
-    try {
-      const token = getToken();
-      const username = getUsername();
-      const response = await axios.put(
-        "http://localhost:3000/update-user-rating",
-        {
-          username: username,
-          movieTitle: movieInfo.title,
-          userRating: movieRating,
-        },
-        {
-          headers: {
-            authorization: token,
-          },
-        }
+  const buttonsWatched = () => {
+    if (inWatched) {
+      return (
+        <button
+          className="button"
+          onClick={() => {
+            removeFromList(status, movieInfo);
+            setInWatched(false);
+            setStatus("Not in List");
+          }}
+        >
+          Remove from Watched
+        </button>
       );
-      console.log(response.data);
-    } catch (error) {
-      if (error.response) {
-        // The server responded with a status code that falls out of the range of 2xx
-        window.alert(
-          "The movie is not in your watched list. Please add it to your list of watched movies first."
-        );
-        console.error("Post Error:", error.response.data);
-        console.error("Status Code:", error.response.status);
-        setRating(0);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("Request Error:", error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error:", error.message);
-      }
+    } else {
+      return (
+        <button
+          className="button"
+          onClick={() => {
+            addToList("watch", movieInfo);
+            setStatus("Watched");
+            setInWatchLater(false);
+            setInWatched(true);
+          }}
+        >
+          Add to Watched
+        </button>
+      );
     }
   };
 
-  const addToList = async (action) => {
-    try {
-      const username = getUsername();
-      const token = getToken();
-      console.log(username);
-      console.log(action);
-      console.log(movieInfo);
-      const response = await axios.put(
-        "http://localhost:3000/edit-movie-state",
-        {
-          username: username,
-          action: action,
-          movie: movieInfo,
-        },
-        {
-          headers: {
-            authorization: token,
-          },
-        }
+  const buttonsWatchLater = () => {
+    if (inWatchLater) {
+      return (
+        <button
+          className="button"
+          onClick={() => {
+            removeFromList(status, movieInfo);
+            setInWatchLater(false);
+            setStatus("Not in List");
+          }}
+        >
+          Remove from Watch Later
+        </button>
       );
-      console.log(response.data);
-      if (action === "watch") {
-        setMovieStatus("Watched");
-      } else {
-        setMovieStatus("Watch Later");
-      }
-    } catch (error) {
-      if (error.response) {
-        // The server responded with a status code that falls out of the range of 2xx
-        console.error("Post Error:", error.response.data);
-        console.error("Status Code:", error.response.status);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("Request Error:", error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error:", error.message);
-      }
+    } else {
+      return (
+        <button
+          className="button"
+          onClick={() => {
+            addToList("watch-later", movieInfo);
+            setStatus("Watch Later");
+            setInWatchLater(true);
+            setInWatched(false);
+          }}
+        >
+          Add to Watch Later
+        </button>
+      );
     }
   };
-
-  const removeFromList = async () => {
-    try {
-      const username = getUsername();
-      const token = getToken();
-      const response = await axios.put(
-        "http://localhost:3000/remove-movie",
-        {
-          username: username,
-          movieName: movieInfo.title,
-          status: movieStatus,
-        },
-        {
-          headers: {
-            authorization: token,
-          },
-        }
-      );
-      console.log(response.data);
-      setMovieStatus("Not in List");
-      setRating(0);
-    } catch (error) {
-      if (error.response) {
-        // The server responded with a status code that falls out of the range of 2xx
-        console.error("Post Error:", error.response.data);
-        console.error("Status Code:", error.response.status);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("Request Error:", error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error:", error.message);
-      }
-    }
-  };
-
-  console.log(movieInfo);
 
   return (
     <>
@@ -196,13 +156,13 @@ function MovieView({ movieInfo, toggleOverlay }) {
                   }}
                   onChange={(event, newRating) => {
                     setRating(newRating);
-                    updateMovieRating(newRating);
+                    updateMovieRating(newRating, movieInfo, resetRating);
                   }}
                 />
               </div>
             )}
             <p id="movie-status" className="movie-text">
-              {movieStatus}
+              {status === "" ? "Not in List" : status}
             </p>
           </div>
         </div>
@@ -210,43 +170,11 @@ function MovieView({ movieInfo, toggleOverlay }) {
           <CloseFullscreenIcon fontSize="large" />
         </div>
         <div id="edit-button-group" className="button-group">
-          {movieStatus !== "Watched" ? (
-            <button
-              className="button"
-              onClick={() => {
-                addToList("watch");
-              }}
-            >
-              Add to Watched
-            </button>
+          {userData ? buttonsWatched() : <CircularProgress color="inherit" />}
+          {userData ? (
+            buttonsWatchLater()
           ) : (
-            <button
-              className="button"
-              onClick={() => {
-                removeFromList();
-              }}
-            >
-              Remove from Watched
-            </button>
-          )}
-          {movieStatus !== "Watch Later" ? (
-            <button
-              className="button"
-              onClick={() => {
-                addToList("watch-later");
-              }}
-            >
-              Add to Watch Later
-            </button>
-          ) : (
-            <button
-              className="button"
-              onClick={() => {
-                removeFromList();
-              }}
-            >
-              Remove from Watch Later
-            </button>
+            <CircularProgress color="inherit" />
           )}
         </div>
       </div>

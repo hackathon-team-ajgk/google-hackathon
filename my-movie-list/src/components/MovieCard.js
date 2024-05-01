@@ -1,12 +1,16 @@
 import "../pages/home-page/Home.css";
 import { useState } from "react";
 import MovieView from "./MovieView";
+import { MovieProvider } from "../contexts/MovieContext";
 
 function MovieCard({ movie }) {
   const [overlayOn, setOverlayOn] = useState(false);
 
   // Function to toggle overlay visibility
   const toggleOverlay = () => {
+    if (overlayOn) {
+      window.location.reload();
+    }
     setOverlayOn(!overlayOn);
   };
 
@@ -27,7 +31,9 @@ function MovieCard({ movie }) {
         </div>
       )}
       {overlayOn && (
-        <MovieView movieInfo={movie} toggleOverlay={toggleOverlay} />
+        <MovieProvider>
+          <MovieView movieInfo={movie} toggleOverlay={toggleOverlay} />
+        </MovieProvider>
       )}
     </>
   );

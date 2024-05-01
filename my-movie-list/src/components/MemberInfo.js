@@ -29,11 +29,10 @@ export const teamInfo = [
   {
     name: "Jose Sanchez",
     role: "Back-end Dev",
-    image:
-      "https://thicc.mywaifulist.moe/waifus/4234/598b4b1806115a5ac68260eb844ce050efbcee7a25189864632c27fc418163d1_thumb.jpg",
-    bio: "",
-    github: "",
-    linkedIn: "",
+    image: "https://cdn.wallpapersafari.com/30/18/uH3j5V.jpg",
+    bio: "Hello! I am a Computer Information Systems attending Mount Royal University, I like Brazilian Jiu-Jitsu, lifting weights, and playing video games. Connect with me on LinkedIn!",
+    github: "https://github.com/josesanchez2004",
+    linkedIn: "https://www.linkedin.com/in/jose-sanchez-35083825a/",
   },
   {
     name: "Kiaan B",

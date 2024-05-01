@@ -1,8 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
-import MovieSlider from "./MovieSlider";
 
-function MovieRecs() {
+function MovieRecs({ onChange }) {
   const genres = [
     "Action",
     "Adventure",
@@ -26,7 +25,6 @@ function MovieRecs() {
   ];
 
   const [genre, setGenre] = useState("Action");
-  const [suggestionsByGenre, setSuggestionsByGenre] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Function to update the state based on the option selected by the user
@@ -43,8 +41,7 @@ function MovieRecs() {
           params: { genre: genre },
         }
       );
-      console.log(response.data);
-      setSuggestionsByGenre(response.data);
+      onChange(response.data);
     } catch (error) {
       if (error.response) {
         // The server responded with a status code that falls out of the range of 2xx
@@ -69,9 +66,6 @@ function MovieRecs() {
     <>
       <section id="ai-suggestions-by-genre" className="section-container">
         <form className="genre-recs-container" onSubmit={handleGetRecsSubmit}>
-          <p id="ai-sugg-heading">
-            Get AI Movie Recommendations Based On Genre
-          </p>
           <select
             className="genres-container"
             value={genre}
@@ -88,9 +82,9 @@ function MovieRecs() {
           </button>
         </form>
       </section>
-      {suggestionsByGenre.length > 0 && (
+      {/* {suggestionsByGenre.length > 0 && (
         <MovieSlider genre={`Recommendations`} movies={suggestionsByGenre} />
-      )}
+      )} */}
     </>
   );
 }

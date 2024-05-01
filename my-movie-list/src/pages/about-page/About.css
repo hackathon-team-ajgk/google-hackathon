@@ -36,7 +36,7 @@
 }
 
 .slick-slide > div {
-  margin: 0 10px;
+  margin: 0 30px;
 }
 
 .card {
@@ -324,7 +324,7 @@ a:visited {
     text-align: center;
   }
   .contact-us {
-    max-width: 475px;
+    max-width: 400px;
     min-height: 650px;
   }
   .form-field {
@@ -336,7 +336,7 @@ a:visited {
     min-height: 52px;
   }
   #contact-textarea {
-    max-width: 80%;
+    max-width: 262px;
   }
   #address-input::placeholder {
     padding-left: 20px;
