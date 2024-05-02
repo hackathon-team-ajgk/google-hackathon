@@ -26,6 +26,14 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(
+  cors({
+    origin: ["https://deploy-mern"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
 /**
  * Middleware to authenticate JWT token
  * @name authenticateToken
