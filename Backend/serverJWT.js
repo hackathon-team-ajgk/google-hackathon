@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 
 app.use(
   cors({
-    origin: ["https://deploy-mern"],
+    origin: ["https://google-hackathon-frontend-beige.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
